@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.CenterStageRobot;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
@@ -12,12 +13,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.ElevatorCommand;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.ElevatorManualCommand;
+import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.DroneSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.ElevatorSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeArmSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.OuttakeSusystem;
+import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.PixelColorDetectorSubsystem;
 import org.inventors.ftc.robotbase.drive.DriveConstants;
 import org.inventors.ftc.robotbase.hardware.GamepadExEx;
 import org.inventors.ftc.robotbase.RobotEx;
@@ -34,8 +37,7 @@ public class CenterStageRobot extends RobotEx {
 
     public CenterStageRobot(HardwareMap hm, DriveConstants RobotConstants, Telemetry telemetry, GamepadExEx driverOp,
                             GamepadExEx toolOp) {
-        super(hm, RobotConstants, telemetry, driverOp, toolOp, OpModeType.TELEOP, false,
-                false, new Pose2d(0, 0, 0));
+        super(hm, RobotConstants, telemetry, driverOp, toolOp, OpModeType.TELEOP, false, false, new Pose2d(0, 0, 0));
     }
 
     public CenterStageRobot(HardwareMap hm, DriveConstants RobotConstants, Telemetry telemetry, GamepadExEx driverOp,
@@ -65,7 +67,7 @@ public class CenterStageRobot extends RobotEx {
                 .whenPressed(new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.TOOGLE));
 
         toolOp.getGamepadButton(GamepadKeys.Button.Y)
-                        .whenPressed(new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.EXTREME));
+                .whenPressed(new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.EXTREME));
 
         toolOp.getGamepadButton(GamepadKeys.Button.A)
                 .toggleWhenPressed(
@@ -92,8 +94,6 @@ public class CenterStageRobot extends RobotEx {
                 .toggleWhenPressed(
                         new SequentialCommandGroup(
                                 new InstantCommand(intakeArmSubsystem::lowerArm, intakeArmSubsystem),
-                                new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.CLOSE),
-//                                new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.CLOSE),
                                 new InstantCommand(outtakeSusystem::go_intake_second, outtakeSusystem),
                                 new WaitCommand(80),
                                 new InstantCommand(outtakeSusystem::go_intake_first, outtakeSusystem),
