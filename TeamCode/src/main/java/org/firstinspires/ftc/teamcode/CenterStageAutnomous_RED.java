@@ -242,6 +242,8 @@ public class CenterStageAutnomous_RED extends CommandOpMode {
         }
         drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
 
+        PoseStorage.currentPose = drive.getPoseEstimate();
+
         reset();
     }
 }

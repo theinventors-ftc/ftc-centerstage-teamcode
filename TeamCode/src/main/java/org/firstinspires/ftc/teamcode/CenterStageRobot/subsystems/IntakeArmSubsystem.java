@@ -18,7 +18,7 @@ public class IntakeArmSubsystem extends SubsystemBase {
     public IntakeArmSubsystem(HardwareMap hm) {
         rightArm = hm.get(ServoImplEx.class, "right_intake_arm");
 
-        setPosition(MAX);
+        raiseArm();
     }
 
     public void setPosition(double position) {
@@ -26,7 +26,7 @@ public class IntakeArmSubsystem extends SubsystemBase {
     }
 
     public void raiseArm() {
-        setPosition(MAX);
+        setPosition(0.33);
     }
 
     public void lowerArm() {

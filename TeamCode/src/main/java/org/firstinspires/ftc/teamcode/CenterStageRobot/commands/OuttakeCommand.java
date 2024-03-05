@@ -30,7 +30,7 @@ public class OuttakeCommand extends CommandBase {
     public SequentialCommandGroup closeOuttake() {
         return new SequentialCommandGroup(
                 new InstantCommand(outtakeSusystem::go_intake_second, outtakeSusystem),
-                new WaitCommand(80),
+                new WaitCommand(30),
                 new InstantCommand(outtakeSusystem::go_intake_first, outtakeSusystem)
         );
     }
