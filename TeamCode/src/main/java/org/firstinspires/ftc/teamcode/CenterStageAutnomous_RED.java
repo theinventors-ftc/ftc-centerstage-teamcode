@@ -116,7 +116,7 @@ public class CenterStageAutnomous_RED extends CommandOpMode {
                 RoadRunnerSubsystem_RED.Path.INNER, RoadRunnerSubsystem_RED.PixelStack.INNER,
                 RoadRunnerSubsystem_RED.ParkingPosition.INNER, telemetry);
 
-        rand = RoadRunnerSubsystem_RED.Randomization.LEFT;
+        rand = RoadRunnerSubsystem_RED.Randomization.RIGHT;
 
         RR_Red.spikeRandomizationPath(rand);
         RR_Red.cycle();

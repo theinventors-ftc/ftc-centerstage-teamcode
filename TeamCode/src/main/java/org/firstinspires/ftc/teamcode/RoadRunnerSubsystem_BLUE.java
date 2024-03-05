@@ -25,9 +25,11 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     public static double StackStationFirstCycleOffset = 4; /*-inches-*/
     public static double StackStationSecondCycleOffset = 6; /*-inches-*/
 
-    public final double StackDistance = 2; /*-inches-*/
-    public final double HIGH_VEL_SPEED = 60.0;
+    public final double StackDistance = 0; /*-inches-*/
     public final double LOW_VEL_SPEED = 45.0;
+    public final double HIGH_VEL_SPEED = 70.0;
+    public final double HIGH_ACCEL_SPEED = 60.0;
+    public final double LOW_ACCEL_SPEED = 60.0;
     /*-------------------------------------------------------
     -Trajectories-
     -------------------------------------------------------*/
@@ -36,12 +38,15 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     protected TrajectorySequenceBuilder leftSpike;
     protected TrajectorySequenceBuilder centerSpike;
     protected TrajectorySequenceBuilder rightSpike;
+    protected TrajectorySequenceBuilder rightSpike_LONG;
     protected TrajectorySequenceBuilder spike_randomizedBackdrop;
     protected TrajectorySequenceBuilder backdrop_station_first_cycle;
     protected TrajectorySequenceBuilder backdrop_station_second_cycle;
     protected TrajectorySequenceBuilder station_backdrop_first_cycle;
     protected TrajectorySequenceBuilder station_backdrop_second_cycle;
+    protected TrajectorySequenceBuilder spike_station_right;
     protected TrajectorySequenceBuilder spike_station;
+    protected TrajectorySequenceBuilder station_long_randomizedBackdrop;
     protected TrajectorySequenceBuilder parking;
     /*-------------------------------------------------------
     -Enums-
@@ -99,7 +104,7 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
 
     protected Pose2d leftPixel_LONG = new Pose2d(TileInverted - (RobotY/2),1.5 * Tile, Math.toRadians(270));
     protected Pose2d centerPixel_LONG = new Pose2d(1.5 * TileInverted, Tile + (RobotY/2), Math.toRadians(270));
-    protected Pose2d rightPixel_LONG = new Pose2d(2 * TileInverted, Tile + (RobotX/2), Math.toRadians(180));
+    protected Pose2d rightPixel_LONG = new Pose2d(2 * TileInverted + (RobotY/2), Tile + (RobotX/2), Math.toRadians(180));
 
     protected Pose2d randomizationBackdropLeft = new Pose2d(2.5 * Tile - (RobotY/2) + RandomizationBackdropDistance, 1.75 * Tile, Math.toRadians(180)); // Default
     protected Pose2d randomizationBackdropCenter = new Pose2d(2.5 * Tile - (RobotY/2) + RandomizationBackdropDistance, 1.5 * Tile, Math.toRadians(180));
@@ -171,6 +176,13 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
 
         /*------------------------------------------------------------------------*/
 
+        rightSpike_LONG = drive.trajectorySequenceBuilder(HomePose)
+                .lineToLinearHeading(new Pose2d(leftPixelSpike.vec(), Math.toRadians(180)))
+                .setTangent(Math.toRadians(300))
+                .splineToLinearHeading(stackStation, Math.toRadians(135));
+
+        /*------------------------------------------------------------------------*/
+
         centerSpike = drive.trajectorySequenceBuilder(HomePose)
                 .lineTo(centerPixelSpike.vec());
 
@@ -192,11 +204,11 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
                 .setTangent(Math.toRadians(180))
                 .splineToConstantHeading(stationClose, Math.toRadians(180),
                         SampleMecanumDrive.getVelocityConstraint(LOW_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+                        SampleMecanumDrive.getAccelerationConstraint(LOW_ACCEL_SPEED)
                 )
                 .lineTo(stationFar,
                         SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(HIGH_VEL_SPEED)
+                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
                 )
                 .splineToConstantHeading(stackStation.vec(), Math.toRadians(stackStationTanget[stackStationTangetValue])); //tan pair 180/225
 
@@ -204,11 +216,11 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
                 .setTangent(Math.toRadians(180))
                 .splineToConstantHeading(stationClose, Math.toRadians(180),
                         SampleMecanumDrive.getVelocityConstraint(LOW_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+                        SampleMecanumDrive.getAccelerationConstraint(LOW_ACCEL_SPEED)
                 )
                 .lineTo(stationFar,
                         SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(HIGH_VEL_SPEED)
+                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
                 )
                 .splineToConstantHeading(stackStationSecondCycle.vec(), Math.toRadians(stackStationTanget[stackStationTangetValue])); //tan pair 180/225
 
@@ -218,7 +230,7 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
                 .splineToConstantHeading(stationFar, Math.toRadians(0))
                 .lineTo(stationClose,
                         SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(HIGH_VEL_SPEED)
+                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
                 )
                 .splineToConstantHeading(backdrop_Unload.vec(), Math.toRadians(0));
 
@@ -228,15 +240,25 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
                 .splineToConstantHeading(stationFar, Math.toRadians(0))
                 .lineTo(stationClose,
                         SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(HIGH_VEL_SPEED)
+                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
                 )
                 .splineToConstantHeading(backdrop_Unload.vec(), Math.toRadians(0));
 
         /*----------------------------------------------------------------------------------------*/
 
         spike_station = drive.trajectorySequenceBuilder(pixel_cycle_PoseTransfer)
-                .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(stackStation, Math.toRadians(270));
+                .setTangent(Math.toRadians(240))
+                .splineToLinearHeading(stackStation, Math.toRadians(180));
+
+        station_long_randomizedBackdrop = drive.trajectorySequenceBuilder(stackStation)
+                .setReversed(true)
+                .setTangent(Math.toRadians(0))
+                .splineToConstantHeading(stationFar, Math.toRadians(0))
+                .lineTo(stationClose,
+                        SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
+                )
+                .splineToConstantHeading(randomizedBackdrop.vec(), Math.toRadians(0));
 
         /*----------------------------------------------------------------------------------------*/
 

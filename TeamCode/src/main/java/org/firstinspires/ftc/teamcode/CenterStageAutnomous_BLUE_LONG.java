@@ -19,8 +19,8 @@ import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeSubsyste
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.OuttakeSusystem;
 import org.firstinspires.ftc.teamcode.roadRunner.drive.SampleMecanumDrive;
 
-@Autonomous(name = "CenterStageAutonomous_BLUE", group = "Final Autonomous")
-public class CenterStageAutnomous_BLUE extends CommandOpMode {
+@Autonomous(name = "CenterStageAutonomous_BLUE_LONG", group = "Final Autonomous")
+public class CenterStageAutnomous_BLUE_LONG extends CommandOpMode {
 
     private OuttakeSusystem outtakeSusystem;
     private ElevatorSubsystem elevatorSubsystem;
@@ -33,7 +33,7 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
     private RoadRunnerSubsystem_BLUE.Randomization rand;
 
     private Pose2d HomePose_SHORT = new Pose2d(RoadRunnerSubsystem_BLUE.Tile/2, 3 * RoadRunnerSubsystem_BLUE.Tile - 6.93 - 2.56, Math.toRadians(270));
-    private Pose2d HomePose_LONG = new Pose2d(1.5 * RoadRunnerSubsystem_BLUE.TileInverted, 3 * RoadRunnerSubsystem_BLUE.TileInverted + (RoadRunnerSubsystem_BLUE.RobotY/2), Math.toRadians(90));
+    private Pose2d HomePose_LONG = new Pose2d(1.5 * RoadRunnerSubsystem_BLUE.TileInverted, 3 * RoadRunnerSubsystem_BLUE.Tile - 6.93 - 2.56, Math.toRadians(270));
 
     private SequentialCommandGroup temp;
     public SequentialCommandGroup randomizationPixelElevator(){
@@ -103,6 +103,28 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
         );
     }
 
+    public SequentialCommandGroup stackStationIntake_LONG() {
+        return new SequentialCommandGroup(
+                new InstantCommand(intakeSubsystem::run),
+                new InstantCommand(outtakeSusystem::wheel_grab),
+                new WaitCommand(150),
+                new SequentialCommandGroup(
+                        new InstantCommand(()-> intakeArmSubsystem.auto_pixel(5)),
+                        new WaitCommand(1000)
+                ),
+                new ParallelCommandGroup(
+                        new InstantCommand(intakeSubsystem::stop),
+                        new InstantCommand(()-> intakeArmSubsystem.auto_pixel(6)),
+                        new InstantCommand(outtakeSusystem::wheel_stop)
+                ),
+                new SequentialCommandGroup(
+                        new InstantCommand(intakeSubsystem::reverse),
+                        new WaitCommand(600),
+                        new InstantCommand(intakeSubsystem::stop)
+                )
+        );
+    }
+
     @Override
     public void initialize() {
         outtakeSusystem = new OuttakeSusystem(hardwareMap);
@@ -112,8 +134,8 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
 
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         drive = new SampleMecanumDrive(hardwareMap);
-        RR_Blue = new RoadRunnerCommand_BLUE(drive, HomePose_SHORT, RoadRunnerSubsystem_BLUE.StartingPosition.SHORT,
-                RoadRunnerSubsystem_BLUE.Path.OUTER, RoadRunnerSubsystem_BLUE.PixelStack.OUTER,
+        RR_Blue = new RoadRunnerCommand_BLUE(drive, HomePose_LONG, RoadRunnerSubsystem_BLUE.StartingPosition.LONG,
+                RoadRunnerSubsystem_BLUE.Path.INNER, RoadRunnerSubsystem_BLUE.PixelStack.INNER,
                 RoadRunnerSubsystem_BLUE.ParkingPosition.OUTER, telemetry);
 
         rand = RoadRunnerSubsystem_BLUE.Randomization.RIGHT;
@@ -131,17 +153,39 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
 
         // SPIKE
         new InstantCommand(intakeArmSubsystem::lockPixel, intakeArmSubsystem).schedule();
+
+        temp = new SequentialCommandGroup(
+                new WaitCommand(1000),
+                new InstantCommand(intakeArmSubsystem::raiseArm, intakeArmSubsystem)
+        );
+        temp.schedule();
         RR_Blue.runSpike(rand);
+        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
+            run();
+            drive.update();
+        }
+
+        // BACKDROP - YELLOW
+
         while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
             run();
             drive.update();
         }
         drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
 
-        // BACKDROP - YELLOW
-        new InstantCommand(intakeArmSubsystem::raiseArm, intakeArmSubsystem).schedule();
-        randomizationPixelElevator().schedule();
-        RR_Blue.runSpike_RandomizedBackdrop();
+        temp = stackStationIntake_LONG();
+        temp.schedule();
+        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
+            run();
+        }
+
+        temp = new SequentialCommandGroup(
+                new WaitCommand(1850),
+                randomizationPixelElevator()
+        );
+
+        temp.schedule();
+        RR_Blue.runStation_RandomizedBackdrop();
         while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
             run();
             drive.update();
@@ -153,6 +197,7 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
         while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
             run();
         }
+
         // STACK FIRST 2
         temp = new SequentialCommandGroup(
                 new WaitCommand(600),
@@ -166,14 +211,14 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
         }
         drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
 
-        temp = stackStationIntake(5);
+        temp = stackStationIntake(4);
         temp.schedule();
         while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
             run();
         }
 
         temp = new SequentialCommandGroup(
-                new WaitCommand(2400),
+                new WaitCommand(1850),
                 elevator()
         );
 
@@ -206,14 +251,14 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
         }
         drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
 
-        temp = stackStationIntake(3);
+        temp = stackStationIntake(2);
         temp.schedule();
         while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
             run();
         }
 
         temp = new SequentialCommandGroup(
-                new WaitCommand(2400),
+                new WaitCommand(1850),
                 elevator()
         );
 
