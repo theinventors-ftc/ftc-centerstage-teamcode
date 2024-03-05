@@ -55,7 +55,7 @@ public class CenterStageTeleOp extends CommandOpMode {
     public static double MAX_RPM = 1150;
 
     public static double DEFAULT_SPEED_PERC = 0.75;
-    public static double SLOW_SPEED_PERC = 0.3;
+    public static double SLOW_SPEED_PERC = 0.5;
     public static double FAST_SPEED_PERC = 1;
 
     public Pose2d pose;
@@ -109,7 +109,7 @@ public class CenterStageTeleOp extends CommandOpMode {
 
         pose = PoseStorage.currentPose;
 
-        robot = new CenterStageRobot(hardwareMap, RobotConstants, telemetry, driverOp, toolOp, RobotEx.OpModeType.TELEOP, false, false, pose);
+        robot = new CenterStageRobot(hardwareMap, RobotConstants, telemetry, driverOp, toolOp, RobotEx.OpModeType.TELEOP, false, true, pose);
     }
 
     @Override

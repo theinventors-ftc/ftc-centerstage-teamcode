@@ -73,7 +73,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         if (getHeight() < 600 && leftY.getAsDouble() < -0.05) {
             new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.CLOSE).schedule();
         } else if (getHeight() > 600 && leftY.getAsDouble() > 0.05) {
-            new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.OPEN).schedule();
+            if(outtakeSusystem.getState() != OuttakeSusystem.State.EXTREME) {
+                new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.OPEN).schedule();
+            }
         }
     }
 

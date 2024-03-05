@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.inventors.ftc.robotbase.hardware.ColorSensor;
 
 public class PixelColorDetectorSubsystem extends SubsystemBase {
-    private ColorSensor frontSensor; //, backSensor;
+    private ColorSensor frontSensor, backSensor;
 
     public enum PixelColor {
         NONE, // 1, 5, 14
@@ -26,14 +26,32 @@ public class PixelColorDetectorSubsystem extends SubsystemBase {
 
     private Telemetry telemetry;
 
+    private boolean isEnabled = false;
+
     public PixelColorDetectorSubsystem(HardwareMap hm, Telemetry telemetry) {
         this.telemetry = telemetry;
 
         frontSensor = new ColorSensor(hm, "front_color_sensor");
-//        backSensor = new ColorSensor(hm, "back_color_sensor");
+        backSensor = new ColorSensor(hm, "back_color_sensor");
     }
 
-    public PixelColor predictColor(double redCh, double greenCh, double blueCh) {
+    public PixelColor predictColorFront(double redCh, double greenCh, double blueCh) {
+        double average = (redCh + greenCh + blueCh) / 3;
+
+        if (average > 20) {
+            return PixelColor.WHITE;
+        } else if (greenCh > redCh && greenCh > blueCh && redCh > blueCh) {
+            return PixelColor.YELLOW;
+        } else if (greenCh > redCh && greenCh > blueCh) {
+            return PixelColor.GREEN;
+        } else if (blueCh > redCh && blueCh > greenCh && greenCh > redCh && average > 10) {
+            return PixelColor.PURPLE;
+        }
+
+        return PixelColor.NONE;
+    }
+
+    public PixelColor predictColorBack(double redCh, double greenCh, double blueCh) {
         double average = (redCh + greenCh + blueCh) / 3;
 
         if (average > 45) {
@@ -42,29 +60,39 @@ public class PixelColorDetectorSubsystem extends SubsystemBase {
             return PixelColor.YELLOW;
         } else if (greenCh > redCh && greenCh > blueCh) {
             return PixelColor.GREEN;
-        } else if (blueCh > redCh && blueCh > greenCh && greenCh > redCh && average > 15) {
+        } else if (blueCh > redCh && blueCh > greenCh && greenCh > redCh && average > 10) {
             return PixelColor.PURPLE;
         }
 
         return PixelColor.NONE;
     }
 
+    public void update() {
+        double[] frontColors = frontSensor.getNormalizedColors();
+        double[] backColors = backSensor.getNormalizedColors();
+
+        frontPixelColor = predictColorFront(frontColors[0], frontColors[1], frontColors[2]);
+        backPixelColor = predictColorBack(backColors[0], backColors[1], backColors[2]);
+
+        telemetry.addData("Front Red: ", frontColors[0]);
+        telemetry.addData("Front Green: ", frontColors[1]);
+        telemetry.addData("Front Blue: ", frontColors[2]);
+        telemetry.addData("Back Red: ", backColors[0]);
+        telemetry.addData("Back Green: ", backColors[1]);
+        telemetry.addData("Back Blue: ", backColors[2]);
+    }
+
     @Override
     public void periodic() {
-        frontPixelColor = predictColor(frontSensor.getRed(), frontSensor.getGreen(), frontSensor.getBlue());
-//        backPixelColor = predictColor(backSensor.getRed(), backSensor.getGreen(), backSensor.getBlue());
+//        if (!isEnabled) return;
+
+        update();
 
         frontPixelExistence = frontPixelColor != PixelColor.NONE ? 1 : 0;
         backPixelExistence = backPixelColor != PixelColor.NONE ? 1 : 0;
 
         numOfPixels = frontPixelExistence + backPixelExistence;
 
-//        telemetry.addData("Front Red: ", frontSensor.getRed());
-//        telemetry.addData("Front Green: ", frontSensor.getGreen());
-//        telemetry.addData("Front Blue: ", frontSensor.getBlue());
-//        telemetry.addData("Back Red: ", backSensor.getRed());
-//        telemetry.addData("Back Green: ", backSensor.getGreen());
-//        telemetry.addData("Back Blue: ", backSensor.getBlue());
         telemetry.addData("Front Color Prediction: ", frontPixelColor);
         telemetry.addData("Back Color Prediction: ", backPixelColor);
     }
@@ -87,5 +115,17 @@ public class PixelColorDetectorSubsystem extends SubsystemBase {
 
     public int getNumOfPixels() {
         return numOfPixels;
+    }
+
+    public void enable() {
+        isEnabled = true;
+    }
+
+    public void disable() {
+        isEnabled = false;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
     }
 }
