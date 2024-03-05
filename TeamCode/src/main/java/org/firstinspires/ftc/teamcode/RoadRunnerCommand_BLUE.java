@@ -120,15 +120,35 @@ public class RoadRunnerCommand_BLUE extends RoadRunnerSubsystem_BLUE {
                 return centerSpike;
             }
             else if (randomization == Randomization.RIGHT){
-                return leftSpike;
+                return rightSpike_LONG;
             }
         }
 
         return leftSpike;
     }
 
+    public TrajectorySequenceBuilder getLongSpike_Station(Randomization randomization){
+
+        if (randomization == Randomization.LEFT){
+                return spike_station;
+        }
+        else if (randomization == Randomization.CENTER){
+                return spike_station;
+        }
+        else if (randomization == Randomization.RIGHT){
+            return spike_station_right;
+        }
+
+
+        return spike_station;
+    }
+
     public void runSpike(Randomization rand) {
         drive.followTrajectorySequenceAsync(getSpike(rand).build());
+    }
+
+    public void runSpike_Station(Randomization rand) {
+        drive.followTrajectorySequenceAsync(getLongSpike_Station(rand).build());
     }
 
     public void runSpike_RandomizedBackdrop() {
@@ -155,7 +175,8 @@ public class RoadRunnerCommand_BLUE extends RoadRunnerSubsystem_BLUE {
         drive.followTrajectorySequenceAsync(parking.build());
     }
 
-    public void runSpike_Station(){
-        drive.followTrajectorySequenceAsync(spike_station.build());
+    public void runStation_RandomizedBackdrop(){
+        drive.followTrajectorySequenceAsync(station_long_randomizedBackdrop.build());
     }
+
 }

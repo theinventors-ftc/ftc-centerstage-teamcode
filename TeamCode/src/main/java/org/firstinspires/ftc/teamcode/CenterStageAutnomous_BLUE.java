@@ -113,7 +113,7 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         drive = new SampleMecanumDrive(hardwareMap);
         RR_Blue = new RoadRunnerCommand_BLUE(drive, HomePose_SHORT, RoadRunnerSubsystem_BLUE.StartingPosition.SHORT,
-                RoadRunnerSubsystem_BLUE.Path.INNER, RoadRunnerSubsystem_BLUE.PixelStack.INNER,
+                RoadRunnerSubsystem_BLUE.Path.OUTER, RoadRunnerSubsystem_BLUE.PixelStack.OUTER,
                 RoadRunnerSubsystem_BLUE.ParkingPosition.OUTER, telemetry);
 
         rand = RoadRunnerSubsystem_BLUE.Randomization.RIGHT;
@@ -173,7 +173,7 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
         }
 
         temp = new SequentialCommandGroup(
-                new WaitCommand(1800),
+                new WaitCommand(2400),
                 elevator()
         );
 
@@ -213,7 +213,7 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
         }
 
         temp = new SequentialCommandGroup(
-                new WaitCommand(1800),
+                new WaitCommand(2400),
                 elevator()
         );
 

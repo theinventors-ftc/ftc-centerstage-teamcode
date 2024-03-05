@@ -25,8 +25,10 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
     public static double StackStationFirstCycleOffset = 1; /*-inches-*/
     public static double StackStationSecondCycleOffset = -2; /*-inches-*/
     public final double StackDistance = 2; /*-inches-*/
-    public final double HIGH_VEL_SPEED = 60.0;
+    public final double HIGH_VEL_SPEED = 70.0;
+    public final double HIGH_ACCEL_SPEED = 60.0;
     public final double LOW_VEL_SPEED = 45.0;
+    public final double LOW_ACCEL_SPEED = 45.0;
     /*-------------------------------------------------------
     -Trajectories-
     -------------------------------------------------------*/
@@ -194,7 +196,7 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
                 )
                 .lineTo(stationFar,
                         SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(HIGH_VEL_SPEED)
+                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
                 )
                 .splineToConstantHeading(stackStation.vec(), Math.toRadians(stackStationTanget[stackStationTangetValue])); //tan pair 180/225
 
@@ -206,7 +208,7 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
                 )
                 .lineTo(stationFar,
                         SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(HIGH_VEL_SPEED)
+                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
                 )
                 .splineToConstantHeading(stackStationSecondCycle.vec(), Math.toRadians(stackStationTanget[stackStationTangetValue])); //tan pair 180/225
 
@@ -216,7 +218,7 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
                 .splineToConstantHeading(stationFar, Math.toRadians(0))
                 .lineTo(stationClose,
                         SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(HIGH_VEL_SPEED)
+                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
                 )
                 .splineToConstantHeading(backdrop_Unload.vec(), Math.toRadians(0));
 
@@ -226,7 +228,7 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
                 .splineToConstantHeading(stationFar, Math.toRadians(0))
                 .lineTo(stationClose,
                         SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(HIGH_VEL_SPEED)
+                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
                 )
                 .splineToConstantHeading(backdrop_Unload.vec(), Math.toRadians(0));
 
