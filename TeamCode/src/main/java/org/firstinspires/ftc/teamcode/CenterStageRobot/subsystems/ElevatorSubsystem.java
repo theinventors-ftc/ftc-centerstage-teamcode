@@ -43,6 +43,14 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private OuttakeSusystem outtakeSusystem;
 
+    public final double kS = 230, kG = 260, kV = 1.0, kA = 0.0;
+
+    ElevatorFeedforward feedforward;
+
+    public double feedForwardValue = 0.0;
+
+    public double max_ticks_per_second = 0;
+
     public ElevatorSubsystem(HardwareMap hm, Telemetry telemetry, DoubleSupplier leftY,
             OuttakeSusystem outtakeSusystem) {
 
@@ -66,15 +74,39 @@ public class ElevatorSubsystem extends SubsystemBase {
         setLevel(Level.LOADING);
 
         this.outtakeSusystem = outtakeSusystem;
+
+        this.max_ticks_per_second = leftMotor.ACHIEVABLE_MAX_TICKS_PER_SECOND;
+        feedforward = new ElevatorFeedforward(
+                kS, kG, kV, kA
+        );
     }
 
     @Override
     public void periodic() {
-        if (getHeight() < 600 && leftY.getAsDouble() < -0.05) {
-            new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.CLOSE).schedule();
-        } else if (getHeight() > 600 && leftY.getAsDouble() > 0.05) {
-            if(outtakeSusystem.getState() != OuttakeSusystem.State.EXTREME) {
-                new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.OPEN).schedule();
+        if (leftY.getAsDouble() > 0.05 || leftY.getAsDouble() < -0.05) {
+            setManual();
+        }
+
+        if (!isAuto) {
+            feedForwardValue = feedforward.calculate(
+                    0.9 * leftY.getAsDouble() * max_ticks_per_second
+            );
+
+            // Don't use Feed Forward when the Elevator is in Loading(Down-Most) Position
+//        feedForwardValue = elevator.getHeight() < 100 ? max_ticks_per_second : feedForwardValue;
+
+            if (getHeight() < 100) {
+                setPower(leftY.getAsDouble());
+            } else {
+                setPower((feedForwardValue / max_ticks_per_second) * MAX_SPEED);
+            }
+
+            if (getHeight() < 700 && leftY.getAsDouble() < -0.05) {
+                new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.CLOSE).schedule();
+            } else if (getHeight() > 400 && leftY.getAsDouble() > 0.05) {
+                if(outtakeSusystem.getState() != OuttakeSusystem.State.EXTREME) {
+                    new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.OPEN).schedule();
+                }
             }
         }
     }

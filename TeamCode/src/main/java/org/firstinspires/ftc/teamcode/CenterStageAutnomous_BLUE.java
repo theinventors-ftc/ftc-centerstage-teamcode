@@ -18,6 +18,8 @@ import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeArmSubsy
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.OuttakeSusystem;
 import org.firstinspires.ftc.teamcode.roadRunner.drive.SampleMecanumDrive;
+import org.inventors.ftc.opencvpipelines.TeamPropDetectionPipeline;
+import org.inventors.ftc.robotbase.hardware.Camera;
 
 @Autonomous(name = "CenterStageAutonomous_BLUE", group = "Final Autonomous")
 public class CenterStageAutnomous_BLUE extends CommandOpMode {
@@ -31,6 +33,11 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
     private SampleMecanumDrive drive;
     private RoadRunnerCommand_BLUE RR_Blue;
     private RoadRunnerSubsystem_BLUE.Randomization rand;
+
+    private FtcDashboard dashboard;
+    private Camera camera;
+
+    private TeamPropDetectionPipeline pipeline;
 
     private Pose2d HomePose_SHORT = new Pose2d(RoadRunnerSubsystem_BLUE.Tile/2, 3 * RoadRunnerSubsystem_BLUE.Tile - 6.93 - 2.56, Math.toRadians(270));
     private Pose2d HomePose_LONG = new Pose2d(1.5 * RoadRunnerSubsystem_BLUE.TileInverted, 3 * RoadRunnerSubsystem_BLUE.TileInverted + (RoadRunnerSubsystem_BLUE.RobotY/2), Math.toRadians(90));
@@ -112,22 +119,36 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
 
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         drive = new SampleMecanumDrive(hardwareMap);
-        RR_Blue = new RoadRunnerCommand_BLUE(drive, HomePose_SHORT, RoadRunnerSubsystem_BLUE.StartingPosition.SHORT,
-                RoadRunnerSubsystem_BLUE.Path.OUTER, RoadRunnerSubsystem_BLUE.PixelStack.OUTER,
-                RoadRunnerSubsystem_BLUE.ParkingPosition.OUTER, telemetry);
+        RR_Blue = new RoadRunnerCommand_BLUE(4, 4, 4,
+                6, 6, 6,
+                drive, HomePose_SHORT, RoadRunnerSubsystem_BLUE.StartingPosition.SHORT,
+                RoadRunnerSubsystem_BLUE.Path.INNER, RoadRunnerSubsystem_BLUE.PixelStack.INNER,
+                RoadRunnerSubsystem_BLUE.ParkingPosition.INNER, telemetry);
 
         rand = RoadRunnerSubsystem_BLUE.Randomization.RIGHT;
-
-        RR_Blue.spikeRandomizationPath(rand);
-        RR_Blue.cycle();
-        RR_Blue.parking();
-        RR_Blue.TrajectoryInit();
+        dashboard = FtcDashboard.getInstance();
+        camera = new Camera(hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.BLUE);
     }
 
     @Override
     public void runOpMode() {
         initialize();
         waitForStart();
+
+        if (camera.getTeamPropPos() == 0){
+            rand = RoadRunnerSubsystem_BLUE.Randomization.LEFT;
+        }
+        else if (camera.getTeamPropPos() == 1){
+            rand = RoadRunnerSubsystem_BLUE.Randomization.CENTER;
+        }
+        else if (camera.getTeamPropPos() == 2){
+            rand = RoadRunnerSubsystem_BLUE.Randomization.RIGHT;
+        }
+
+        RR_Blue.spikeRandomizationPath(rand);
+        RR_Blue.cycle();
+        RR_Blue.parking();
+        RR_Blue.TrajectoryInit();
 
         // SPIKE
         new InstantCommand(intakeArmSubsystem::lockPixel, intakeArmSubsystem).schedule();

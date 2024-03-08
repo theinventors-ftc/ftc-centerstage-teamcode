@@ -22,7 +22,7 @@ public class OuttakeCommand extends CommandBase {
     public SequentialCommandGroup openOuttake() {
         return new SequentialCommandGroup(
                 new InstantCommand(outtakeSusystem::go_outtake_first, outtakeSusystem),
-                new WaitCommand(80),
+                new WaitCommand(100),
                 new InstantCommand(outtakeSusystem::go_outtake_second, outtakeSusystem)
         );
     }
@@ -30,7 +30,7 @@ public class OuttakeCommand extends CommandBase {
     public SequentialCommandGroup closeOuttake() {
         return new SequentialCommandGroup(
                 new InstantCommand(outtakeSusystem::go_intake_second, outtakeSusystem),
-                new WaitCommand(30),
+                new WaitCommand(100),
                 new InstantCommand(outtakeSusystem::go_intake_first, outtakeSusystem)
         );
     }

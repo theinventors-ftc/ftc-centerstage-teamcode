@@ -35,6 +35,6 @@ public class IntakeCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return pixelColorDetectorSubsystem.isFrontPixel(); // || intakeSubsystem.isStalled();
+        return pixelColorDetectorSubsystem.getNumOfPixels() == 2; // || intakeSubsystem.isStalled();
     }
 }

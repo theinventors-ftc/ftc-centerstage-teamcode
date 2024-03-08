@@ -15,19 +15,29 @@ import org.firstinspires.ftc.teamcode.roadRunner.trajectorysequence.TrajectorySe
 
 public class RoadRunnerCommand_RED extends RoadRunnerSubsystem_RED {
     Telemetry telemetry;
-    RoadRunnerCommand_RED(
+    private static Double firstLeftOffset, firstCenterOffset, firstRightOffset, secondLeftOffset, secondCenterOffset, secondRightOffset;
+    RoadRunnerCommand_RED(double firstLeftOffset, double firstCenterOffset, double firstRightOffset,
+            double secondLeftOffset, double secondCenterOffset, double secondRightOffset,
             SampleMecanumDrive sampleDrive, Pose2d HomePose,
             StartingPosition startingPosition, Path path, PixelStack pixelStack,
             ParkingPosition parkingPosition, Telemetry telemetry
     ) {
         super(sampleDrive, HomePose, startingPosition, path, pixelStack, parkingPosition);
         this.telemetry = telemetry;
+        this.firstLeftOffset = firstLeftOffset;
+        this.firstCenterOffset = firstCenterOffset;
+        this.firstRightOffset = firstRightOffset;
+        this.secondLeftOffset = secondLeftOffset;
+        this.secondCenterOffset = secondCenterOffset;
+        this.secondRightOffset = secondRightOffset;
     }
 
     public void spikeRandomizationPath(Randomization randomization){
 
         if (startingPosition == StartingPosition.SHORT){
             if (randomization == Randomization.LEFT){
+                StackStationFirstCycleOffset = firstLeftOffset;
+                StackStationSecondCycleOffset = secondLeftOffset;
                 randomizedBackdrop = randomizationBackdropLeft;
                 leftPixelSpike = leftPixel_SHORT;
                 pixel_cycle_PoseTransfer = leftPixel_SHORT;
@@ -35,11 +45,15 @@ public class RoadRunnerCommand_RED extends RoadRunnerSubsystem_RED {
                 leftSpikeFinalTangetValue = 0;
             }
             else if (randomization == Randomization.CENTER){
+                StackStationFirstCycleOffset = firstCenterOffset;
+                StackStationSecondCycleOffset = secondCenterOffset;
                 randomizedBackdrop = randomizationBackdropCenter;
                 centerPixelSpike = centerPixel_SHORT;
                 pixel_cycle_PoseTransfer = centerPixel_SHORT;
             }
             else if (randomization == Randomization.RIGHT){
+                StackStationFirstCycleOffset = firstRightOffset;
+                StackStationSecondCycleOffset = secondRightOffset;
                 randomizedBackdrop = randomizationBackdropRight;
                 rightPixelSpike = rightPixel_SHORT;
                 pixel_cycle_PoseTransfer = rightPixel_SHORT;

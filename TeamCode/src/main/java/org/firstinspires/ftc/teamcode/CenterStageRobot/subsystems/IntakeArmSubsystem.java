@@ -9,16 +9,16 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class IntakeArmSubsystem extends SubsystemBase {
-    private double MIN = 0.1,MID = 0.1, MAX = 0.65;
+    private double MIN = 0.1,MID = 0.1, MAX = 0.35;
 
     private double PIXEL_LOCK_POS = 0.05;
-    private double[] AUTO = {0.1, 0.16, 0.22, 0.255, 0.30, 0.55};
+    private double[] AUTO = {0.1, 0.16, 0.22, 0.255, 0.30, MAX};
     private final ServoImplEx rightArm;
 
     public IntakeArmSubsystem(HardwareMap hm) {
         rightArm = hm.get(ServoImplEx.class, "right_intake_arm");
 
-        raiseArm();
+        lowerArm();
     }
 
     public void setPosition(double position) {
@@ -26,7 +26,7 @@ public class IntakeArmSubsystem extends SubsystemBase {
     }
 
     public void raiseArm() {
-        setPosition(0.33);
+        setPosition(MAX);
     }
 
     public void lowerArm() {

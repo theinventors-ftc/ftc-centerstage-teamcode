@@ -10,6 +10,7 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.ElevatorCommand;
@@ -20,6 +21,7 @@ import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.OuttakeSusyste
 import org.firstinspires.ftc.teamcode.roadRunner.drive.SampleMecanumDrive;
 
 @Autonomous(name = "CenterStageAutonomous_BLUE_LONG", group = "Final Autonomous")
+@Disabled
 public class CenterStageAutnomous_BLUE_LONG extends CommandOpMode {
 
     private OuttakeSusystem outtakeSusystem;
@@ -134,7 +136,9 @@ public class CenterStageAutnomous_BLUE_LONG extends CommandOpMode {
 
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         drive = new SampleMecanumDrive(hardwareMap);
-        RR_Blue = new RoadRunnerCommand_BLUE(drive, HomePose_LONG, RoadRunnerSubsystem_BLUE.StartingPosition.LONG,
+        RR_Blue = new RoadRunnerCommand_BLUE(4,4,4,
+                6,6,6,
+                drive, HomePose_LONG, RoadRunnerSubsystem_BLUE.StartingPosition.LONG,
                 RoadRunnerSubsystem_BLUE.Path.INNER, RoadRunnerSubsystem_BLUE.PixelStack.INNER,
                 RoadRunnerSubsystem_BLUE.ParkingPosition.OUTER, telemetry);
 
