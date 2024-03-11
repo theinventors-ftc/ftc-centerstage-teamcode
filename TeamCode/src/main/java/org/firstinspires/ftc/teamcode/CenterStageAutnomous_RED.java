@@ -39,22 +39,31 @@ public class CenterStageAutnomous_RED extends CommandOpMode {
 
     private TeamPropDetectionPipeline pipeline;
 
-    private Pose2d HomePose_SHORT = new Pose2d(RoadRunnerSubsystem_RED.Tile/2, 3 * RoadRunnerSubsystem_RED.TileInverted + 6.93 + 2.56, Math.toRadians(90));
+    private Pose2d HomePose_SHORT = new Pose2d(RoadRunnerSubsystem_RED.Tile/2, 3 * RoadRunnerSubsystem_RED.TileInverted + 6.93, Math.toRadians(90));
     private Pose2d HomePose_LONG = new Pose2d(1.5 * RoadRunnerSubsystem_RED.TileInverted, 3 * RoadRunnerSubsystem_RED.TileInverted + (RoadRunnerSubsystem_RED.RobotY/2), Math.toRadians(90));
 
     private SequentialCommandGroup temp;
     public SequentialCommandGroup randomizationPixelElevator(){
         return new SequentialCommandGroup(
-                new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.AUTO),
+                new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.AUTO0),
                 new InstantCommand(outtakeSusystem::go_outtake_first),
                 new WaitCommand(80),
                 new InstantCommand(outtakeSusystem::go_outtake_second)
         );
     }
 
-    public SequentialCommandGroup elevator(){
+    public SequentialCommandGroup elevator_first(){
         return new SequentialCommandGroup(
-                new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.LOW),
+                new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.AUTO1),
+                new InstantCommand(outtakeSusystem::go_outtake_first),
+                new WaitCommand(80),
+                new InstantCommand(outtakeSusystem::go_outtake_second)
+        );
+    }
+
+    public SequentialCommandGroup elevator_second(){
+        return new SequentialCommandGroup(
+                new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.AUTO2),
                 new InstantCommand(outtakeSusystem::go_outtake_first),
                 new WaitCommand(80),
                 new InstantCommand(outtakeSusystem::go_outtake_second)
@@ -119,8 +128,7 @@ public class CenterStageAutnomous_RED extends CommandOpMode {
 
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         drive = new SampleMecanumDrive(hardwareMap);
-        RR_Red = new RoadRunnerCommand_RED(1, 1, 1,
-                -2, -2, -2, drive, HomePose_SHORT, RoadRunnerSubsystem_RED.StartingPosition.SHORT,
+        RR_Red = new RoadRunnerCommand_RED(drive, HomePose_SHORT, RoadRunnerSubsystem_RED.StartingPosition.SHORT,
                 RoadRunnerSubsystem_RED.Path.INNER, RoadRunnerSubsystem_RED.PixelStack.INNER,
                 RoadRunnerSubsystem_RED.ParkingPosition.INNER, telemetry);
 
@@ -194,7 +202,7 @@ public class CenterStageAutnomous_RED extends CommandOpMode {
 
         temp = new SequentialCommandGroup(
                 new WaitCommand(1800),
-                elevator()
+                elevator_first()
         );
 
         temp.schedule();
@@ -234,7 +242,7 @@ public class CenterStageAutnomous_RED extends CommandOpMode {
 
         temp = new SequentialCommandGroup(
                 new WaitCommand(1800),
-                elevator()
+                elevator_second()
         );
 
         temp.schedule();

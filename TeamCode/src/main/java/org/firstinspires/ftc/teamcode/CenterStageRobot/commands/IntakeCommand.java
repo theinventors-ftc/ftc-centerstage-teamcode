@@ -10,20 +10,19 @@ import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeArmSubsy
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.OuttakeSusystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.PixelColorDetectorSubsystem;
+import org.inventors.ftc.robotbase.controllers.StateMachine;
 
 public class IntakeCommand extends CommandBase {
     private IntakeSubsystem intakeSubsystem;
     private PixelColorDetectorSubsystem pixelColorDetectorSubsystem;
+    private StateMachine stateMachine;
 
-    private Telemetry telemetry;
-    public IntakeCommand(IntakeSubsystem intakeSubsystem, PixelColorDetectorSubsystem pixelColorDetectorSubsystem, Telemetry telemetry) {
+    public IntakeCommand(IntakeSubsystem intakeSubsystem, PixelColorDetectorSubsystem pixelColorDetectorSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         this.pixelColorDetectorSubsystem = pixelColorDetectorSubsystem;
 
-        this.telemetry = telemetry;
-
-
-        telemetry.addData("Intake Init", "");
+        stateMachine = new StateMachine(() -> pixelColorDetectorSubsystem.getNumOfPixels() == 2,
+                200);
 
         addRequirements(intakeSubsystem, pixelColorDetectorSubsystem);
     }
@@ -34,7 +33,13 @@ public class IntakeCommand extends CommandBase {
     }
 
     @Override
+    public void execute() {
+        stateMachine.update();
+    }
+
+    @Override
     public boolean isFinished() {
-        return pixelColorDetectorSubsystem.getNumOfPixels() == 2; // || intakeSubsystem.isStalled();
+        return stateMachine.isJustActive();
+//        return pixelColorDetectorSubsystem.getNumOfPixels() == 2;
     }
 }

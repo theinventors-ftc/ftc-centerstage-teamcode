@@ -20,11 +20,12 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
     public static double TileInverted = -24; /*-inches-*/
     public static double RobotX = 12.6; /*-inches-*/
     public static double RobotY = 18; /*-inches-*/
-    public static double BackdropDistance = 1.25; /*-inches-*/
-    public static double RandomizationBackdropDistance = 2.25; /*-inches-*/
-    public static double StackStationFirstCycleOffset = 1; /*-inches-*/
-    public static double StackStationSecondCycleOffset = -2; /*-inches-*/
-    public final double StackDistance = 2; /*-inches-*/
+
+    public static double BackdropDistance = 2.5; /*-inches-*/
+    public static double RandomizationBackdropDistance = 4; /*-inches-*/
+    public static double StackStationFirstCycleOffset = 4; /*-inches-*/
+    public static double StackStationSecondCycleOffset = 6; /*-inches-*/
+    public final double StackDistance = 4; /*-inches-*/
     public final double HIGH_VEL_SPEED = 70.0;
     public final double HIGH_ACCEL_SPEED = 60.0;
     public final double LOW_VEL_SPEED = 45.0;
@@ -122,7 +123,7 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
     protected Pose2d parkingOuter = new Pose2d(2.5 * Tile, 2.65 * TileInverted, Math.toRadians(180));
 
     protected Vector2d stationClose_Inner = new Vector2d(Tile, TileInverted/2);
-    protected Vector2d stationFar_Inner = new Vector2d(2 * TileInverted,TileInverted/2);
+    protected Vector2d stationFar_Inner = new Vector2d(1.5 * TileInverted,TileInverted/2);
 
     protected Vector2d stationClose_Outer = new Vector2d(Tile, 2.5 * TileInverted);
     protected Vector2d stationFar_Outer = new Vector2d(1.5 * TileInverted,2.5 * TileInverted);

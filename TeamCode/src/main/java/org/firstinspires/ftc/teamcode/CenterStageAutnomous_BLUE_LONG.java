@@ -40,16 +40,25 @@ public class CenterStageAutnomous_BLUE_LONG extends CommandOpMode {
     private SequentialCommandGroup temp;
     public SequentialCommandGroup randomizationPixelElevator(){
         return new SequentialCommandGroup(
-                new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.AUTO),
+                new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.AUTO0),
                 new InstantCommand(outtakeSusystem::go_outtake_first),
                 new WaitCommand(80),
                 new InstantCommand(outtakeSusystem::go_outtake_second)
         );
     }
 
-    public SequentialCommandGroup elevator(){
+    public SequentialCommandGroup elevator_first(){
         return new SequentialCommandGroup(
-                new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.LOW),
+                new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.AUTO1),
+                new InstantCommand(outtakeSusystem::go_outtake_first),
+                new WaitCommand(80),
+                new InstantCommand(outtakeSusystem::go_outtake_second)
+        );
+    }
+
+    public SequentialCommandGroup elevator_second(){
+        return new SequentialCommandGroup(
+                new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.AUTO2),
                 new InstantCommand(outtakeSusystem::go_outtake_first),
                 new WaitCommand(80),
                 new InstantCommand(outtakeSusystem::go_outtake_second)
@@ -136,9 +145,7 @@ public class CenterStageAutnomous_BLUE_LONG extends CommandOpMode {
 
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         drive = new SampleMecanumDrive(hardwareMap);
-        RR_Blue = new RoadRunnerCommand_BLUE(4,4,4,
-                6,6,6,
-                drive, HomePose_LONG, RoadRunnerSubsystem_BLUE.StartingPosition.LONG,
+        RR_Blue = new RoadRunnerCommand_BLUE(drive, HomePose_LONG, RoadRunnerSubsystem_BLUE.StartingPosition.LONG,
                 RoadRunnerSubsystem_BLUE.Path.INNER, RoadRunnerSubsystem_BLUE.PixelStack.INNER,
                 RoadRunnerSubsystem_BLUE.ParkingPosition.OUTER, telemetry);
 
@@ -223,7 +230,7 @@ public class CenterStageAutnomous_BLUE_LONG extends CommandOpMode {
 
         temp = new SequentialCommandGroup(
                 new WaitCommand(1850),
-                elevator()
+                elevator_first()
         );
 
         temp.schedule();
@@ -263,7 +270,7 @@ public class CenterStageAutnomous_BLUE_LONG extends CommandOpMode {
 
         temp = new SequentialCommandGroup(
                 new WaitCommand(1850),
-                elevator()
+                elevator_second()
         );
 
         temp.schedule();

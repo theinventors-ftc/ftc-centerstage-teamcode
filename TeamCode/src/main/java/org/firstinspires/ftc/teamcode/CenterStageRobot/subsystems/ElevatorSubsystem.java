@@ -31,19 +31,19 @@ public class ElevatorSubsystem extends SubsystemBase {
     public double MAX_SPEED = 0.9;
 
     public enum Level {
-        LOADING, HANGING, AUTO, LOW, MID, HIGH
+        LOADING, HANGING, AUTO0, AUTO1, AUTO2, LOW, MID, HIGH
     }
 
     private Level level;
 
-    private int[] levelPositions = { 0, 300, 800, 1050, 1650, 1750 };
+    private int[] levelPositions = { 0, 300, 500, 950, 1000, 1050, 1650, 1750 };
 
     private Telemetry telemetry;
     private DoubleSupplier leftY;
 
     private OuttakeSusystem outtakeSusystem;
 
-    public final double kS = 230, kG = 260, kV = 1.0, kA = 0.0;
+    public final double kS = 230, kG = 260, kV = 1.0, kA= 0.0;
 
     ElevatorFeedforward feedforward;
 
@@ -103,7 +103,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
             if (getHeight() < 700 && leftY.getAsDouble() < -0.05) {
                 new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.CLOSE).schedule();
-            } else if (getHeight() > 400 && leftY.getAsDouble() > 0.05) {
+            } else if (getHeight() > 300 && leftY.getAsDouble() > 0.05) {
                 if(outtakeSusystem.getState() != OuttakeSusystem.State.EXTREME) {
                     new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.OPEN).schedule();
                 }
@@ -127,14 +127,18 @@ public class ElevatorSubsystem extends SubsystemBase {
             levelIdx = 0;
         else if (level == Level.HANGING)
             levelIdx = 1;
-        else if (level == Level.AUTO)
+        else if (level == Level.AUTO0)
             levelIdx = 2;
-        else if (level == Level.LOW)
+        else if (level == Level.AUTO1)
             levelIdx = 3;
-        else if (level == Level.MID)
+        else if (level == Level.AUTO2)
             levelIdx = 4;
-        else if (level == Level.HIGH)
+        else if (level == Level.LOW)
             levelIdx = 5;
+        else if (level == Level.MID)
+            levelIdx = 6;
+        else if (level == Level.HIGH)
+            levelIdx = 7;
 
         motors.setTargetPosition(levelPositions[levelIdx]);
     }

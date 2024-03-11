@@ -104,11 +104,11 @@ public class CenterStageRobot extends RobotEx {
                                 new InstantCommand(outtakeSusystem::go_intake_first),
                                 new WaitCommand(150),
                                 new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.LOADING),
-////                                new IntakeCommand(intakeSubsystem, pixelColorDetectorSubsystem, telemetry),
                                 new InstantCommand(outtakeSusystem::wheel_grab),
+//                                new IntakeCommand(intakeSubsystem, pixelColorDetectorSubsystem),
                                 new InstantCommand(intakeSubsystem::run, intakeSubsystem)
 //                                new WaitCommand(3000),
-//                                new InstantCommand(outtakeSusystem::wheel_stop)
+//                                new InstantCommand(outtakeSusystem::wheel_stop),
 //                                new InstantCommand(intakeArmSubsystem::raiseArm),
 //                                new WaitCommand(200),
 //                                new InstantCommand(intakeSubsystem::reverse, intakeSubsystem),
@@ -148,5 +148,19 @@ public class CenterStageRobot extends RobotEx {
 
         new Trigger(() -> toolOp.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) < 0.8)
                 .whenActive(new InstantCommand(droneSubsystem::grab, droneSubsystem));
+
+        new Trigger(() -> toolOp.getRightY() >= 0.8)
+                .whenActive(new SequentialCommandGroup(
+                        new InstantCommand(intakeArmSubsystem::raiseArm, intakeArmSubsystem),
+                        new WaitCommand(200),
+                        new InstantCommand(intakeSubsystem::reverse, intakeSubsystem),
+                        new InstantCommand(outtakeSusystem::wheel_release, outtakeSusystem)
+                ));
+
+        new Trigger(() -> toolOp.getRightY() < 0.8)
+                .whenActive(new SequentialCommandGroup(
+                        new InstantCommand(intakeSubsystem::stop, intakeSubsystem),
+                        new InstantCommand(outtakeSusystem::wheel_stop, outtakeSusystem)
+                ));
     }
 }
