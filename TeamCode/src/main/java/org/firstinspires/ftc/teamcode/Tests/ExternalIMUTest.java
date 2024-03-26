@@ -15,8 +15,8 @@ public class ExternalIMUTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         imu = hardwareMap.get(IMU.class, "external_imu");
 
-        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
-        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.UP;
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
 
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
 
@@ -29,6 +29,8 @@ public class ExternalIMUTest extends LinearOpMode {
 
         while(opModeIsActive()) {
             telemetry.addData("Yaw: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+            telemetry.addData("Pitch: ", imu.getRobotYawPitchRollAngles().getPitch(AngleUnit.DEGREES));
+            telemetry.addData("Roll: ", imu.getRobotYawPitchRollAngles().getRoll(AngleUnit.DEGREES));
             telemetry.update();
         }
     }
