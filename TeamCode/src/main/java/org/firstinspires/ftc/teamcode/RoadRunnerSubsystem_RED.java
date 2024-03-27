@@ -21,15 +21,15 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
     public static double RobotX = 12.6; /*-inches-*/
     public static double RobotY = 18; /*-inches-*/
 
-    public static double BackdropDistance = 1.5; /*-inches-*/
-    public static double RandomizationBackdropDistance = 2; /*-inches-*/
-    public static double StackStationFirstCycleOffset = 2; /*-inches-*/
-    public static double StackStationSecondCycleOffset = 3; /*-inches-*/
+    public static double BackdropDistance = 2; /*-inches-*/
+    public static double RandomizationBackdropDistance = 2.5; /*-inches-*/
+    public static double StackStationFirstCycleOffset = 5; /*-inches-*/
+    public static double StackStationSecondCycleOffset = 6; /*-inches-*/
     public final double StackDistance = 3; /*-inches-*/
-    public final double HIGH_VEL_SPEED = 70.0;
+    public final double HIGH_VEL_SPEED = 60.0;
     public final double HIGH_ACCEL_SPEED = 60.0;
-    public final double LOW_VEL_SPEED = 45.0;
-    public final double LOW_ACCEL_SPEED = 45.0;
+    public final double LOW_VEL_SPEED = 50.0;
+    public final double LOW_ACCEL_SPEED = 50.0;
     /*-------------------------------------------------------
     -Trajectories-
     -------------------------------------------------------*/
@@ -97,7 +97,7 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
 
     protected Pose2d leftPixel_SHORT = new Pose2d((RobotY/2), TileInverted - (RobotX/2), Math.toRadians(180));
     protected Pose2d centerPixel_SHORT = new Pose2d(Tile/2, TileInverted - (RobotY/2), Math.toRadians(90));
-    protected Pose2d rightPixel_SHORT = new Pose2d(Tile, 1.5 * TileInverted, Math.toRadians(90));
+    protected Pose2d rightPixel_SHORT = new Pose2d(Tile -1, 1.5 * TileInverted - 6, Math.toRadians(90));
 
     protected Pose2d leftPixel_LONG = new Pose2d(2 * TileInverted,1.5 * TileInverted, Math.toRadians(180));
     protected Pose2d centerPixel_LONG = new Pose2d(1.5 * TileInverted, TileInverted - (RobotY/2), Math.toRadians(90));
@@ -105,8 +105,8 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
 
     protected Pose2d randomizationBackdropLeft = new Pose2d(2.5 * Tile - (RobotY/2) + RandomizationBackdropDistance, 1.2 * TileInverted, Math.toRadians(180)); // Default
     protected Pose2d randomizationBackdropCenter = new Pose2d(2.5 * Tile - (RobotY/2) + RandomizationBackdropDistance, 1.5 * TileInverted, Math.toRadians(180));
-    protected Pose2d randomizationBackdropRight = new Pose2d(2.5 * Tile - (RobotY/2) + RandomizationBackdropDistance, 1.75 * TileInverted, Math.toRadians(180)); // Default
-    protected Pose2d backdropLeft = new Pose2d(2.5 * Tile - (RobotY/2) + BackdropDistance,1.35 * TileInverted, Math.toRadians(180)); // Default
+    protected Pose2d randomizationBackdropRight = new Pose2d(2.5 * Tile - (RobotY/2) + RandomizationBackdropDistance, 1.8 * TileInverted, Math.toRadians(180)); // Default
+    protected Pose2d backdropLeft = new Pose2d(2.5 * Tile - (RobotY/2) + BackdropDistance,1.4 * TileInverted, Math.toRadians(180)); // Default
     protected Pose2d backdropCenter = new Pose2d(2.5 * Tile - (RobotY/2) + BackdropDistance, 1.5 * TileInverted, Math.toRadians(180));
     protected Pose2d backdropRight = new Pose2d(2.5 * Tile - (RobotY/2) + BackdropDistance, 1.75 * TileInverted, Math.toRadians(180)); // Default
 
@@ -122,8 +122,8 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
     protected Pose2d parkingMiddle = new Pose2d(2 * Tile, 1.5 * TileInverted, Math.toRadians(180));
     protected Pose2d parkingOuter = new Pose2d(2.5 * Tile, 2.65 * TileInverted, Math.toRadians(180));
 
-    protected Vector2d stationClose_Inner = new Vector2d(Tile, TileInverted/2 + 1);
-    protected Vector2d stationFar_Inner = new Vector2d(1.5 * TileInverted,TileInverted/2 + 1);
+    protected Vector2d stationClose_Inner = new Vector2d(Tile/2, TileInverted/2 + 2);
+    protected Vector2d stationFar_Inner = new Vector2d(TileInverted,TileInverted/2 + 2);
 
     protected Vector2d stationClose_Outer = new Vector2d(Tile, 2.5 * TileInverted);
     protected Vector2d stationFar_Outer = new Vector2d(1.5 * TileInverted,2.5 * TileInverted);
@@ -185,15 +185,18 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
 
         spike_randomizedBackdrop = drive.trajectorySequenceBuilder(pixel_cycle_PoseTransfer)
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(randomizedBackdrop, Math.toRadians(0));
+                .splineTo(randomizedBackdrop.vec(), Math.toRadians(0),
+                        SampleMecanumDrive.getVelocityConstraint(LOW_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(LOW_ACCEL_SPEED)
+                );
 
         /*----------------------------------------------------------------------------------------*/
 
         backdrop_station_first_cycle = drive.trajectorySequenceBuilder(randomizedBackdrop)
                 .setTangent(Math.toRadians(180))
-                .splineToConstantHeading(stationClose, Math.toRadians(180),
-                        SampleMecanumDrive.getVelocityConstraint(LOW_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+                .splineToConstantHeading(stationClose, Math.toRadians(180)
+//                        SampleMecanumDrive.getVelocityConstraint(LOW_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+//                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
                 )
                 .lineTo(stationFar,
                         SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
@@ -203,9 +206,9 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
 
         backdrop_station_second_cycle = drive.trajectorySequenceBuilder(backdrop_Unload)
                 .setTangent(Math.toRadians(180))
-                .splineToConstantHeading(stationClose, Math.toRadians(180),
-                        SampleMecanumDrive.getVelocityConstraint(LOW_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+                .splineToConstantHeading(stationClose, Math.toRadians(180)
+//                        SampleMecanumDrive.getVelocityConstraint(LOW_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+//                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
                 )
                 .lineTo(stationFar,
                         SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),

@@ -91,6 +91,7 @@ public class CenterStageAutnomous_RED extends CommandOpMode {
                 new InstantCommand(outtakeSusystem::go_intake_second),
                 new WaitCommand(80),
                 new InstantCommand(outtakeSusystem::go_intake_first),
+                new WaitCommand(100),
                 new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.LOADING)
         );
     }
@@ -130,7 +131,7 @@ public class CenterStageAutnomous_RED extends CommandOpMode {
         drive = new SampleMecanumDrive(hardwareMap);
         RR_Red = new RoadRunnerCommand_RED(drive, HomePose_SHORT, RoadRunnerSubsystem_RED.StartingPosition.SHORT,
                 RoadRunnerSubsystem_RED.Path.INNER, RoadRunnerSubsystem_RED.PixelStack.INNER,
-                RoadRunnerSubsystem_RED.ParkingPosition.INNER, telemetry);
+                RoadRunnerSubsystem_RED.ParkingPosition.MID, telemetry);
 
         rand = RoadRunnerSubsystem_RED.Randomization.RIGHT;
         dashboard = FtcDashboard.getInstance();
