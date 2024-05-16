@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.roadRunner.trajectorysequence.TrajectorySe
 
 public class RoadRunnerCommand_RED extends RoadRunnerSubsystem_RED {
     Telemetry telemetry;
+
     RoadRunnerCommand_RED(
             SampleMecanumDrive sampleDrive, Pose2d HomePose,
             StartingPosition startingPosition, Path path, PixelStack pixelStack,
@@ -24,8 +25,7 @@ public class RoadRunnerCommand_RED extends RoadRunnerSubsystem_RED {
         this.telemetry = telemetry;
     }
 
-    public void spikeRandomizationPath(Randomization randomization){
-
+    public void spikeRandomizationPath(Randomization randomization) {
         if (startingPosition == StartingPosition.SHORT){
             if (randomization == Randomization.LEFT){
                 randomizedBackdrop = randomizationBackdropLeft;
@@ -33,16 +33,19 @@ public class RoadRunnerCommand_RED extends RoadRunnerSubsystem_RED {
                 pixel_cycle_PoseTransfer = leftPixel_SHORT;
                 leftSpikeStartingTangetValue = 0;
                 leftSpikeFinalTangetValue = 0;
+                RandomizationOffset_XY.put("Final", RandomizationOffset_XY.get("Left"));
             }
             else if (randomization == Randomization.CENTER){
                 randomizedBackdrop = randomizationBackdropCenter;
                 centerPixelSpike = centerPixel_SHORT;
                 pixel_cycle_PoseTransfer = centerPixel_SHORT;
+                RandomizationOffset_XY.put("Final", RandomizationOffset_XY.get("Center"));
             }
             else if (randomization == Randomization.RIGHT){
                 randomizedBackdrop = randomizationBackdropRight;
                 rightPixelSpike = rightPixel_SHORT;
                 pixel_cycle_PoseTransfer = rightPixel_SHORT;
+                RandomizationOffset_XY.put("Final", RandomizationOffset_XY.get("Right"));
             }
         }
         else if (startingPosition == StartingPosition.LONG){
@@ -50,11 +53,13 @@ public class RoadRunnerCommand_RED extends RoadRunnerSubsystem_RED {
                 randomizedBackdrop = randomizationBackdropLeft;
                 rightPixelSpike = leftPixel_LONG;
                 pixel_cycle_PoseTransfer = leftPixel_LONG;
+                RandomizationOffset_XY.put("Final", RandomizationOffset_XY.get("Left"));
             }
             else if (randomization == Randomization.CENTER){
                 randomizedBackdrop = randomizationBackdropCenter;
                 centerPixelSpike = centerPixel_LONG;
                 pixel_cycle_PoseTransfer = centerPixel_LONG;
+                RandomizationOffset_XY.put("Final", RandomizationOffset_XY.get("Center"));
             }
             else if (randomization == Randomization.RIGHT){
                 randomizedBackdrop = randomizationBackdropRight;
@@ -62,12 +67,13 @@ public class RoadRunnerCommand_RED extends RoadRunnerSubsystem_RED {
                 pixel_cycle_PoseTransfer = rightPixel_LONG;
                 leftSpikeStartingTangetValue = 1;
                 leftSpikeFinalTangetValue = 1;
+                RandomizationOffset_XY.put("Final", RandomizationOffset_XY.get("Right"));
             }
         }
     }
 
-    public void cycle(){
-        if (path == Path.INNER){
+    public void cycle() {
+        if (path == Path.INNER) {
             stationClose = stationClose_Inner;
             stationFar = stationFar_Inner;
             backdrop_Unload = backdropLeft;
@@ -75,7 +81,7 @@ public class RoadRunnerCommand_RED extends RoadRunnerSubsystem_RED {
             stackStationSecondCycle = stationInnerSecondCycle;
             stackStationTangetValue = 0;
         }
-        else if (path == Path.OUTER){
+        else if (path == Path.OUTER) {
             stationClose = stationClose_Outer;
             stationFar = stationFar_Outer;
             backdrop_Unload = backdropRight;
@@ -85,7 +91,7 @@ public class RoadRunnerCommand_RED extends RoadRunnerSubsystem_RED {
         }
     }
 
-    public void parking(){
+    public void parking() {
         if (parkingPosition == ParkingPosition.INNER){
             parkingTangetValue = 0;
             parkingPose = parkingInner;
@@ -100,8 +106,8 @@ public class RoadRunnerCommand_RED extends RoadRunnerSubsystem_RED {
         }
     }
 
-    public TrajectorySequenceBuilder getSpike(Randomization randomization){
-        if (startingPosition == StartingPosition.SHORT){
+    public TrajectorySequenceBuilder getSpike(Randomization randomization) {
+        if (startingPosition == StartingPosition.SHORT) {
             if (randomization == Randomization.LEFT){
                 return leftSpike;
             }
@@ -158,4 +164,6 @@ public class RoadRunnerCommand_RED extends RoadRunnerSubsystem_RED {
     public void runSpike_Station(){
         drive.followTrajectorySequenceAsync(spike_station.build());
     }
+
+    public void runTest(){drive.followTrajectorySequence(test);}
 }

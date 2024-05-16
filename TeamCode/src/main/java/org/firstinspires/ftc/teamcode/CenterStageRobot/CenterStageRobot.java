@@ -46,7 +46,7 @@ public class CenterStageRobot extends RobotEx {
     public CenterStageRobot(HardwareMap hm, DriveConstants RobotConstants, Telemetry telemetry, GamepadExEx driverOp,
                             GamepadExEx toolOp, OpModeType opModeType, String imuName, boolean camera,
                             boolean distance_sensor, Pose2d startingPose) {
-        super(hm, RobotConstants, telemetry, driverOp, toolOp, opModeType, imuName, camera,
+        super(hm, RobotConstants, telemetry, driverOp, toolOp, opModeType,imuName, camera,
                 distance_sensor, startingPose);
     }
 

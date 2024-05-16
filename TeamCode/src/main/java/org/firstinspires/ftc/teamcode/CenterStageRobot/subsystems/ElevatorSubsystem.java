@@ -36,7 +36,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private Level level;
 
-    private int[] levelPositions = { 0, 300, 500, 800, 900, 1050, 1650, 1750 };
+    private int[] levelPositions = { 0, 300, 500, 800, 870, 1050, 1650, 1750 };
 
     private Telemetry telemetry;
     private DoubleSupplier leftY;
@@ -101,9 +101,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 setPower((feedForwardValue / max_ticks_per_second) * MAX_SPEED);
             }
 
-            if (getHeight() < 700 && leftY.getAsDouble() < -0.05) {
-                new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.CLOSE).schedule();
-            } else if (getHeight() > 300 && leftY.getAsDouble() > 0.05) {
+            if (getHeight() > 300 && leftY.getAsDouble() > 0.05) {
                 if(outtakeSusystem.getState() != OuttakeSusystem.State.EXTREME) {
                     new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.OPEN).schedule();
                 }
