@@ -35,7 +35,7 @@ public class CenterStageRobot extends RobotEx {
 
     private DroneSubsystem droneSubsystem;
     private PixelColorDetectorSubsystem pixelColorDetectorSubsystem;
-    private LEDSubsystem ledSubsystem;
+//    private LEDSubsystem ledSubsystem;
 
     public CenterStageRobot(HardwareMap hm, DriveConstants RobotConstants, Telemetry telemetry, GamepadExEx driverOp,
                             GamepadExEx toolOp) {
@@ -43,9 +43,9 @@ public class CenterStageRobot extends RobotEx {
     }
 
     public CenterStageRobot(HardwareMap hm, DriveConstants RobotConstants, Telemetry telemetry, GamepadExEx driverOp,
-                            GamepadExEx toolOp, OpModeType opModeType, boolean camera, boolean distance_sensor,
+                            GamepadExEx toolOp, OpModeType opModeType, String imuName, boolean camera, boolean distance_sensor,
                             Pose2d startingPose) {
-        super(hm, RobotConstants, telemetry, driverOp, toolOp, opModeType, "external_imu", camera, distance_sensor, startingPose);
+        super(hm, RobotConstants, telemetry, driverOp, toolOp, opModeType, imuName, camera, distance_sensor, startingPose);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class CenterStageRobot extends RobotEx {
         elevatorSubsystem = new ElevatorSubsystem(hardwareMap, telemetry, () -> toolOp.getLeftY(), outtakeSusystem);
         droneSubsystem = new DroneSubsystem(hardwareMap);
         pixelColorDetectorSubsystem = new PixelColorDetectorSubsystem(hardwareMap, telemetry);
-        ledSubsystem = new LEDSubsystem(hardwareMap, pixelColorDetectorSubsystem, telemetry);
+//        ledSubsystem = new LEDSubsystem(hardwareMap, pixelColorDetectorSubsystem, telemetry);
 
 //        CommandScheduler.getInstance().registerSubsystem(intakeSubsystem);
 //        intakeSubsystem.setDefaultCommand(new IntakeManualCommand(intakeSubsystem, () -> toolOp.getRightY()));
@@ -97,7 +97,7 @@ public class CenterStageRobot extends RobotEx {
                 .toggleWhenPressed(
                         new SequentialCommandGroup(
                                 new InstantCommand(pixelColorDetectorSubsystem::enable),
-                                new InstantCommand(ledSubsystem::enableIntake),
+//                                new InstantCommand(ledSubsystem::enableIntake),
                                 new InstantCommand(intakeArmSubsystem::lowerArm),
                                 new InstantCommand(outtakeSusystem::go_intake_second),
                                 new WaitCommand(80),
@@ -126,8 +126,8 @@ public class CenterStageRobot extends RobotEx {
                                 new WaitCommand(500),
                                 new InstantCommand(intakeSubsystem::stop, intakeSubsystem),
                                 new InstantCommand(pixelColorDetectorSubsystem::disable),
-                                new WaitCommand(350),
-                                new InstantCommand(ledSubsystem::disableIntake)
+                                new WaitCommand(350)
+//                                new InstantCommand(ledSubsystem::disableIntake)
                         )
                 );
 

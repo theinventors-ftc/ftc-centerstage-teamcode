@@ -22,8 +22,8 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     public static double RobotY = 18; /*-inches-*/
     public static double BackdropDistance = 3; /*-inches-*/
     public static double RandomizationBackdropDistance = 3; /*-inches-*/
-    public static double StackStationFirstCycleOffset = 4; /*-inches-*/
-    public static double StackStationSecondCycleOffset = 8; /*-inches-*/
+    public static double StackStationFirstCycleOffset = 0; /*-inches-*/
+    public static double StackStationSecondCycleOffset = 0; /*-inches-*/
 
     public final double StackDistance = 3; /*-inches-*/
     public final double LOW_VEL_SPEED = 45.0;

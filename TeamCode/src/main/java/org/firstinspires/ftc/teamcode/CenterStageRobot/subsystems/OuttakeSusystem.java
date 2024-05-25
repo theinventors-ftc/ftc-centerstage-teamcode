@@ -21,7 +21,8 @@ public class OuttakeSusystem extends SubsystemBase {
 
     private final double FIRST_MIN = 0.6, FIRST_MID = 0.22, FIRST_MAX = 0;
     private final double SECOND_MIN = 0.45, SECOND_MID = 0.65, SECOND_MAX = 0.9;
-    private final double WHEEL_POWER = 0.9;
+    private final double WHEEL_POWER_OUT = 0.7;
+    private final double WHEEL_POWER_IN = 0.9;
 
     public OuttakeSusystem(HardwareMap hm) {
         firstLinkServo = hm.get(ServoImplEx.class, "outtake_first");
@@ -63,11 +64,11 @@ public class OuttakeSusystem extends SubsystemBase {
     }
 
     public void wheel_grab() {
-        wheelServo.setPower(WHEEL_POWER);
+        wheelServo.setPower(WHEEL_POWER_IN);
     }
 
     public void wheel_release() {
-        wheelServo.setPower(-WHEEL_POWER);
+        wheelServo.setPower(-WHEEL_POWER_OUT);
     }
 
     public void wheel_stop() {

@@ -91,6 +91,7 @@ public class CenterStageAutnomous_RED extends CommandOpMode {
                 new InstantCommand(outtakeSusystem::go_intake_second),
                 new WaitCommand(80),
                 new InstantCommand(outtakeSusystem::go_intake_first),
+                new WaitCommand(100),
                 new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.LOADING)
         );
     }
@@ -130,7 +131,7 @@ public class CenterStageAutnomous_RED extends CommandOpMode {
         drive = new SampleMecanumDrive(hardwareMap);
         RR_Red = new RoadRunnerCommand_RED(drive, HomePose_SHORT, RoadRunnerSubsystem_RED.StartingPosition.SHORT,
                 RoadRunnerSubsystem_RED.Path.INNER, RoadRunnerSubsystem_RED.PixelStack.INNER,
-                RoadRunnerSubsystem_RED.ParkingPosition.INNER, telemetry);
+                RoadRunnerSubsystem_RED.ParkingPosition.MID, telemetry);
 
         rand = RoadRunnerSubsystem_RED.Randomization.RIGHT;
         dashboard = FtcDashboard.getInstance();
@@ -157,121 +158,128 @@ public class CenterStageAutnomous_RED extends CommandOpMode {
         RR_Red.parking();
         RR_Red.TrajectoryInit();
 
-        // SPIKE
-        new InstantCommand(intakeArmSubsystem::lockPixel, intakeArmSubsystem).schedule();
-        RR_Red.runSpike(rand);
-        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
-            run();
-            drive.update();
-        }
-        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
 
-        // BACKDROP - YELLOW
-        new InstantCommand(intakeArmSubsystem::raiseArm, intakeArmSubsystem).schedule();
-        randomizationPixelElevator().schedule();
-        RR_Red.runSpike_RandomizedBackdrop();
-        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
-            run();
-            drive.update();
-        }
-        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
-
-        temp = scoring_randomization();
-        temp.schedule();
-        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
-            run();
-        }
-        // STACK FIRST 2
-        temp = new SequentialCommandGroup(
-                new WaitCommand(600),
-                resetElevator()
-        );
-        temp.schedule();
-        RR_Red.runBackdrop_Station_First_Cycle();
-        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
-            run();
-            drive.update();
-        }
-        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
-
-        temp = stackStationIntake(5);
-        temp.schedule();
-        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
-            run();
-        }
-
-        temp = new SequentialCommandGroup(
-                new WaitCommand(1800),
-                elevator_first()
-        );
-
-        temp.schedule();
-
-        RR_Red.runStation_Backdrop_First_Cycle();
-        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
-            run();
-            drive.update();
-        }
-        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
-
-        temp = scoring();
-        temp.schedule();
-        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
-            run();
-        }
-
-        // STACK Second 2
-        temp = new SequentialCommandGroup(
-                new WaitCommand(600),
-                resetElevator()
-        );
-        temp.schedule();
-
-        RR_Red.runBackdrop_Station_Second_Cycle();
-        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
-            run();
-            drive.update();
-        }
-        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
-
-        temp = stackStationIntake(3);
-        temp.schedule();
-        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
-            run();
-        }
-
-        temp = new SequentialCommandGroup(
-                new WaitCommand(1800),
-                elevator_second()
-        );
-
-        temp.schedule();
-
-        RR_Red.runStation_Backdrop_Second_Cycle();
-        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
-            run();
-            drive.update();
-        }
-        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
-
-        temp = scoring();
-        temp.schedule();
-        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
-            run();
+        while (!isStopRequested() && opModeIsActive()){
+            RR_Red.runTest();
+            telemetry.update();
         }
 
 
-        temp = resetElevator();
-        temp.schedule();
-        RR_Red.runParking();
-        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
-            run();
-            drive.update();
-        }
-        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
+//        // SPIKE
+//        new InstantCommand(intakeArmSubsystem::lockPixel, intakeArmSubsystem).schedule();
+//        RR_Red.runSpike(rand);
+//        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
+//            run();
+//            drive.update();
+//        }
+//        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
+//
+//        // BACKDROP - YELLOW
+//        new InstantCommand(intakeArmSubsystem::raiseArm, intakeArmSubsystem).schedule();
+//        randomizationPixelElevator().schedule();
+//        RR_Red.runSpike_RandomizedBackdrop();
+//        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
+//            run();
+//            drive.update();
+//        }
+//        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
+//
+//        temp = scoring_randomization();
+//        temp.schedule();
+//        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
+//            run();
+//        }
+//        // STACK FIRST 2
+//        temp = new SequentialCommandGroup(
+//                new WaitCommand(600),
+//                resetElevator()
+//        );
+//        temp.schedule();
+//        RR_Red.runBackdrop_Station_First_Cycle();
+//        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
+//            run();
+//            drive.update();
+//        }
+//        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
+//
+//        temp = stackStationIntake(5);
+//        temp.schedule();
+//        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
+//            run();
+//        }
+//
+//        temp = new SequentialCommandGroup(
+//                new WaitCommand(1800),
+//                elevator_first()
+//        );
+//
+//        temp.schedule();
+//
+//        RR_Red.runStation_Backdrop_First_Cycle();
+//        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
+//            run();
+//            drive.update();
+//        }
+//        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
+//
+//        temp = scoring();
+//        temp.schedule();
+//        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
+//            run();
+//        }
+//
+//        // STACK Second 2
+//        temp = new SequentialCommandGroup(
+//                new WaitCommand(600),
+//                resetElevator()
+//        );
+//        temp.schedule();
+//
+//        RR_Red.runBackdrop_Station_Second_Cycle();
+//        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
+//            run();
+//            drive.update();
+//        }
+//        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
+//
+//        temp = stackStationIntake(3);
+//        temp.schedule();
+//        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
+//            run();
+//        }
+//
+//        temp = new SequentialCommandGroup(
+//                new WaitCommand(1800),
+//                elevator_second()
+//        );
+//
+//        temp.schedule();
+//
+//        RR_Red.runStation_Backdrop_Second_Cycle();
+//        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
+//            run();
+//            drive.update();
+//        }
+//        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
+//
+//        temp = scoring();
+//        temp.schedule();
+//        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
+//            run();
+//        }
+//
+//
+//        temp = resetElevator();
+//        temp.schedule();
+//        RR_Red.runParking();
+//        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
+//            run();
+//            drive.update();
+//        }
+//        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
 
-        PoseStorage.currentPose = drive.getPoseEstimate();
+//        PoseStorage.currentPose = drive.getPoseEstimate();
 
-        reset();
+//        reset();
     }
 }
