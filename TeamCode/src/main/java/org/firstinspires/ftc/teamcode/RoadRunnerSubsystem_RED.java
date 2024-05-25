@@ -1,17 +1,90 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Pair;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 
 import org.firstinspires.ftc.teamcode.roadRunner.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.roadRunner.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.roadRunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.roadRunner.trajectorysequence.TrajectorySequenceBuilder;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.concurrent.TimeUnit;
-
 public class RoadRunnerSubsystem_RED extends SubsystemBase {
     protected SampleMecanumDrive drive;
+
+    /*-------------------------------------------------------
+    -Functions-
+    -------------------------------------------------------*/
+    enum RobotSides{
+        FRONT,
+        REAR,
+        CENTER,
+        LEFT,
+        RIGHT,
+    }
+
+    enum Offsets{
+        X,
+        Y,
+        BOTH
+    }
+
+    public Pose2d offsetPoseShifter(Pose2d pose, Pair<Double, Double> xy_offset, Offsets preference) {
+        Double X = pose.getX() + xy_offset.first;
+        Double Y = pose.getY() + xy_offset.second;
+
+        if (preference == Offsets.X){
+            Y = pose.getY();
+        }
+        else if(preference == Offsets.Y){
+            X = pose.getX();
+        }
+
+        Pose2d finalPose2d = new Pose2d(X,Y,pose.getHeading());
+
+        return finalPose2d;
+    }
+
+    public Pose2d robotPoseLimitCalculation(Pose2d pose, RobotSides side){
+        Double X = pose.getX();
+        Double Y = pose.getY();
+
+        if(side == RobotSides.CENTER) return pose;
+
+        if(pose.getHeading() == 90){
+            if(side == RobotSides.LEFT) X = X + (RobotX/2);
+            else if(side == RobotSides.RIGHT) X = X - (RobotX/2);
+            else if(side == RobotSides.FRONT) Y = Y - (RobotY/2);
+            else if(side == RobotSides.REAR) Y = Y + (RobotY/2);
+        }
+        else if(pose.getHeading() == 270){
+            if(side == RobotSides.LEFT) X = X - (RobotX/2);
+            else if(side == RobotSides.RIGHT) X = X + (RobotX/2);
+            else if(side == RobotSides.FRONT) Y = Y + (RobotY/2);
+            else if(side == RobotSides.REAR) Y = Y - (RobotY/2);
+        }
+        else if(pose.getHeading() == 0){
+            if(side == RobotSides.LEFT) Y = Y - (RobotX/2);
+            else if(side == RobotSides.RIGHT) Y = Y + (RobotX/2);
+            else if(side == RobotSides.FRONT) X = X - (RobotY/2);
+            else if(side == RobotSides.REAR) X = X + (RobotY/2);
+        }
+        else if(pose.getHeading() == 180){
+            if(side == RobotSides.LEFT) Y = Y + (RobotX/2);
+            else if(side == RobotSides.RIGHT) Y = Y - (RobotX/2);
+            else if(side == RobotSides.FRONT) X = X + (RobotY/2);
+            else if(side == RobotSides.REAR) X = X - (RobotY/2);
+        }
+
+        Pose2d finalPose2d = new Pose2d(X, Y, pose.getHeading());
+
+        return finalPose2d;
+    }
 
     /*-------------------------------------------------------
     -Params-
@@ -21,20 +94,24 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
     public static double RobotX = 12.6; /*-inches-*/
     public static double RobotY = 18; /*-inches-*/
 
-    public static double BackdropDistance = 2; /*-inches-*/
-    public static double RandomizationBackdropDistance = 2.5; /*-inches-*/
-    public static double StackStationFirstCycleOffset = 5; /*-inches-*/
-    public static double StackStationSecondCycleOffset = 6; /*-inches-*/
     public final double StackDistance = 3; /*-inches-*/
     public final double HIGH_VEL_SPEED = 60.0;
     public final double HIGH_ACCEL_SPEED = 60.0;
     public final double LOW_VEL_SPEED = 50.0;
     public final double LOW_ACCEL_SPEED = 50.0;
+
+    Dictionary<String, Pair<Double, Double>> RandomizationOffset_XY = new Hashtable<String, Pair<Double, Double>>() {{
+        put("Left", new Pair<>(2.5, 6.5));
+        put("Center", new Pair<>(2.5, 6.5));
+        put("Right", new Pair<>(2.5, 6.5));
+        put("Final", new Pair<>(0.0,0.0));
+    }};
+
     /*-------------------------------------------------------
     -Trajectories-
     -------------------------------------------------------*/
     public Pose2d HomePose;
-    protected TrajectorySequenceBuilder test;
+    protected TrajectorySequence test;
     protected TrajectorySequenceBuilder leftSpike;
     protected TrajectorySequenceBuilder centerSpike;
     protected TrajectorySequenceBuilder rightSpike;
@@ -45,6 +122,7 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
     protected TrajectorySequenceBuilder station_backdrop_second_cycle;
     protected TrajectorySequenceBuilder spike_station;
     protected TrajectorySequenceBuilder parking;
+
     /*-------------------------------------------------------
     -Enums-
     -------------------------------------------------------*/
@@ -95,38 +173,114 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
     protected Integer stackStationTangetValue = 0;
     protected Integer parkingTangetValue = 1;
 
-    protected Pose2d leftPixel_SHORT = new Pose2d((RobotY/2), TileInverted - (RobotX/2), Math.toRadians(180));
-    protected Pose2d centerPixel_SHORT = new Pose2d(Tile/2, TileInverted - (RobotY/2), Math.toRadians(90));
-    protected Pose2d rightPixel_SHORT = new Pose2d(Tile -1, 1.5 * TileInverted - 6, Math.toRadians(90));
+    /*------------------------Spikes------------------------*/
 
-    protected Pose2d leftPixel_LONG = new Pose2d(2 * TileInverted,1.5 * TileInverted, Math.toRadians(180));
-    protected Pose2d centerPixel_LONG = new Pose2d(1.5 * TileInverted, TileInverted - (RobotY/2), Math.toRadians(90));
-    protected Pose2d rightPixel_LONG = new Pose2d(TileInverted - (RobotY/2), TileInverted - (RobotX/2), Math.toRadians(90));
+    protected Pose2d leftPixel_SHORT = robotPoseLimitCalculation(new Pose2d(
+            (RobotY/2), TileInverted, Math.toRadians(180)///////
+    ), RobotSides.RIGHT);
 
-    protected Pose2d randomizationBackdropLeft = new Pose2d(2.5 * Tile - (RobotY/2) + RandomizationBackdropDistance, 1.2 * TileInverted, Math.toRadians(180)); // Default
-    protected Pose2d randomizationBackdropCenter = new Pose2d(2.5 * Tile - (RobotY/2) + RandomizationBackdropDistance, 1.5 * TileInverted, Math.toRadians(180));
-    protected Pose2d randomizationBackdropRight = new Pose2d(2.5 * Tile - (RobotY/2) + RandomizationBackdropDistance, 1.8 * TileInverted, Math.toRadians(180)); // Default
-    protected Pose2d backdropLeft = new Pose2d(2.5 * Tile - (RobotY/2) + BackdropDistance,1.4 * TileInverted, Math.toRadians(180)); // Default
-    protected Pose2d backdropCenter = new Pose2d(2.5 * Tile - (RobotY/2) + BackdropDistance, 1.5 * TileInverted, Math.toRadians(180));
-    protected Pose2d backdropRight = new Pose2d(2.5 * Tile - (RobotY/2) + BackdropDistance, 1.75 * TileInverted, Math.toRadians(180)); // Default
+    protected Pose2d centerPixel_SHORT = robotPoseLimitCalculation(new Pose2d(
+            Tile/2, TileInverted, Math.toRadians(90)///////
+    ), RobotSides.FRONT);
 
-    protected Pose2d stationInnerSecondCycle = new Pose2d(3 * TileInverted + (RobotY/2)  + StackDistance,TileInverted/2 - StackStationSecondCycleOffset, Math.toRadians(180)); // Default
-    protected Pose2d stationMiddleSecondCycle = new Pose2d(3 * TileInverted + (RobotY/2) + StackDistance,TileInverted - StackStationSecondCycleOffset, Math.toRadians(180));
-    protected Pose2d stationOuterSecondCycle = new Pose2d(3 * TileInverted + (RobotY/2) + StackDistance, 1.5 * TileInverted - StackStationSecondCycleOffset, Math.toRadians(180)); // Default
+    protected Pose2d rightPixel_SHORT = robotPoseLimitCalculation(new Pose2d(
+            Tile, 1.5 * TileInverted, Math.toRadians(90)///////
+    ), RobotSides.CENTER);
 
-    protected Pose2d stationInner = new Pose2d(3 * TileInverted + (RobotY/2) + StackDistance,TileInverted/2 - StackStationFirstCycleOffset, Math.toRadians(180)); // Default
-    protected Pose2d stationMiddle = new Pose2d(3 * TileInverted + (RobotY/2) + StackDistance,TileInverted - StackStationFirstCycleOffset, Math.toRadians(180));
-    protected Pose2d stationOuter = new Pose2d(3 * TileInverted + (RobotY/2) + StackDistance, 1.5 * TileInverted - StackStationFirstCycleOffset, Math.toRadians(180)); // Default
+    protected Pose2d leftPixel_LONG = robotPoseLimitCalculation(new Pose2d(
+            2 * TileInverted,1.5 * TileInverted, Math.toRadians(180)///////
+    ), RobotSides.CENTER);
 
-    protected Pose2d parkingInner = new Pose2d(2.5 * Tile, TileInverted/2, Math.toRadians(180));
-    protected Pose2d parkingMiddle = new Pose2d(2 * Tile, 1.5 * TileInverted, Math.toRadians(180));
-    protected Pose2d parkingOuter = new Pose2d(2.5 * Tile, 2.65 * TileInverted, Math.toRadians(180));
+    protected Pose2d centerPixel_LONG = robotPoseLimitCalculation(new Pose2d(
+            1.5 * TileInverted, TileInverted, Math.toRadians(90)///////
+    ), RobotSides.FRONT);
 
-    protected Vector2d stationClose_Inner = new Vector2d(Tile/2, TileInverted/2 + 2);
-    protected Vector2d stationFar_Inner = new Vector2d(TileInverted,TileInverted/2 + 2);
+    protected Pose2d rightPixel_LONG = new Pose2d(
+            TileInverted - (RobotY/2), TileInverted - (RobotX/2), Math.toRadians(90)///////
+    );
 
-    protected Vector2d stationClose_Outer = new Vector2d(Tile, 2.5 * TileInverted);
-    protected Vector2d stationFar_Outer = new Vector2d(1.5 * TileInverted,2.5 * TileInverted);
+    /*------------------------Randomized Backdrop------------------------*/
+
+    protected Pose2d randomizationBackdropLeft = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
+            2.5 * Tile, 1.2 * TileInverted, Math.toRadians(180)///////
+    ), RandomizationOffset_XY.get("Final"), Offsets.X), RobotSides.REAR);
+
+    protected Pose2d randomizationBackdropCenter = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
+            2.5 * Tile, 1.5 * TileInverted, Math.toRadians(180)///////
+    ), RandomizationOffset_XY.get("Final"), Offsets.X), RobotSides.REAR);
+
+    protected Pose2d randomizationBackdropRight =  robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
+            2.5 * Tile, 1.8 * TileInverted, Math.toRadians(180)///////
+    ), RandomizationOffset_XY.get("Final"), Offsets.X), RobotSides.REAR);
+
+    /*------------------------Backdrops------------------------*/
+
+    protected Pose2d backdropLeft = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
+            2.5 * Tile ,1.4 * TileInverted, Math.toRadians(180)///////
+    ), RandomizationOffset_XY.get("Final"), Offsets.X), RobotSides.REAR);
+
+    protected Pose2d backdropCenter = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
+            2.5 * Tile , 1.5 * TileInverted, Math.toRadians(180)///////
+    ), RandomizationOffset_XY.get("Final"), Offsets.X), RobotSides.REAR);
+
+    protected Pose2d backdropRight = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
+            2.5 * Tile , 1.75 * TileInverted, Math.toRadians(180)///////
+    ), RandomizationOffset_XY.get("Final"), Offsets.X), RobotSides.REAR);
+
+    /*------------------------Stacks Second Cycle------------------------*/
+
+    protected Pose2d stationInnerSecondCycle = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
+            3 * TileInverted,TileInverted/2, Math.toRadians(180)///////
+    ), RandomizationOffset_XY.get("Final"), Offsets.BOTH), RobotSides.FRONT);
+
+    protected Pose2d stationMiddleSecondCycle = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
+            3 * TileInverted,TileInverted, Math.toRadians(180)///////
+    ), RandomizationOffset_XY.get("Final"), Offsets.BOTH), RobotSides.FRONT);
+
+    protected Pose2d stationOuterSecondCycle = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
+            3 * TileInverted, 1.5 * TileInverted, Math.toRadians(180)///////
+    ), RandomizationOffset_XY.get("Final"), Offsets.BOTH), RobotSides.FRONT);
+
+    /*------------------------Stacks First Cycle------------------------*/
+
+    protected Pose2d stationInner = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
+            3 * TileInverted,TileInverted/2, Math.toRadians(180)///////
+    ), RandomizationOffset_XY.get("Final"), Offsets.BOTH), RobotSides.FRONT);
+
+    protected Pose2d stationMiddle = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
+            3 * TileInverted, TileInverted, Math.toRadians(180)///////
+    ), RandomizationOffset_XY.get("Final"), Offsets.BOTH), RobotSides.FRONT);
+
+    protected Pose2d stationOuter = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
+            3 * TileInverted, 1.5 * TileInverted, Math.toRadians(180)///////
+    ), RandomizationOffset_XY.get("Final"), Offsets.BOTH), RobotSides.FRONT);
+
+    /*------------------------Parking------------------------*/
+
+    protected Pose2d parkingInner = new Pose2d(
+            2.5 * Tile, TileInverted/2, Math.toRadians(180));///////
+
+    protected Pose2d parkingMiddle = new Pose2d(
+            2 * Tile, 1.5 * TileInverted, Math.toRadians(180));///////
+
+    protected Pose2d parkingOuter = new Pose2d(
+            2.5 * Tile, 2.65 * TileInverted, Math.toRadians(180));///////
+
+    /*------------------------Mid Points------------------------*/
+
+    protected Vector2d stationClose_Inner = new Vector2d(
+            Tile/2, TileInverted/2);///////
+
+    protected Vector2d stationFar_Inner = new Vector2d(
+            TileInverted,TileInverted/2);///////
+
+    protected Vector2d stationClose_Outer = new Vector2d(
+            Tile, 2.5 * TileInverted);///////
+
+    protected Vector2d stationFar_Outer = new Vector2d(
+            1.5 * TileInverted,2.5 * TileInverted);///////
+
+    /*------------------------------------------------*/
 
     public Pose2d pixel_cycle_PoseTransfer = rightPixel_SHORT;
     public Pose2d leftPixelSpike = leftPixel_SHORT;
@@ -163,8 +317,10 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
     public void TrajectoryInit(){
 
         /*-----------------------------------------------------*/
-        test = drive.trajectorySequenceBuilder(HomePose)
-                .strafeTo(new Vector2d(0,0));
+        test = drive.trajectorySequenceBuilder(new Pose2d())
+                .forward(30)
+                .back(30)
+                .build();
         /*-----------------------------------------------------*/
 
         rightSpike = drive.trajectorySequenceBuilder(HomePose)
@@ -246,6 +402,7 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
 
         parking = drive.trajectorySequenceBuilder(backdrop_Unload)
                 .setTangent(Math.toRadians(parkingTanget[parkingTangetValue])) //tan 135/225
-                .splineToConstantHeading(parkingPose.vec(), Math.toRadians(0));
+                .splineToLinearHeading(new Pose2d(parkingPose.vec(), Math.toRadians(90)), Math.toRadians(0));
+
     }
 }
