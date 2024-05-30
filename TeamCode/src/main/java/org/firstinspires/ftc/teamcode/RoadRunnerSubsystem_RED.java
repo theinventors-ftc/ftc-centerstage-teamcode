@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.preference.Preference;
 import android.util.Pair;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -50,31 +51,47 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
         return finalPose2d;
     }
 
+    public Vector2d offsetPoseShifter(Vector2d pose, Pair<Double, Double> xy_offset, Offsets preference) {
+        Double X = pose.getX() + xy_offset.first;
+        Double Y = pose.getY() + xy_offset.second;
+
+        if (preference == Offsets.X){
+            Y = pose.getY();
+        }
+        else if(preference == Offsets.Y){
+            X = pose.getX();
+        }
+
+        Vector2d finalVector2d = new Vector2d(X,Y);
+
+        return finalVector2d;
+    }
+
     public Pose2d robotPoseLimitCalculation(Pose2d pose, RobotSides side){
         Double X = pose.getX();
         Double Y = pose.getY();
 
         if(side == RobotSides.CENTER) return pose;
 
-        if(pose.getHeading() == 90){
+        if(Math.toDegrees(pose.getHeading()) == 90){
             if(side == RobotSides.LEFT) X = X + (RobotX/2);
             else if(side == RobotSides.RIGHT) X = X - (RobotX/2);
             else if(side == RobotSides.FRONT) Y = Y - (RobotY/2);
             else if(side == RobotSides.REAR) Y = Y + (RobotY/2);
         }
-        else if(pose.getHeading() == 270){
+        else if(Math.toDegrees(pose.getHeading()) == 270){
             if(side == RobotSides.LEFT) X = X - (RobotX/2);
             else if(side == RobotSides.RIGHT) X = X + (RobotX/2);
             else if(side == RobotSides.FRONT) Y = Y + (RobotY/2);
             else if(side == RobotSides.REAR) Y = Y - (RobotY/2);
         }
-        else if(pose.getHeading() == 0){
+        else if(Math.toDegrees(pose.getHeading()) == 0){
             if(side == RobotSides.LEFT) Y = Y - (RobotX/2);
             else if(side == RobotSides.RIGHT) Y = Y + (RobotX/2);
             else if(side == RobotSides.FRONT) X = X - (RobotY/2);
             else if(side == RobotSides.REAR) X = X + (RobotY/2);
         }
-        else if(pose.getHeading() == 180){
+        else if(Math.toDegrees(pose.getHeading()) == 180){
             if(side == RobotSides.LEFT) Y = Y + (RobotX/2);
             else if(side == RobotSides.RIGHT) Y = Y - (RobotX/2);
             else if(side == RobotSides.FRONT) X = X + (RobotY/2);
@@ -91,19 +108,15 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
     -------------------------------------------------------*/
     public static double Tile = 24; /*-inches-*/
     public static double TileInverted = -24; /*-inches-*/
-    public static double RobotX = 12.6; /*-inches-*/
-    public static double RobotY = 18; /*-inches-*/
-
-    public final double StackDistance = 3; /*-inches-*/
-    public final double HIGH_VEL_SPEED = 60.0;
-    public final double HIGH_ACCEL_SPEED = 60.0;
-    public final double LOW_VEL_SPEED = 50.0;
-    public final double LOW_ACCEL_SPEED = 50.0;
+    public static double RobotX = 12.795; /*-inches-*/
+    public static double RobotY = 18.11; /*-inches-*/
+    public static double AccDefault = 52;
+    public static double VelDefault = 52;
 
     Dictionary<String, Pair<Double, Double>> RandomizationOffset_XY = new Hashtable<String, Pair<Double, Double>>() {{
-        put("Left", new Pair<>(2.5, 6.5));
-        put("Center", new Pair<>(2.5, 6.5));
-        put("Right", new Pair<>(2.5, 6.5));
+        put("Left", new Pair<>(0.0, -2.5));
+        put("Center", new Pair<>(-0.5, -2.0));
+        put("Right", new Pair<>(-2.0, 0.0));
         put("Final", new Pair<>(0.0,0.0));
     }};
 
@@ -176,8 +189,8 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
     /*------------------------Spikes------------------------*/
 
     protected Pose2d leftPixel_SHORT = robotPoseLimitCalculation(new Pose2d(
-            (RobotY/2), TileInverted, Math.toRadians(180)///////
-    ), RobotSides.RIGHT);
+            0, 1.25 * TileInverted, Math.toRadians(180)///////
+    ), RobotSides.FRONT);
 
     protected Pose2d centerPixel_SHORT = robotPoseLimitCalculation(new Pose2d(
             Tile/2, TileInverted, Math.toRadians(90)///////
@@ -201,59 +214,59 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
 
     /*------------------------Randomized Backdrop------------------------*/
 
-    protected Pose2d randomizationBackdropLeft = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
-            2.5 * Tile, 1.2 * TileInverted, Math.toRadians(180)///////
-    ), RandomizationOffset_XY.get("Final"), Offsets.X), RobotSides.REAR);
+    protected Pose2d randomizationBackdropLeft = robotPoseLimitCalculation(new Pose2d(
+            2.75 * Tile, 1.3 * TileInverted, Math.toRadians(180)///////
+    ), RobotSides.REAR);
 
-    protected Pose2d randomizationBackdropCenter = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
-            2.5 * Tile, 1.5 * TileInverted, Math.toRadians(180)///////
-    ), RandomizationOffset_XY.get("Final"), Offsets.X), RobotSides.REAR);
+    protected Pose2d randomizationBackdropCenter = robotPoseLimitCalculation(new Pose2d(
+            2.75 * Tile, 1.5 * TileInverted, Math.toRadians(180)///////
+    ), RobotSides.REAR);
 
-    protected Pose2d randomizationBackdropRight =  robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
-            2.5 * Tile, 1.8 * TileInverted, Math.toRadians(180)///////
-    ), RandomizationOffset_XY.get("Final"), Offsets.X), RobotSides.REAR);
+    protected Pose2d randomizationBackdropRight =  robotPoseLimitCalculation(new Pose2d(
+            2.75 * Tile, 1.8 * TileInverted, Math.toRadians(180)///////
+    ), RobotSides.REAR);
 
     /*------------------------Backdrops------------------------*/
 
-    protected Pose2d backdropLeft = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
-            2.5 * Tile ,1.4 * TileInverted, Math.toRadians(180)///////
-    ), RandomizationOffset_XY.get("Final"), Offsets.X), RobotSides.REAR);
+    protected Pose2d backdropLeft = robotPoseLimitCalculation(new Pose2d(
+            2.75 * Tile ,1.3 * TileInverted, Math.toRadians(180)///////
+    ), RobotSides.REAR);
 
-    protected Pose2d backdropCenter = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
-            2.5 * Tile , 1.5 * TileInverted, Math.toRadians(180)///////
-    ), RandomizationOffset_XY.get("Final"), Offsets.X), RobotSides.REAR);
+    protected Pose2d backdropCenter = robotPoseLimitCalculation(new Pose2d(
+            2.75 * Tile , 1.5 * TileInverted, Math.toRadians(180)///////
+    ), RobotSides.REAR);
 
-    protected Pose2d backdropRight = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
-            2.5 * Tile , 1.75 * TileInverted, Math.toRadians(180)///////
-    ), RandomizationOffset_XY.get("Final"), Offsets.X), RobotSides.REAR);
+    protected Pose2d backdropRight = robotPoseLimitCalculation(new Pose2d(
+            2.75 * Tile , 1.75 * TileInverted, Math.toRadians(180)///////
+    ), RobotSides.REAR);
 
     /*------------------------Stacks Second Cycle------------------------*/
 
-    protected Pose2d stationInnerSecondCycle = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
-            3 * TileInverted,TileInverted/2, Math.toRadians(180)///////
-    ), RandomizationOffset_XY.get("Final"), Offsets.BOTH), RobotSides.FRONT);
+    protected Pose2d stationInnerSecondCycle = robotPoseLimitCalculation(new Pose2d(
+            2.7 * TileInverted,TileInverted/2, Math.toRadians(180)///////
+    ), RobotSides.FRONT);
 
-    protected Pose2d stationMiddleSecondCycle = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
-            3 * TileInverted,TileInverted, Math.toRadians(180)///////
-    ), RandomizationOffset_XY.get("Final"), Offsets.BOTH), RobotSides.FRONT);
+    protected Pose2d stationMiddleSecondCycle = robotPoseLimitCalculation(new Pose2d(
+            2.7 * TileInverted,TileInverted, Math.toRadians(180)///////
+    ), RobotSides.FRONT);
 
-    protected Pose2d stationOuterSecondCycle = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
-            3 * TileInverted, 1.5 * TileInverted, Math.toRadians(180)///////
-    ), RandomizationOffset_XY.get("Final"), Offsets.BOTH), RobotSides.FRONT);
+    protected Pose2d stationOuterSecondCycle = robotPoseLimitCalculation(new Pose2d(
+            2.7 * TileInverted, 1.5 * TileInverted, Math.toRadians(180)///////
+    ), RobotSides.FRONT);
 
     /*------------------------Stacks First Cycle------------------------*/
 
-    protected Pose2d stationInner = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
-            3 * TileInverted,TileInverted/2, Math.toRadians(180)///////
-    ), RandomizationOffset_XY.get("Final"), Offsets.BOTH), RobotSides.FRONT);
+    protected Pose2d stationInner = robotPoseLimitCalculation(new Pose2d(
+            2.7 * TileInverted,TileInverted/2, Math.toRadians(180)///////
+    ), RobotSides.FRONT);
 
-    protected Pose2d stationMiddle = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
-            3 * TileInverted, TileInverted, Math.toRadians(180)///////
-    ), RandomizationOffset_XY.get("Final"), Offsets.BOTH), RobotSides.FRONT);
+    protected Pose2d stationMiddle = robotPoseLimitCalculation(new Pose2d(
+            2.7 * TileInverted, TileInverted, Math.toRadians(180)///////
+    ), RobotSides.FRONT);
 
-    protected Pose2d stationOuter = robotPoseLimitCalculation(offsetPoseShifter(new Pose2d(
-            3 * TileInverted, 1.5 * TileInverted, Math.toRadians(180)///////
-    ), RandomizationOffset_XY.get("Final"), Offsets.BOTH), RobotSides.FRONT);
+    protected Pose2d stationOuter = robotPoseLimitCalculation(new Pose2d(
+            2.7 * TileInverted, 1.5 * TileInverted, Math.toRadians(180)///////
+    ), RobotSides.FRONT);
 
     /*------------------------Parking------------------------*/
 
@@ -314,7 +327,11 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
         drive.setPoseEstimate(HomePose);
     }
 
-    public void TrajectoryInit(){
+    public void TrajectoryInit(Randomization randomization){
+
+        if(randomization == Randomization.LEFT)RandomizationOffset_XY.put("Final", RandomizationOffset_XY.get("Left"));
+        else if(randomization == Randomization.CENTER)RandomizationOffset_XY.put("Final", RandomizationOffset_XY.get("Center"));
+        else if(randomization == Randomization.RIGHT)RandomizationOffset_XY.put("Final", RandomizationOffset_XY.get("Right"));
 
         /*-----------------------------------------------------*/
         test = drive.trajectorySequenceBuilder(new Pose2d())
@@ -335,15 +352,15 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
 
         leftSpike = drive.trajectorySequenceBuilder(HomePose)
                 .setTangent(Math.toRadians(leftSpikeStartingTanget[leftSpikeStartingTangetValue])) //tan pair 45/135
-                .splineToLinearHeading(leftPixelSpike, Math.toRadians(leftSpikeFinalTanget[leftSpikeFinalTangetValue]));
+                .splineToLinearHeading(offsetPoseShifter(leftPixelSpike, new Pair<>(2.0, 0.0), Offsets.BOTH), Math.toRadians(leftSpikeFinalTanget[leftSpikeFinalTangetValue]));
 
         /*----------------------------------------------------------------------------------------*/
 
         spike_randomizedBackdrop = drive.trajectorySequenceBuilder(pixel_cycle_PoseTransfer)
-                .setTangent(Math.toRadians(270))
-                .splineTo(randomizedBackdrop.vec(), Math.toRadians(0),
-                        SampleMecanumDrive.getVelocityConstraint(LOW_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(LOW_ACCEL_SPEED)
+                .setTangent(Math.toRadians(315))
+                .splineToLinearHeading(offsetPoseShifter(randomizedBackdrop, new Pair<>(0.0, 0.0),  Offsets.BOTH), Math.toRadians(0)
+//                        ,SampleMecanumDrive.getVelocityConstraint(LOW_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+//                        SampleMecanumDrive.getAccelerationConstraint(LOW_ACCEL_SPEED)
                 );
 
         /*----------------------------------------------------------------------------------------*/
@@ -354,11 +371,11 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
 //                        SampleMecanumDrive.getVelocityConstraint(LOW_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
 //                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
                 )
-                .lineTo(stationFar,
-                        SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
+                .lineTo(stationFar
+//                        ,SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+//                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
                 )
-                .splineToConstantHeading(stackStation.vec(), Math.toRadians(stackStationTanget[stackStationTangetValue])); //tan pair 180/225
+                .splineToConstantHeading(offsetPoseShifter(stackStation.vec(), RandomizationOffset_XY.get("Final"), Offsets.BOTH), Math.toRadians(stackStationTanget[stackStationTangetValue])); //tan pair 180/225
 
         backdrop_station_second_cycle = drive.trajectorySequenceBuilder(backdrop_Unload)
                 .setTangent(Math.toRadians(180))
@@ -366,31 +383,38 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
 //                        SampleMecanumDrive.getVelocityConstraint(LOW_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
 //                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
                 )
-                .lineTo(stationFar,
-                        SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
+                .lineTo(stationFar
+//                        ,SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+//                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
                 )
-                .splineToConstantHeading(stackStationSecondCycle.vec(), Math.toRadians(stackStationTanget[stackStationTangetValue])); //tan pair 180/225
+                .splineToConstantHeading(offsetPoseShifter(stackStationSecondCycle.vec(), RandomizationOffset_XY.get("Final"), Offsets.BOTH), Math.toRadians(stackStationTanget[stackStationTangetValue])); //tan pair 180/225
+
 
         station_backdrop_first_cycle = drive.trajectorySequenceBuilder(stackStation)
                 .setReversed(true)
                 .setTangent(Math.toRadians(0))
                 .splineToConstantHeading(stationFar, Math.toRadians(0))
-                .lineTo(stationClose,
-                        SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
+                .lineTo(stationClose
+//                        ,SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+//                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
                 )
-                .splineToConstantHeading(backdrop_Unload.vec(), Math.toRadians(0));
+                .splineToConstantHeading(backdrop_Unload.vec(), Math.toRadians(0)
+                        ,SampleMecanumDrive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH)
+                        ,SampleMecanumDrive.getAccelerationConstraint(AccDefault)
+                );
 
         station_backdrop_second_cycle = drive.trajectorySequenceBuilder(stackStationSecondCycle)
                 .setReversed(true)
                 .setTangent(Math.toRadians(0))
                 .splineToConstantHeading(stationFar, Math.toRadians(0))
-                .lineTo(stationClose,
-                        SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
+                .lineTo(stationClose
+//                        ,SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+//                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
                 )
-                .splineToConstantHeading(backdrop_Unload.vec(), Math.toRadians(0));
+                .splineToConstantHeading(backdrop_Unload.vec(), Math.toRadians(0)
+                        ,SampleMecanumDrive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH)
+                        ,SampleMecanumDrive.getAccelerationConstraint(AccDefault)
+                );
 
         /*----------------------------------------------------------------------------------------*/
 

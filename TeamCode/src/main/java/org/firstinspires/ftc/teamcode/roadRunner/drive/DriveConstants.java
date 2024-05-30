@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.roadRunner.drive;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 /*
@@ -20,9 +21,15 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 public class DriveConstants {
 
     /*
+     * These are imu constants based on the physical position of the imu.
+     */
+    public static final RevHubOrientationOnRobot.LogoFacingDirection LOGO_FACING_DIR = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+    public static final RevHubOrientationOnRobot.UsbFacingDirection USB_FACING_DIR = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+
+    /*
      * These are motor constants that should be listed online for your motors.
      */
-    public static final double TICKS_PER_REV = 8192;
+    public static final double TICKS_PER_REV = 4096;
     public static final double MAX_RPM = 1150;
 
     /*
@@ -47,7 +54,7 @@ public class DriveConstants {
      */
     public static double WHEEL_RADIUS = 1.8898; // in
     public static double GEAR_RATIO = 0.3076923076923077; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 12.52; // in
+    public static double TRACK_WIDTH = 13.78; // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -55,8 +62,8 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 0.0149;
-    public static double kA = 0.0034;
+    public static double kV = 0.015; //0.0149;
+    public static double kA = 0.0038; //0.0034;
     public static double kStatic = 0;
 
     /*
@@ -87,10 +94,10 @@ public class DriveConstants {
      * You are free to raise this on your own if you would like. It is best determined through experimentation.
 
      */
-    public static double MAX_VEL = 55;
-    public static double MAX_ACCEL = 55;
-    public static double MAX_ANG_VEL = Math.toRadians(160);
-    public static double MAX_ANG_ACCEL = Math.toRadians(160);
+    public static double MAX_VEL = 52;
+    public static double MAX_ACCEL = 52;
+    public static double MAX_ANG_VEL = Math.toRadians(115);
+    public static double MAX_ANG_ACCEL = Math.toRadians(115);
 
 
     public static double encoderTicksToInches(double ticks) {
