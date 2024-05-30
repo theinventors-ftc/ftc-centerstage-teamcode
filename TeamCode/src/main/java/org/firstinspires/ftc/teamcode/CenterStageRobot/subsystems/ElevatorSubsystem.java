@@ -1,24 +1,18 @@
 package org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems;
 
-import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.command.WaitCommand;
-import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
-import com.arcrobotics.ftclib.util.MathUtils;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.OuttakeCommand;
 import org.inventors.ftc.robotbase.hardware.MotorExEx;
 
+import java.util.HashMap;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 public class ElevatorSubsystem extends SubsystemBase {
     public boolean isAuto = true;
@@ -26,24 +20,32 @@ public class ElevatorSubsystem extends SubsystemBase {
     public final MotorExEx rightMotor;
     private final MotorGroup motors;
 
-    private boolean isAutoEnabled = true;
-
     public double MAX_SPEED = 0.9;
 
     public enum Level {
-        LOADING, HANGING, AUTO0, AUTO1, AUTO2, LOW, MID, HIGH
+        LOADING, HANGING, AUTO0, AUTO1, AUTO2, LOW, MID, HIGH, STORAGE
     }
 
     private Level level;
 
-    private int[] levelPositions = { 0, 300, 500, 800, 870, 1050, 1650, 1750 };
+    private HashMap<Level, Integer> levels = new HashMap<Level, Integer>() {{
+        put(Level.LOADING, 0);
+        put(Level.HANGING, 600);
+        put(Level.AUTO0, 500);
+        put(Level.AUTO1, 800);
+        put(Level.AUTO2, 870);
+        put(Level.LOW, 1050);
+        put(Level.MID, 1650);
+        put(Level.HIGH, 1750);
+//        put(Level.STORAGE, 0); // Remembering Last Position
+    }};
 
     private Telemetry telemetry;
     private DoubleSupplier leftY;
 
     private OuttakeSusystem outtakeSusystem;
 
-    public final double kS = 230, kG = 260, kV = 1.0, kA= 0.0;
+    public final double kS = 230, kG = 250, kV = 1.0, kA= 0.0;
 
     ElevatorFeedforward feedforward;
 
@@ -83,17 +85,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (leftY.getAsDouble() > 0.05 || leftY.getAsDouble() < -0.05) {
+        if (Math.abs(leftY.getAsDouble()) > 0.06) {
             setManual();
         }
+        telemetry.addData("Elevator Height: ", levels.get(Level.STORAGE));
 
         if (!isAuto) {
             feedForwardValue = feedforward.calculate(
                     0.9 * leftY.getAsDouble() * max_ticks_per_second
             );
-
-            // Don't use Feed Forward when the Elevator is in Loading(Down-Most) Position
-//        feedForwardValue = elevator.getHeight() < 100 ? max_ticks_per_second : feedForwardValue;
 
             if (getHeight() < 100) {
                 setPower(leftY.getAsDouble());
@@ -101,7 +101,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 setPower((feedForwardValue / max_ticks_per_second) * MAX_SPEED);
             }
 
-            if (getHeight() > 300 && leftY.getAsDouble() > 0.05) {
+            if (getHeight() > 300 && leftY.getAsDouble() > 0.05) { // Open Outtake Automation
                 if(outtakeSusystem.getState() != OuttakeSusystem.State.EXTREME) {
                     new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.OPEN).schedule();
                 }
@@ -118,27 +118,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void setLevel(Level levelPicked) {
-        level = levelPicked;
-        int levelIdx = 0;
-
-        if (level == Level.LOADING)
-            levelIdx = 0;
-        else if (level == Level.HANGING)
-            levelIdx = 1;
-        else if (level == Level.AUTO0)
-            levelIdx = 2;
-        else if (level == Level.AUTO1)
-            levelIdx = 3;
-        else if (level == Level.AUTO2)
-            levelIdx = 4;
-        else if (level == Level.LOW)
-            levelIdx = 5;
-        else if (level == Level.MID)
-            levelIdx = 6;
-        else if (level == Level.HIGH)
-            levelIdx = 7;
-
-        motors.setTargetPosition(levelPositions[levelIdx]);
+        motors.setTargetPosition((int)levels.get(levelPicked));
     }
 
     public void setManual() {
@@ -149,6 +129,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void setAuto() {
         motors.setRunMode(Motor.RunMode.PositionControl);
         isAuto = true;
+    }
+
+    public void capturePosition() {
+        telemetry.addData("PEOS", "");
+        levels.put(Level.STORAGE, getHeight().intValue());
     }
 
     public void setPower(double power) {

@@ -52,14 +52,10 @@ public class IntakeSubsystem extends SubsystemBase {
         if(timer.done() && getCurrent() > ampThreshold){
             isStalled = true;
         }
-
-        telemetry.addData("Intake State: ", state);
     }
 
     public void run() {
         state = State.LOADING;
-
-        telemetry.addData("Intake Running", "");
         motor.set(speed);
     }
 

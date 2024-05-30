@@ -73,18 +73,11 @@ public class PixelColorDetectorSubsystem extends SubsystemBase {
 
         frontPixelColor = predictColorFront(frontColors[0], frontColors[1], frontColors[2]);
         backPixelColor = predictColorBack(backColors[0], backColors[1], backColors[2]);
-
-        telemetry.addData("Front Red: ", frontColors[0]);
-        telemetry.addData("Front Green: ", frontColors[1]);
-        telemetry.addData("Front Blue: ", frontColors[2]);
-        telemetry.addData("Back Red: ", backColors[0]);
-        telemetry.addData("Back Green: ", backColors[1]);
-        telemetry.addData("Back Blue: ", backColors[2]);
     }
 
     @Override
     public void periodic() {
-//        if (!isEnabled) return;
+        if (!isEnabled) return;
 
         update();
 
@@ -92,9 +85,6 @@ public class PixelColorDetectorSubsystem extends SubsystemBase {
         backPixelExistence = backPixelColor != PixelColor.NONE ? 1 : 0;
 
         numOfPixels = frontPixelExistence + backPixelExistence;
-
-        telemetry.addData("Front Color Prediction: ", frontPixelColor);
-        telemetry.addData("Back Color Prediction: ", backPixelColor);
     }
 
     public PixelColor getFrontPixelColor() {

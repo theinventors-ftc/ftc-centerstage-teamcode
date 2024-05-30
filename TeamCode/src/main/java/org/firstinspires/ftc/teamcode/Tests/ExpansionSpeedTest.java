@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.Tests;
 
 import com.arcrobotics.ftclib.util.Timing;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import java.util.concurrent.TimeUnit;
 
+@Disabled
 @TeleOp
 public class ExpansionSpeedTest extends LinearOpMode {
     private ServoImplEx servo, servo2;

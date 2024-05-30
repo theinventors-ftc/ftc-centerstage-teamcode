@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.roadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadRunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.roadRunner.trajectorysequence.TrajectorySequenceBuilder;
 
-@Autonomous(name = "Turn", group = "Final Autonomous")
+@Autonomous(name = "Turn", group = "Tests")
 public class Turn extends LinearOpMode {
     private SampleMecanumDrive drive;
 
