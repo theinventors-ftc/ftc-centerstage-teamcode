@@ -33,19 +33,16 @@ public class RoadRunnerCommand_RED extends RoadRunnerSubsystem_RED {
                 pixel_cycle_PoseTransfer = leftPixel_SHORT;
                 leftSpikeStartingTangetValue = 0;
                 leftSpikeFinalTangetValue = 0;
-                RandomizationOffset_XY.put("Final", RandomizationOffset_XY.get("Left"));
             }
             else if (randomization == Randomization.CENTER){
                 randomizedBackdrop = randomizationBackdropCenter;
                 centerPixelSpike = centerPixel_SHORT;
                 pixel_cycle_PoseTransfer = centerPixel_SHORT;
-                RandomizationOffset_XY.put("Final", RandomizationOffset_XY.get("Center"));
             }
             else if (randomization == Randomization.RIGHT){
                 randomizedBackdrop = randomizationBackdropRight;
                 rightPixelSpike = rightPixel_SHORT;
                 pixel_cycle_PoseTransfer = rightPixel_SHORT;
-                RandomizationOffset_XY.put("Final", RandomizationOffset_XY.get("Right"));
             }
         }
         else if (startingPosition == StartingPosition.LONG){

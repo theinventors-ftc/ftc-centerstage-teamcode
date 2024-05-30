@@ -7,10 +7,10 @@ import static org.firstinspires.ftc.teamcode.roadRunner.drive.DriveConstants.MAX
 import static org.firstinspires.ftc.teamcode.roadRunner.drive.DriveConstants.MOTOR_VELO_PID;
 import static org.firstinspires.ftc.teamcode.roadRunner.drive.DriveConstants.RUN_USING_ENCODER;
 import static org.firstinspires.ftc.teamcode.roadRunner.drive.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.roadRunner.drive.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.roadRunner.drive.DriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.roadRunner.drive.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.roadRunner.drive.DriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.roadRunner.drive.DriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.roadRunner.drive.DriveConstants.encoderTicksToInches;
 
 import androidx.annotation.NonNull;
 
@@ -41,9 +41,9 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.roadRunner.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.roadRunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.roadRunner.trajectorysequence.TrajectorySequenceBuilder;
+import org.firstinspires.ftc.teamcode.roadRunner.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.roadRunner.util.LynxModuleUtil;
 
 import java.util.ArrayList;
@@ -55,10 +55,12 @@ import java.util.List;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(13, 0, 2);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(11, 0, 0.2);
+//    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(13, 0, 2);
+//    public static PIDCoefficients HEADING_PID = new PIDCoefficients(11, 0, 0.2);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(20, 0, 1.4);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(10, 0, 0.8);
 
-    public static double LATERAL_MULTIPLIER = 1.8;
+    public static double LATERAL_MULTIPLIER = 1.42;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;

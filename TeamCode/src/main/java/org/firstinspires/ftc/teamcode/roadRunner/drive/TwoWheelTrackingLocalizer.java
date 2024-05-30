@@ -34,18 +34,20 @@ import java.util.List;
  *
  */
 public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
-    public static double TICKS_PER_REV = 8192;
+    public static double TICKS_PER_REV = 4096;
     public static double WHEEL_RADIUS = 0.688976378; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double PARALLEL_X = -3.15/2.54; // X is the up and down direction
-    public static double PARALLEL_Y = -12.3/2.54; // Y is the strafe direction
+    public static double PARALLEL_X = -1.69291339; // X is the up and down direction
+    public static double PARALLEL_Y = -6.73228346; // Y is the strafe direction
 
-    public static double PERPENDICULAR_X = -4/2.54;
-    public static double PERPENDICULAR_Y = 0.5/2.54;
+    public static double PERPENDICULAR_X = -5.61023622;
+    public static double PERPENDICULAR_Y = 0;
 
-    public static double X_MULTIPLIER = 1.0016*0.99672189244*0.99621879621*1.00334448161; // Multiplier in the X direction (Front - Back)
-    public static double Y_MULTIPLIER = 1.0089686*0.99612617598; // Multiplier in the Y direction (Left - Right)
+    // 100.5539293975986, 99.86363360635514, 100.26343507612756
+    public static double X_MULTIPLIER = 0.9977351476001821; // Multiplier in the X direction (Front - Back)
+    // 100.07648387063297, 100.02379470915602, 100.0893060696475
+    public static double Y_MULTIPLIER = 0.9993684502756573; // Multiplier in the Y direction (Left - Right)
 
     // Parallel/Perpendicular to the forward axis
     // Parallel wheel is parallel to the forward axis
@@ -63,10 +65,10 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
         this.drive = drive;
 
         parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "frontLeft")); // right one port 0
-        perpendicularEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rearRight")); // perp port 3
+        perpendicularEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "frontRight")); // perp port 1
 
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
-        parallelEncoder.setDirection(Encoder.Direction.REVERSE);
+//        parallelEncoder.setDirection(Encoder.Direction.REVERSE);
     }
 
     public static double encoderTicksToInches(double ticks) {
