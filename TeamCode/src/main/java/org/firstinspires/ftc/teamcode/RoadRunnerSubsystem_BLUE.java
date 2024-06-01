@@ -115,9 +115,9 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     public static double VelDefault = 52;
 
     Dictionary<String, Pair<Double, Double>> RandomizationOffset_XY = new Hashtable<String, Pair<Double, Double>>() {{
-        put("Left", new Pair<>(0.0, 0.0));
+        put("Left", new Pair<>(-5.0, 2.0));
         put("Center", new Pair<>(0.0, 0.0));
-        put("Right", new Pair<>(1.0, -2.0));
+        put("Right", new Pair<>(-3.0, 0.0));
         put("Final", new Pair<>(0.0,0.0));
     }};
 
@@ -192,7 +192,7 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     /*------------------------Spikes------------------------*/
 
     protected Pose2d leftPixel_SHORT = robotPoseLimitCalculation(new Pose2d(
-            Tile, 1.5 * Tile, Math.toRadians(270)///////
+            Tile, 1.8 * Tile + 3, Math.toRadians(270)///////
     ), RoadRunnerSubsystem_BLUE.RobotSides.CENTER);
 
     protected Pose2d centerPixel_SHORT = robotPoseLimitCalculation(new Pose2d(
@@ -218,11 +218,11 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     /*------------------------Randomized Backdrop------------------------*/
 
     protected Pose2d randomizationBackdropLeft = robotPoseLimitCalculation(new Pose2d(
-            2.5 * Tile, 1.75 * Tile, Math.toRadians(180)///////
+            2.5 * Tile - 1, 1.75 * Tile, Math.toRadians(180)///////
     ), RoadRunnerSubsystem_BLUE.RobotSides.REAR);
 
     protected Pose2d randomizationBackdropCenter = robotPoseLimitCalculation(new Pose2d(
-            2.5 * Tile, 1.5 * Tile, Math.toRadians(180)///////
+            2.5 * Tile - 3, 1.5 * Tile, Math.toRadians(180)///////
     ), RoadRunnerSubsystem_BLUE.RobotSides.REAR);
 
     protected Pose2d randomizationBackdropRight =  robotPoseLimitCalculation(new Pose2d(
@@ -232,7 +232,7 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     /*------------------------Backdrops------------------------*/
 
     protected Pose2d backdropLeft = robotPoseLimitCalculation(new Pose2d(
-            2.6 * Tile ,1.75 * Tile, Math.toRadians(180)///////
+            2.6 * Tile + 1 ,1.75 * Tile, Math.toRadians(180)///////
     ), RoadRunnerSubsystem_BLUE.RobotSides.REAR);
 
     protected Pose2d backdropCenter = robotPoseLimitCalculation(new Pose2d(
@@ -366,7 +366,7 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
 
         spike_randomizedBackdrop = drive.trajectorySequenceBuilder(pixel_cycle_PoseTransfer)
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(offsetPoseShifter(randomizedBackdrop, RandomizationOffset_XY.get("Final"), Offsets.X), Math.toRadians(0));
+                .splineToLinearHeading(randomizedBackdrop, Math.toRadians(0));
 
         /*----------------------------------------------------------------------------------------*/
 
