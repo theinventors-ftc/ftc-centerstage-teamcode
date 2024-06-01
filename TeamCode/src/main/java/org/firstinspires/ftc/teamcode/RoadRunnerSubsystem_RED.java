@@ -277,7 +277,7 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
             2 * Tile, 1.5 * TileInverted, Math.toRadians(180));///////
 
     protected Pose2d parkingOuter = new Pose2d(
-            2.5 * Tile, 2.65 * TileInverted, Math.toRadians(180));///////
+            2.5 * Tile, 2.5 * TileInverted, Math.toRadians(180));///////
 
     /*------------------------Mid Points------------------------*/
 
@@ -358,35 +358,20 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
 
         spike_randomizedBackdrop = drive.trajectorySequenceBuilder(pixel_cycle_PoseTransfer)
                 .setTangent(Math.toRadians(315))
-                .splineToLinearHeading(offsetPoseShifter(randomizedBackdrop, new Pair<>(0.0, 0.0),  Offsets.BOTH), Math.toRadians(0)
-//                        ,SampleMecanumDrive.getVelocityConstraint(LOW_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-//                        SampleMecanumDrive.getAccelerationConstraint(LOW_ACCEL_SPEED)
-                );
+                .splineToLinearHeading(offsetPoseShifter(randomizedBackdrop, new Pair<>(0.0, 0.0),  Offsets.BOTH), Math.toRadians(0));
 
         /*----------------------------------------------------------------------------------------*/
 
         backdrop_station_first_cycle = drive.trajectorySequenceBuilder(randomizedBackdrop)
                 .setTangent(Math.toRadians(180))
-                .splineToConstantHeading(stationClose, Math.toRadians(180)
-//                        SampleMecanumDrive.getVelocityConstraint(LOW_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-//                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-                )
-                .lineTo(stationFar
-//                        ,SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-//                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
-                )
+                .splineToConstantHeading(stationClose, Math.toRadians(180))
+                .lineTo(stationFar)
                 .splineToConstantHeading(offsetPoseShifter(stackStation.vec(), RandomizationOffset_XY.get("Final"), Offsets.BOTH), Math.toRadians(stackStationTanget[stackStationTangetValue])); //tan pair 180/225
 
         backdrop_station_second_cycle = drive.trajectorySequenceBuilder(backdrop_Unload)
                 .setTangent(Math.toRadians(180))
-                .splineToConstantHeading(stationClose, Math.toRadians(180)
-//                        SampleMecanumDrive.getVelocityConstraint(LOW_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-//                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-                )
-                .lineTo(stationFar
-//                        ,SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-//                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
-                )
+                .splineToConstantHeading(stationClose, Math.toRadians(180))
+                .lineTo(stationFar)
                 .splineToConstantHeading(offsetPoseShifter(stackStationSecondCycle.vec(), RandomizationOffset_XY.get("Final"), Offsets.BOTH), Math.toRadians(stackStationTanget[stackStationTangetValue])); //tan pair 180/225
 
 
@@ -394,10 +379,7 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
                 .setReversed(true)
                 .setTangent(Math.toRadians(0))
                 .splineToConstantHeading(stationFar, Math.toRadians(0))
-                .lineTo(stationClose
-//                        ,SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-//                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
-                )
+                .lineTo(stationClose)
                 .splineToConstantHeading(backdrop_Unload.vec(), Math.toRadians(0)
                         ,SampleMecanumDrive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH)
                         ,SampleMecanumDrive.getAccelerationConstraint(AccDefault)
@@ -407,10 +389,7 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
                 .setReversed(true)
                 .setTangent(Math.toRadians(0))
                 .splineToConstantHeading(stationFar, Math.toRadians(0))
-                .lineTo(stationClose
-//                        ,SampleMecanumDrive.getVelocityConstraint(HIGH_VEL_SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-//                        SampleMecanumDrive.getAccelerationConstraint(HIGH_ACCEL_SPEED)
-                )
+                .lineTo(stationClose)
                 .splineToConstantHeading(backdrop_Unload.vec(), Math.toRadians(0)
                         ,SampleMecanumDrive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH)
                         ,SampleMecanumDrive.getAccelerationConstraint(AccDefault)
