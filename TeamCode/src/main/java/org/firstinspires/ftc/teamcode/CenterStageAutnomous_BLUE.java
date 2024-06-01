@@ -134,7 +134,7 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
                 RoadRunnerSubsystem_BLUE.Path.INNER, RoadRunnerSubsystem_BLUE.PixelStack.INNER,
                 RoadRunnerSubsystem_BLUE.ParkingPosition.INNER, telemetry);
 
-        rand = RoadRunnerSubsystem_BLUE.Randomization.CENTER;
+        rand = RoadRunnerSubsystem_BLUE.Randomization.LEFT;
         dashboard = FtcDashboard.getInstance();
 
         pipeline = new Pipeline(telemetry, Pipeline.Alliance.BLUE, 30, 6);
