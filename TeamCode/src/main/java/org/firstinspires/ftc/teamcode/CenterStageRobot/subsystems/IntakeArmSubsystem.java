@@ -12,7 +12,7 @@ public class IntakeArmSubsystem extends SubsystemBase {
     private double MIN = 0.1,MID = 0.1, MAX = 0.35;
 
     private double PIXEL_LOCK_POS = 0.05;
-    private double[] AUTO = {0.1, 0.16, 0.22, 0.26, 0.30, MAX};
+    private double[] AUTO = {0.1, 0.16, 0.22, 0.27, 0.32, MAX};
     private final ServoImplEx rightArm;
 
     public IntakeArmSubsystem(HardwareMap hm) {

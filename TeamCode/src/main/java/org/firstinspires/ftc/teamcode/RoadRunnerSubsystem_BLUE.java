@@ -200,7 +200,7 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     ), RoadRunnerSubsystem_BLUE.RobotSides.FRONT);
 
     protected Pose2d rightPixel_SHORT = robotPoseLimitCalculation(new Pose2d(
-            0, Tile, Math.toRadians(180)///////
+            0, Tile + 4, Math.toRadians(180)/////// PEOS
     ), RoadRunnerSubsystem_BLUE.RobotSides.FRONT);
 
     protected Pose2d leftPixel_LONG = robotPoseLimitCalculation(new Pose2d(
@@ -240,13 +240,13 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     ), RoadRunnerSubsystem_BLUE.RobotSides.REAR);
 
     protected Pose2d backdropRight = robotPoseLimitCalculation(new Pose2d(
-            2.6 * Tile , 1.35 * Tile, Math.toRadians(180)///////
+            2.6 * Tile , 1.40 * Tile, Math.toRadians(180)/////// PEOS
     ), RoadRunnerSubsystem_BLUE.RobotSides.REAR);
 
     /*------------------------Stacks Second Cycle------------------------*/
 
     protected Pose2d stationInnerSecondCycle = robotPoseLimitCalculation(new Pose2d(
-            2.95 * TileInverted,Tile/2, Math.toRadians(180)///////
+            2.9 * TileInverted,Tile/2, Math.toRadians(180)///////
     ), RoadRunnerSubsystem_BLUE.RobotSides.FRONT);
 
     protected Pose2d stationMiddleSecondCycle = robotPoseLimitCalculation(new Pose2d(
@@ -387,7 +387,7 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
                 .setTangent(Math.toRadians(0))
                 .splineToConstantHeading(stationFar, Math.toRadians(0))
                 .lineTo(stationClose)
-                .splineToConstantHeading(backdrop_Unload.vec(), Math.toRadians(0)
+                .splineToConstantHeading(offsetPoseShifter(backdrop_Unload.vec(), RandomizationOffset_XY.get("Final"), Offsets.Y), Math.toRadians(0)
                         ,SampleMecanumDrive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH)
                         ,SampleMecanumDrive.getAccelerationConstraint(AccDefault)
                 );
