@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.ElevatorCommand;
+import org.firstinspires.ftc.teamcode.CenterStageRobot.pipelines.Pipeline;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.ElevatorSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeArmSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeSubsystem;
@@ -37,7 +38,7 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
     private FtcDashboard dashboard;
     private Camera camera;
 
-    private TeamPropDetectionPipeline pipeline;
+    private Pipeline pipeline;
 
     private Pose2d HomePose_SHORT = new Pose2d(RoadRunnerSubsystem_BLUE.Tile/2, 3 * RoadRunnerSubsystem_BLUE.Tile - 6.93, Math.toRadians(270));
     private Pose2d HomePose_LONG = new Pose2d(1.5 * RoadRunnerSubsystem_BLUE.TileInverted, 3 * RoadRunnerSubsystem_BLUE.TileInverted + (RoadRunnerSubsystem_BLUE.RobotY/2), Math.toRadians(90));
@@ -88,6 +89,7 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
 
     public SequentialCommandGroup resetElevator() {
         return new SequentialCommandGroup(
+                new WaitCommand(400),
                 new InstantCommand(outtakeSusystem::go_intake_second),
                 new WaitCommand(80),
                 new InstantCommand(outtakeSusystem::go_intake_first),
@@ -132,8 +134,10 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
                 RoadRunnerSubsystem_BLUE.Path.INNER, RoadRunnerSubsystem_BLUE.PixelStack.INNER,
                 RoadRunnerSubsystem_BLUE.ParkingPosition.INNER, telemetry);
 
-        rand = RoadRunnerSubsystem_BLUE.Randomization.RIGHT;
+        rand = RoadRunnerSubsystem_BLUE.Randomization.CENTER;
         dashboard = FtcDashboard.getInstance();
+
+        pipeline = new Pipeline(telemetry, Pipeline.Alliance.BLUE, 30, 6);
         camera = new Camera(hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.BLUE);
     }
 
@@ -142,15 +146,15 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
         initialize();
         waitForStart();
 
-        if (camera.getTeamPropPos() == 0){
-            rand = RoadRunnerSubsystem_BLUE.Randomization.LEFT;
-        }
-        else if (camera.getTeamPropPos() == 1){
-            rand = RoadRunnerSubsystem_BLUE.Randomization.CENTER;
-        }
-        else if (camera.getTeamPropPos() == 2){
-            rand = RoadRunnerSubsystem_BLUE.Randomization.RIGHT;
-        }
+//        if (camera.getTeamPropPos() == 0){
+//            rand = RoadRunnerSubsystem_BLUE.Randomization.LEFT;
+//        }
+//        else if (camera.getTeamPropPos() == 1){
+//            rand = RoadRunnerSubsystem_BLUE.Randomization.CENTER;
+//        }
+//        else if (camera.getTeamPropPos() == 2){
+//            rand = RoadRunnerSubsystem_BLUE.Randomization.RIGHT;
+//        }
 
         RR_Blue.spikeRandomizationPath(rand);
         RR_Blue.cycle();

@@ -37,8 +37,6 @@ public class CenterStageAutnomous_RED extends CommandOpMode {
     private FtcDashboard dashboard;
     private Camera camera;
 
-    private TeamPropDetectionPipeline pipeline;
-
     private Pose2d HomePose_SHORT = new Pose2d(RoadRunnerSubsystem_RED.Tile/2, 3 * RoadRunnerSubsystem_RED.TileInverted + 6.93, Math.toRadians(90));
     private Pose2d HomePose_LONG = new Pose2d(1.5 * RoadRunnerSubsystem_RED.TileInverted, 3 * RoadRunnerSubsystem_RED.TileInverted + (RoadRunnerSubsystem_RED.RobotY/2), Math.toRadians(90));
 
