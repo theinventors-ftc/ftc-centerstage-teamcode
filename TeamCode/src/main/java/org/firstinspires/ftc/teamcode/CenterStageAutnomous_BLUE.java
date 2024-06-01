@@ -155,7 +155,7 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
         RR_Blue.spikeRandomizationPath(rand);
         RR_Blue.cycle();
         RR_Blue.parking();
-        RR_Blue.TrajectoryInit();
+        RR_Blue.TrajectoryInit(rand);
 
         // SPIKE
         new InstantCommand(intakeArmSubsystem::lockPixel, intakeArmSubsystem).schedule();

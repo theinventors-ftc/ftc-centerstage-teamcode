@@ -154,7 +154,7 @@ public class CenterStageAutnomous_BLUE_LONG extends CommandOpMode {
         RR_Blue.spikeRandomizationPath(rand);
         RR_Blue.cycle();
         RR_Blue.parking();
-        RR_Blue.TrajectoryInit();
+        RR_Blue.TrajectoryInit(rand);
     }
 
     @Override
