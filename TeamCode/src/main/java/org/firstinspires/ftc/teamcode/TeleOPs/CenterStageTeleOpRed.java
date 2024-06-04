@@ -110,7 +110,7 @@ public class CenterStageTeleOpRed extends CommandOpMode {
         pose = PoseStorage.currentPose;
 
         robot = new CenterStageRobot(hardwareMap, RobotConstants, telemetry, driverOp, toolOp,
-                RobotEx.OpModeType.TELEOP,  RobotEx.Alliance.RED, "peos_imu",
+                RobotEx.OpModeType.TELEOP,  RobotEx.Alliance.RED, "external_imu",
                 false, true, pose);
     }
 
