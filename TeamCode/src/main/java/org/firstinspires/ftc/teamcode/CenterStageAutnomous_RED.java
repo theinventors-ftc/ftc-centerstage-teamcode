@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.OuttakeSusyste
 import org.firstinspires.ftc.teamcode.roadRunner.drive.SampleMecanumDrive;
 import org.inventors.ftc.opencvpipelines.TeamPropDetectionPipeline;
 import org.inventors.ftc.robotbase.hardware.Camera;
+import org.opencv.core.Rect;
 
 @Autonomous(name = "CenterStageAutonomous_RED", group = "Final Autonomous")
 public class CenterStageAutnomous_RED extends CommandOpMode {
@@ -36,6 +37,10 @@ public class CenterStageAutnomous_RED extends CommandOpMode {
 
     private FtcDashboard dashboard;
     private Camera camera;
+    private final double colorThresh = 40;
+    private final Rect leftRect = new Rect(40, 420, 400, 290);
+    private final Rect centerRect = new Rect(520, 350, 320, 319);
+    private final Rect rightRect = new Rect(900, 310, 300, 400);
 
     private Pose2d HomePose_SHORT = new Pose2d(RoadRunnerSubsystem_RED.Tile/2, 3 * RoadRunnerSubsystem_RED.TileInverted + 6.93, Math.toRadians(90));
     private Pose2d HomePose_LONG = new Pose2d(1.5 * RoadRunnerSubsystem_RED.TileInverted, 3 * RoadRunnerSubsystem_RED.TileInverted + (RoadRunnerSubsystem_RED.RobotY/2), Math.toRadians(90));
@@ -133,7 +138,8 @@ public class CenterStageAutnomous_RED extends CommandOpMode {
 
         rand = RoadRunnerSubsystem_RED.Randomization.RIGHT;
         dashboard = FtcDashboard.getInstance();
-        camera = new Camera(hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.RED);
+        camera = new Camera(hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.RED,
+                colorThresh, leftRect, centerRect, rightRect);
     }
 
     @Override
