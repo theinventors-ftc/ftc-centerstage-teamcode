@@ -37,10 +37,10 @@ public class CenterStageAutnomous_RED extends CommandOpMode {
 
     private FtcDashboard dashboard;
     private Camera camera;
-    private final double colorThresh = 40;
-    private final Rect leftRect = new Rect(40, 420, 400, 290);
-    private final Rect centerRect = new Rect(520, 350, 320, 319);
-    private final Rect rightRect = new Rect(900, 310, 300, 400);
+    private final double colorThresh = 50;
+    private final Rect leftRect = new Rect(90, 470, 300, 240);
+    private final Rect centerRect = new Rect(600, 450, 150, 160);
+    private final Rect rightRect = new Rect(950, 450, 300, 260);
 
     private Pose2d HomePose_SHORT = new Pose2d(RoadRunnerSubsystem_RED.Tile/2, 3 * RoadRunnerSubsystem_RED.TileInverted + 6.93, Math.toRadians(90));
     private Pose2d HomePose_LONG = new Pose2d(1.5 * RoadRunnerSubsystem_RED.TileInverted, 3 * RoadRunnerSubsystem_RED.TileInverted + (RoadRunnerSubsystem_RED.RobotY/2), Math.toRadians(90));
