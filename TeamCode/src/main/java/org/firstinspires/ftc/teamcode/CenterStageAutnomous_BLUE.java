@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.OuttakeSusyste
 import org.firstinspires.ftc.teamcode.roadRunner.drive.SampleMecanumDrive;
 import org.inventors.ftc.opencvpipelines.TeamPropDetectionPipeline;
 import org.inventors.ftc.robotbase.hardware.Camera;
+import org.opencv.core.Rect;
 
 @Autonomous(name = "CenterStageAutonomous_BLUE", group = "Final Autonomous")
 public class CenterStageAutnomous_BLUE extends CommandOpMode {
@@ -36,8 +37,10 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
 
     private FtcDashboard dashboard;
     private Camera camera;
-
-    private TeamPropDetectionPipeline pipeline;
+    private final double colorThresh = 30;
+    private final Rect leftRect = new Rect(90, 470, 300, 240);
+    private final Rect centerRect = new Rect(600, 450, 150, 160);
+    private final Rect rightRect = new Rect(950, 450, 300, 260);
 
     private Pose2d HomePose_SHORT = new Pose2d(RoadRunnerSubsystem_BLUE.Tile/2, 3 * RoadRunnerSubsystem_BLUE.Tile - 6.93, Math.toRadians(270));
     private Pose2d HomePose_LONG = new Pose2d(1.5 * RoadRunnerSubsystem_BLUE.TileInverted, 3 * RoadRunnerSubsystem_BLUE.TileInverted + (RoadRunnerSubsystem_BLUE.RobotY/2), Math.toRadians(90));
@@ -88,6 +91,7 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
 
     public SequentialCommandGroup resetElevator() {
         return new SequentialCommandGroup(
+                new WaitCommand(400),
                 new InstantCommand(outtakeSusystem::go_intake_second),
                 new WaitCommand(80),
                 new InstantCommand(outtakeSusystem::go_intake_first),
@@ -132,9 +136,11 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
                 RoadRunnerSubsystem_BLUE.Path.INNER, RoadRunnerSubsystem_BLUE.PixelStack.INNER,
                 RoadRunnerSubsystem_BLUE.ParkingPosition.INNER, telemetry);
 
-        rand = RoadRunnerSubsystem_BLUE.Randomization.RIGHT;
+        rand = RoadRunnerSubsystem_BLUE.Randomization.LEFT;
         dashboard = FtcDashboard.getInstance();
-        camera = new Camera(hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.BLUE);
+
+        camera = new Camera(hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.RED,
+                colorThresh, leftRect, centerRect, rightRect);
     }
 
     @Override
@@ -155,7 +161,7 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
         RR_Blue.spikeRandomizationPath(rand);
         RR_Blue.cycle();
         RR_Blue.parking();
-        RR_Blue.TrajectoryInit();
+        RR_Blue.TrajectoryInit(rand);
 
         // SPIKE
         new InstantCommand(intakeArmSubsystem::lockPixel, intakeArmSubsystem).schedule();
