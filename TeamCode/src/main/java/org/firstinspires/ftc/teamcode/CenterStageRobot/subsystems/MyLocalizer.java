@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.roadRunner.drive;
+package org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems;
 
 import androidx.annotation.NonNull;
 
@@ -34,7 +34,7 @@ import java.util.function.DoubleSupplier;
  *    \--------------/
  *
  */
-public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
+public class MyLocalizer extends TwoTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 8192;
     public static double WHEEL_RADIUS = 0.688976378; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
@@ -53,16 +53,17 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
     // Perpendicular is perpendicular to the forward axis
     private Encoder parallelEncoder, perpendicularEncoder;
 
-    private SampleMecanumDrive drive;
+    private DoubleSupplier headingSupplier, headingVelocitySupplier;
 
-    public TwoWheelTrackingLocalizer(HardwareMap hardwareMap, DoubleSupplier headingSupplier,
-                                     DoubleSupplier headingVelocitySupplier) {
+    public MyLocalizer(HardwareMap hardwareMap, DoubleSupplier headingSupplier,
+                       DoubleSupplier headingVelocitySupplier){
         super(Arrays.asList(
                 new Pose2d(PARALLEL_X, PARALLEL_Y, 0),
                 new Pose2d(PERPENDICULAR_X, PERPENDICULAR_Y, Math.toRadians(90))
         ));
 
-        this.drive = drive;
+        this.headingSupplier = headingSupplier;
+        this.headingVelocitySupplier = headingVelocitySupplier;
 
         parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "frontLeft")); // right one port 0
         perpendicularEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rearRight")); // perp port 3
@@ -77,12 +78,12 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
 
     @Override
     public double getHeading() {
-        return drive.getRawExternalHeading();
+        return headingSupplier.getAsDouble();
     }
 
     @Override
     public Double getHeadingVelocity() {
-        return drive.getExternalHeadingVelocity();
+        return headingVelocitySupplier.getAsDouble();
     }
 
     @NonNull

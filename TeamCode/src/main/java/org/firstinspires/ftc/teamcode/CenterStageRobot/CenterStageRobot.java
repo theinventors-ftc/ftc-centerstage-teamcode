@@ -36,7 +36,7 @@ public class CenterStageRobot extends RobotEx {
 
     private DroneSubsystem droneSubsystem;
     private PixelColorDetectorSubsystem pixelColorDetectorSubsystem;
-//    private LEDSubsystem ledSubsystem;
+    private LEDSubsystem ledSubsystem;
     private LocalizerSubsystem localizerSubsystem;
 
     private Pose2d initPose;
@@ -62,8 +62,9 @@ public class CenterStageRobot extends RobotEx {
         elevatorSubsystem = new ElevatorSubsystem(hardwareMap, telemetry, () -> toolOp.getLeftY(), outtakeSusystem);
         droneSubsystem = new DroneSubsystem(hardwareMap);
         pixelColorDetectorSubsystem = new PixelColorDetectorSubsystem(hardwareMap, telemetry);
-//        ledSubsystem = new LEDSubsystem(hardwareMap, pixelColorDetectorSubsystem, telemetry);
-//        localizerSubsystem = new LocalizerSubsystem(hardwareMap, initPose);
+        ledSubsystem = new LEDSubsystem(hardwareMap, pixelColorDetectorSubsystem, telemetry);
+        localizerSubsystem = new LocalizerSubsystem(hardwareMap, telemetry, initPose,
+                this::getHeading, this::getHeadingVelocity);
 
         // ----------------------------------- Manual Actions ----------------------------------- //
         toolOp.getGamepadButton(GamepadKeys.Button.B) // Outtake Toggle
