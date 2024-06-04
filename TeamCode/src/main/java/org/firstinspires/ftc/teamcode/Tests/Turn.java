@@ -33,7 +33,7 @@ public class Turn extends LinearOpMode {
     public void runOpMode() {
         drive = new SampleMecanumDrive(hardwareMap);
         turnTraj = drive.trajectorySequenceBuilder(new Pose2d())
-                .turn(Math.toRadians(50));
+                .turn(Math.toRadians(160));
 
         waitForStart();
 

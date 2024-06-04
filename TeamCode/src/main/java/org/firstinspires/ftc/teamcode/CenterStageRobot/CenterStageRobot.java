@@ -41,16 +41,11 @@ public class CenterStageRobot extends RobotEx {
 
     private Pose2d initPose;
 
-    public CenterStageRobot(HardwareMap hm, DriveConstants RobotConstants, Telemetry telemetry, GamepadExEx driverOp,
-                            GamepadExEx toolOp) {
-        super(hm, RobotConstants, telemetry, driverOp, toolOp, OpModeType.TELEOP, "external_imu", false, false, new Pose2d(0, 0, 0));
-        this.initPose = new Pose2d(0, 0, 0);
-    }
-
-    public CenterStageRobot(HardwareMap hm, DriveConstants RobotConstants, Telemetry telemetry, GamepadExEx driverOp,
-                            GamepadExEx toolOp, OpModeType opModeType, String imuName, boolean camera, boolean distance_sensor,
+    public CenterStageRobot(HardwareMap hm, DriveConstants RobotConstants, Telemetry telemetry,
+                            GamepadExEx driverOp, GamepadExEx toolOp, OpModeType opModeType,
+                            Alliance alliance, String imuName, boolean camera, boolean distance_sensor,
                             Pose2d startingPose) {
-        super(hm, RobotConstants, telemetry, driverOp, toolOp, opModeType, imuName, camera, distance_sensor, startingPose);
+        super(hm, RobotConstants, telemetry, driverOp, toolOp, opModeType, alliance, imuName, camera, distance_sensor, startingPose);
         this.initPose = startingPose;
     }
 
