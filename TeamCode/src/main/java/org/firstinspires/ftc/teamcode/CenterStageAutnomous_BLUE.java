@@ -149,15 +149,15 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
         initialize();
         waitForStart();
 
-//        if (camera.getTeamPropPos() == 0){
-//            rand = RoadRunnerSubsystem_BLUE.Randomization.LEFT;
-//        }
-//        else if (camera.getTeamPropPos() == 1){
-//            rand = RoadRunnerSubsystem_BLUE.Randomization.CENTER;
-//        }
-//        else if (camera.getTeamPropPos() == 2){
-//            rand = RoadRunnerSubsystem_BLUE.Randomization.RIGHT;
-//        }
+        if (camera.getTeamPropPos() == 0){
+            rand = RoadRunnerSubsystem_BLUE.Randomization.LEFT;
+        }
+        else if (camera.getTeamPropPos() == 1){
+            rand = RoadRunnerSubsystem_BLUE.Randomization.CENTER;
+        }
+        else if (camera.getTeamPropPos() == 2){
+            rand = RoadRunnerSubsystem_BLUE.Randomization.RIGHT;
+        }
 
         RR_Blue.spikeRandomizationPath(rand);
         RR_Blue.cycle();
@@ -188,85 +188,47 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
         while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
             run();
         }
-        // STACK FIRST 2
-        temp = new SequentialCommandGroup(
-                new WaitCommand(600),
-                resetElevator()
-        );
-        temp.schedule();
-        RR_Blue.runBackdrop_Station_First_Cycle();
-        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
-            run();
-            drive.update();
+        // STACK
+        for (int i = 0; !isStopRequested() && opModeIsActive() && i < 2; ++i ) {
+
+            temp = new SequentialCommandGroup(
+                    new WaitCommand(600),
+                    resetElevator()
+            );
+            temp.schedule();
+            RR_Blue.runBackdrop_Station(i);
+            while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
+                run();
+                drive.update();
+            }
+            drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
+
+            temp = stackStationIntake(i == 0 ? 5 : 3);
+            temp.schedule();
+            while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
+                run();
+            }
+
+            temp = new SequentialCommandGroup(
+                    new WaitCommand(2400),
+                    elevator_first()
+            );
+
+            temp.schedule();
+
+            RR_Blue.runStation_Backdrop(i);
+            while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
+                run();
+                drive.update();
+            }
+            drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
+
+            temp = scoring();
+            temp.schedule();
+            while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
+                run();
+            }
         }
-        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
-
-        temp = stackStationIntake(5);
-        temp.schedule();
-        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
-            run();
-        }
-
-        temp = new SequentialCommandGroup(
-                new WaitCommand(2400),
-                elevator_first()
-        );
-
-        temp.schedule();
-
-        RR_Blue.runStation_Backdrop_First_Cycle();
-        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
-            run();
-            drive.update();
-        }
-        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
-
-        temp = scoring();
-        temp.schedule();
-        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
-            run();
-        }
-
-        // STACK Second 2
-        temp = new SequentialCommandGroup(
-                new WaitCommand(600),
-                resetElevator()
-        );
-        temp.schedule();
-
-        RR_Blue.runBackdrop_Station_Second_Cycle();
-        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
-            run();
-            drive.update();
-        }
-        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
-
-        temp = stackStationIntake(3);
-        temp.schedule();
-        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
-            run();
-        }
-
-        temp = new SequentialCommandGroup(
-                new WaitCommand(2400),
-                elevator_second()
-        );
-
-        temp.schedule();
-
-        RR_Blue.runStation_Backdrop_Second_Cycle();
-        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
-            run();
-            drive.update();
-        }
-        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
-
-        temp = scoring();
-        temp.schedule();
-        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
-            run();
-        }
-
 
         temp = resetElevator();
         temp.schedule();
