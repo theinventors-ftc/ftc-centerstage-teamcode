@@ -154,8 +154,8 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     }};
 
     Dictionary<String, Pair<Double, Double>> CENTER_RandomizationOffset = new Hashtable<String, Pair<Double, Double>>() {{
-        put("Stacks_Inner_FirstCycle", new Pair<>(0.0, 0.0));
-        put("Stacks_Inner_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Inner_FirstCycle", new Pair<>(-2.0, 0.0));
+        put("Stacks_Inner_SecondCycle", new Pair<>(-2.5, 2.0));
         put("Stacks_Mid_FirstCycle", new Pair<>(0.0, 0.0));
         put("Stacks_Mid_SecondCycle", new Pair<>(0.0, 0.0));
         put("Stacks_Outer_FirstCycle", new Pair<>(0.0, 0.0));
@@ -171,7 +171,7 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
         put("Corridor_Far_Outer_FirstCycle", new Pair<>(0.0, 0.0));
         put("Corridor_Far_Outer_SecondCycle", new Pair<>(0.0, 0.0));
 
-        put("Backdrop_Left_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Left_FirstCycle", new Pair<>(0.0, 3.0));
         put("Backdrop_Left_SecondCycle", new Pair<>(0.0, 0.0));
         put("Backdrop_Center_FirstCycle", new Pair<>(0.0, 0.0));
         put("Backdrop_Center_SecondCycle", new Pair<>(0.0, 0.0));
@@ -180,8 +180,8 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     }};
 
     Dictionary<String, Pair<Double, Double>> RIGHT_RandomizationOffset = new Hashtable<String, Pair<Double, Double>>() {{
-        put("Stacks_Inner_FirstCycle", new Pair<>(0.0, 0.0));
-        put("Stacks_Inner_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Inner_FirstCycle", new Pair<>(-1.5, 0.0));
+        put("Stacks_Inner_SecondCycle", new Pair<>(-1.5, 2.0));
         put("Stacks_Mid_FirstCycle", new Pair<>(0.0, 0.0));
         put("Stacks_Mid_SecondCycle", new Pair<>(0.0, 0.0));
         put("Stacks_Outer_FirstCycle", new Pair<>(0.0, 0.0));
@@ -201,8 +201,8 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
         put("Backdrop_Left_SecondCycle", new Pair<>(0.0, 0.0));
         put("Backdrop_Center_FirstCycle", new Pair<>(0.0, 0.0));
         put("Backdrop_Center_SecondCycle", new Pair<>(0.0, 0.0));
-        put("Backdrop_Right_FirstCycle", new Pair<>(0.0, 0.0));
-        put("Backdrop_Right_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Right_FirstCycle", new Pair<>(2.0, 0.0));
+        put("Backdrop_Right_SecondCycle", new Pair<>(2.0, 0.0));
     }};
 
     public Dictionary<Randomization, Dictionary<String, Pair<Double, Double>>> OFFSETS = new Hashtable<Randomization, Dictionary<String, Pair<Double, Double>>>() {{
@@ -280,7 +280,7 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     ), RoadRunnerSubsystem_BLUE.RobotSides.REAR);
 
     protected Pose2d randomizationBackdropRight =  robotPoseLimitCalculation(new Pose2d(
-            2.5 * Tile, 1.3 * Tile, Math.toRadians(180)///////
+            2.5 * Tile + 2, 1.3 * Tile, Math.toRadians(180)///////
     ), RoadRunnerSubsystem_BLUE.RobotSides.REAR);
 
     /*------------------------Backdrops------------------------*/

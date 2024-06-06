@@ -140,7 +140,7 @@ public class CenterStageAutnomous_BLUE extends CommandOpMode {
         rand = RoadRunnerSubsystem_BLUE.Randomization.LEFT;
         dashboard = FtcDashboard.getInstance();
 
-        camera = new Camera(hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.RED,
+        camera = new Camera(hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.BLUE,
                 colorThresh, leftRect, centerRect, rightRect);
     }
 
