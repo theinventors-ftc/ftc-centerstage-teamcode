@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import java.util.function.DoubleSupplier;
 
 public class LocalizerSubsystem extends SubsystemBase {
-    private TwoWheelTrackingLocalizer localizer;
+    private MyLocalizer localizer;
 
     private Telemetry telemetry;
 
     public LocalizerSubsystem(HardwareMap hm, Telemetry telemetry, Pose2d initPose,
                               DoubleSupplier headingSupplier, DoubleSupplier headingVelocitySupplier) {
         this.telemetry = telemetry;
-        localizer = new TwoWheelTrackingLocalizer(hm, headingSupplier, headingVelocitySupplier);
+        localizer = new MyLocalizer(hm, headingSupplier, headingVelocitySupplier);
         localizer.setPoseEstimate(initPose);
     }
 

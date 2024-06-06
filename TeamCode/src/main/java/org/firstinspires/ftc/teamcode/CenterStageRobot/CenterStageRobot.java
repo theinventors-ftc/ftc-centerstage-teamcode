@@ -39,14 +39,13 @@ public class CenterStageRobot extends RobotEx {
     private LEDSubsystem ledSubsystem;
     private LocalizerSubsystem localizerSubsystem;
 
-    private Pose2d initPose;
-
     public CenterStageRobot(HardwareMap hm, DriveConstants RobotConstants, Telemetry telemetry,
                             GamepadExEx driverOp, GamepadExEx toolOp, OpModeType opModeType,
                             Alliance alliance, String imuName, boolean camera, boolean distance_sensor,
                             Pose2d startingPose) {
         super(hm, RobotConstants, telemetry, driverOp, toolOp, opModeType, alliance, imuName, camera, distance_sensor, startingPose);
-        this.initPose = startingPose;
+        localizerSubsystem = new LocalizerSubsystem(hm, telemetry, startingPose,
+                this::getHeading, this::getHeadingVelocity);
     }
 
     @Override
@@ -63,8 +62,6 @@ public class CenterStageRobot extends RobotEx {
         droneSubsystem = new DroneSubsystem(hardwareMap);
         pixelColorDetectorSubsystem = new PixelColorDetectorSubsystem(hardwareMap, telemetry);
         ledSubsystem = new LEDSubsystem(hardwareMap, pixelColorDetectorSubsystem, telemetry);
-        localizerSubsystem = new LocalizerSubsystem(hardwareMap, telemetry, initPose,
-                this::getHeading, this::getHeadingVelocity);
 
         // ----------------------------------- Manual Actions ----------------------------------- //
         toolOp.getGamepadButton(GamepadKeys.Button.B) // Outtake Toggle

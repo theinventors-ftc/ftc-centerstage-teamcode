@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.roadRunner.util.Encoder;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.DoubleSupplier;
 
 /*
  * Sample tracking wheel localizer implementation assuming the standard configuration:
@@ -55,8 +54,7 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
 
     private SampleMecanumDrive drive;
 
-    public TwoWheelTrackingLocalizer(HardwareMap hardwareMap, DoubleSupplier headingSupplier,
-                                     DoubleSupplier headingVelocitySupplier) {
+    public TwoWheelTrackingLocalizer(HardwareMap hardwareMap, SampleMecanumDrive drive) {
         super(Arrays.asList(
                 new Pose2d(PARALLEL_X, PARALLEL_Y, 0),
                 new Pose2d(PERPENDICULAR_X, PERPENDICULAR_Y, Math.toRadians(90))
