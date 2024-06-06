@@ -22,12 +22,11 @@ import org.inventors.ftc.opencvpipelines.TeamPropDetectionPipeline;
 import org.inventors.ftc.robotbase.hardware.Camera;
 import org.opencv.core.Rect;
 
-@Autonomous(name = "CenterStageAutonomous_RED", group = "Final Autonomous")
-public class CenterStageAutnomous_RED extends CommandOpMode {
+@Autonomous(name = "RED_SHORT", group = "Final Autonomous")
+public class Autonomous_RED_Short extends CommandOpMode {
 
     private OuttakeSusystem outtakeSusystem;
     private ElevatorSubsystem elevatorSubsystem;
-    private ElevatorCommand elevatorCommand;
     private IntakeArmSubsystem intakeArmSubsystem;
     private IntakeSubsystem intakeSubsystem;
 
