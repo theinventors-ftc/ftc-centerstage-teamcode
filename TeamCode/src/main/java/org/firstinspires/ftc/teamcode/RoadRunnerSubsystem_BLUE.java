@@ -207,6 +207,7 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     }};
 
     Dictionary<String, Pair<Double, Double>> LEFT_RandomizationOffset_LONG = new Hashtable<String, Pair<Double, Double>>() {{
+        put("Stacks_Rand", new Pair<>(0.0, 0.0));
         put("Stacks_Inner_FirstCycle", new Pair<>(0.0, 0.0));
         put("Stacks_Inner_SecondCycle", new Pair<>(0.0, 0.0));
         put("Stacks_Mid_FirstCycle", new Pair<>(0.0, 0.0));
@@ -224,6 +225,7 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
         put("Corridor_Far_Outer_FirstCycle", new Pair<>(0.0, 0.0));
         put("Corridor_Far_Outer_SecondCycle", new Pair<>(0.0, 0.0));
 
+        put("Backdrop_Rand", new Pair<>(0.0, 0.0));
         put("Backdrop_Left_FirstCycle", new Pair<>(0.0, 0.0));
         put("Backdrop_Left_SecondCycle", new Pair<>(0.0, 0.0));
         put("Backdrop_Center_FirstCycle", new Pair<>(0.0, 0.0));
@@ -233,7 +235,8 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     }};
 
     Dictionary<String, Pair<Double, Double>> CENTER_RandomizationOffset_LONG = new Hashtable<String, Pair<Double, Double>>() {{
-        put("Stacks_Inner_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Rand", new Pair<>(-1.5, 0.0));
+        put("Stacks_Inner_FirstCycle", new Pair<>(-2.0, 0.0));
         put("Stacks_Inner_SecondCycle", new Pair<>(0.0, 0.0));
         put("Stacks_Mid_FirstCycle", new Pair<>(0.0, 0.0));
         put("Stacks_Mid_SecondCycle", new Pair<>(0.0, 0.0));
@@ -250,6 +253,7 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
         put("Corridor_Far_Outer_FirstCycle", new Pair<>(0.0, 0.0));
         put("Corridor_Far_Outer_SecondCycle", new Pair<>(0.0, 0.0));
 
+        put("Backdrop_Rand", new Pair<>(0.0, 0.0));
         put("Backdrop_Left_FirstCycle", new Pair<>(0.0, 0.0));
         put("Backdrop_Left_SecondCycle", new Pair<>(0.0, 0.0));
         put("Backdrop_Center_FirstCycle", new Pair<>(0.0, 0.0));
@@ -259,8 +263,9 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     }};
 
     Dictionary<String, Pair<Double, Double>> RIGHT_RandomizationOffset_LONG = new Hashtable<String, Pair<Double, Double>>() {{
-        put("Stacks_Inner_FirstCycle", new Pair<>(-1.0, 0.0));
-        put("Stacks_Inner_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Rand", new Pair<>(-1.0, 0.0));
+        put("Stacks_Inner_FirstCycle", new Pair<>(-1.0, 1.0));
+        put("Stacks_Inner_SecondCycle", new Pair<>(-1.0, 3.0));
         put("Stacks_Mid_FirstCycle", new Pair<>(0.0, 0.0));
         put("Stacks_Mid_SecondCycle", new Pair<>(0.0, 0.0));
         put("Stacks_Outer_FirstCycle", new Pair<>(0.0, 0.0));
@@ -276,12 +281,13 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
         put("Corridor_Far_Outer_FirstCycle", new Pair<>(0.0, 0.0));
         put("Corridor_Far_Outer_SecondCycle", new Pair<>(0.0, 0.0));
 
+        put("Backdrop_Rand", new Pair<>(1.0, 0.0));
         put("Backdrop_Left_FirstCycle", new Pair<>(0.0, 0.0));
         put("Backdrop_Left_SecondCycle", new Pair<>(0.0, 0.0));
         put("Backdrop_Center_FirstCycle", new Pair<>(0.0, 0.0));
         put("Backdrop_Center_SecondCycle", new Pair<>(0.0, 0.0));
-        put("Backdrop_Right_FirstCycle", new Pair<>(0.0, 0.0));
-        put("Backdrop_Right_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Right_FirstCycle", new Pair<>(2.0, 2.0));
+        put("Backdrop_Right_SecondCycle", new Pair<>(2.0, 5.0));
     }};
 
     public Dictionary<Randomization, Dictionary<String, Pair<Double, Double>>> OFFSETS_SHORT = new Hashtable<Randomization, Dictionary<String, Pair<Double, Double>>>() {{
@@ -308,16 +314,11 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     protected TrajectorySequenceBuilder leftSpike;
     protected TrajectorySequenceBuilder centerSpike;
     protected TrajectorySequenceBuilder rightSpike;
-
-    protected TrajectorySequenceBuilder leftSpike_LONG;
-    protected TrajectorySequenceBuilder centerSpike_LONG;
-    protected TrajectorySequenceBuilder rightSpike_LONG;
     protected TrajectorySequenceBuilder spike_randomizedBackdrop;
     protected TrajectorySequenceBuilder backdrop_station;
     protected TrajectorySequenceBuilder backdrop_station_2;
     protected TrajectorySequenceBuilder station_backdrop;
     protected TrajectorySequenceBuilder station_backdrop_2;
-    protected TrajectorySequenceBuilder spike_station_right;
     protected TrajectorySequenceBuilder spike_station;
     protected TrajectorySequenceBuilder station_long_randomizedBackdrop;
     protected TrajectorySequenceBuilder parking;
@@ -328,7 +329,7 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     protected Integer[] rightSpikeStartingTanget = {315, 225}; //For short 45 and long 135 difference
     protected Integer[] rightSpikeFinalTanget = {180, 0}; //For short 180 and long 0 difference
     protected Integer[] stackStationTanget = {180, 135, 225}; // 180 for Inner 225 for Mid and Outer FROM INNER// 135 for FROM OUTER
-    protected Integer[] parkingTanget = {190, 135}; // 135 for Inner 225 for Mid and Outer
+    protected Integer[] parkingTanget = {180, 135}; // 135 for Inner 225 for Mid and Outer
 
     protected Integer rightSpikeStartingTangetValue = 0;
     protected Integer rightSpikeFinalTangetValue = 0;
@@ -350,16 +351,16 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     ), RoadRunnerSubsystem_BLUE.RobotSides.FRONT);
 
     protected Pose2d leftPixel_LONG = robotPoseLimitCalculation(new Pose2d(
-            TileInverted - 3,1.5 * Tile, Math.toRadians(0)///////PEOS
+            TileInverted,1.5 * Tile, Math.toRadians(0)///////PEOS
     ), RobotSides.FRONT);
 
     protected Pose2d centerPixel_LONG = robotPoseLimitCalculation(new Pose2d(
-            1.5 * TileInverted, Tile, Math.toRadians(270)///////
+            1.9 * TileInverted, Tile, Math.toRadians(0)///////
     ), RoadRunnerSubsystem_BLUE.RobotSides.FRONT);
 
     protected Pose2d rightPixel_LONG = robotPoseLimitCalculation(new Pose2d(
-            2 * TileInverted, 1.5 * Tile, Math.toRadians(180)///////
-    ), RoadRunnerSubsystem_BLUE.RobotSides.FRONT);;
+            1.95 * TileInverted, 1.25 * Tile, Math.toRadians(180)///////
+    ), RoadRunnerSubsystem_BLUE.RobotSides.FRONT);
 
     /*------------------------Randomized Backdrop------------------------*/
 
@@ -372,7 +373,21 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     ), RoadRunnerSubsystem_BLUE.RobotSides.REAR);
 
     protected Pose2d randomizationBackdropRight =  robotPoseLimitCalculation(new Pose2d(
-            2.5 * Tile + 2, 1.3 * Tile, Math.toRadians(180)///////
+            2.5 * Tile, 1.25 * Tile, Math.toRadians(180)///////
+    ), RoadRunnerSubsystem_BLUE.RobotSides.REAR);
+
+    /*-----------------------------------------------*/
+
+    protected Pose2d randomizationBackdropLeftLong = robotPoseLimitCalculation(new Pose2d(
+            2.5 * Tile, 1.75 * Tile, Math.toRadians(180)///////
+    ), RoadRunnerSubsystem_BLUE.RobotSides.REAR);
+
+    protected Pose2d randomizationBackdropCenterLong = robotPoseLimitCalculation(new Pose2d(
+            2.5 * Tile, 1.5 * Tile, Math.toRadians(180)///////
+    ), RoadRunnerSubsystem_BLUE.RobotSides.REAR);
+
+    protected Pose2d randomizationBackdropRightLong =  robotPoseLimitCalculation(new Pose2d(
+            2.5 * Tile, 1.3 * Tile, Math.toRadians(180)///////
     ), RoadRunnerSubsystem_BLUE.RobotSides.REAR);
 
     /*------------------------Backdrops------------------------*/
@@ -474,7 +489,7 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
         /*------------------------------------------------------------------------*/
 
         centerSpike = drive.trajectorySequenceBuilder(HomePose)
-                .lineTo(centerPixelSpike.vec());
+                .splineToLinearHeading(centerPixelSpike, Math.toRadians(270));
 
         /*------------------------------------------------------------------------*/
 
@@ -482,31 +497,7 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
                 .setTangent(Math.toRadians(rightSpikeStartingTanget[rightSpikeStartingTangetValue])) //tan pair 45/135
                 .splineToLinearHeading(rightPixelSpike, Math.toRadians(rightSpikeFinalTanget[rightSpikeFinalTangetValue]));
 
-        /*-----------------------------------------------------*/
-
-        leftSpike_LONG = drive.trajectorySequenceBuilder(HomePose)
-                .lineToLinearHeading(new Pose2d(leftPixelSpike.vec(), Math.toRadians(0)))
-                .setTangent(Math.toRadians(60)) ///////////////////////////////////////////////////////
-                .splineToLinearHeading(stackStation, Math.toRadians(135));
-
         /*------------------------------------------------------------------------*/
-
-        centerSpike_LONG = drive.trajectorySequenceBuilder(HomePose)
-                .lineTo(centerPixelSpike.vec());
-
-
-        /*------------------------------------------------------------------------*/
-
-        rightSpike_LONG = drive.trajectorySequenceBuilder(HomePose)
-                .lineToLinearHeading(new Pose2d(rightPixelSpike.vec(), Math.toRadians(180)))
-                .setTangent(Math.toRadians(60)) ///////////////////////////////////////////////////////
-                .splineToConstantHeading(stationFar, Math.toRadians(180)
-                        ,SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH)
-                        ,SampleMecanumDrive.getAccelerationConstraint(AccDefault)
-                )
-                .splineToConstantHeading(offsetPoseShifter(stackStation.vec(), OFFSETS.get(startingPosition).get(rand).get("Stacks_Inner_FirstCycle")), Math.toRadians(stackStationTanget[stackStationTangetValue]));
-
-        /*----------------------------------------------------------------------------------------*/
 
         spike_randomizedBackdrop = drive.trajectorySequenceBuilder(pixel_cycle_PoseTransfer)
                 .setTangent(Math.toRadians(90))
@@ -550,15 +541,15 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
         /*----------------------------------------------------------------------------------------*/
 
         spike_station = drive.trajectorySequenceBuilder(pixel_cycle_PoseTransfer)
-                .setTangent(Math.toRadians(240))
-                .splineToLinearHeading(stackStation, Math.toRadians(180));
+                .setTangent(Math.toRadians(280))
+                .splineToLinearHeading(offsetPoseShifter(stackStation, OFFSETS.get(startingPosition).get(rand).get("Stacks_Rand")), Math.toRadians(180));
 
         station_long_randomizedBackdrop = drive.trajectorySequenceBuilder(stackStation)
                 .setReversed(true)
                 .setTangent(Math.toRadians(0))
                 .splineToConstantHeading(stationFar, Math.toRadians(0))
                 .lineTo(stationClose)
-                .splineToConstantHeading(randomizedBackdrop.vec(), Math.toRadians(0));
+                .splineToConstantHeading(offsetPoseShifter(randomizedBackdrop.vec(), OFFSETS.get(startingPosition).get(rand).get("Backdrop_Rand")), Math.toRadians(0));
 
         /*----------------------------------------------------------------------------------------*/
 

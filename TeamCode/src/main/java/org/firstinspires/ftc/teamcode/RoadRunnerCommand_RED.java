@@ -50,13 +50,13 @@ public class RoadRunnerCommand_RED extends RoadRunnerSubsystem_RED {
                 randomizedBackdrop = randomizationBackdropLeft;
                 rightPixelSpike = leftPixel_LONG;
                 pixel_cycle_PoseTransfer = leftPixel_LONG;
-                RandomizationOffset_XY.put("Final", RandomizationOffset_XY.get("Left"));
+
             }
             else if (randomization == Randomization.CENTER){
                 randomizedBackdrop = randomizationBackdropCenter;
                 centerPixelSpike = centerPixel_LONG;
                 pixel_cycle_PoseTransfer = centerPixel_LONG;
-                RandomizationOffset_XY.put("Final", RandomizationOffset_XY.get("Center"));
+
             }
             else if (randomization == Randomization.RIGHT){
                 randomizedBackdrop = randomizationBackdropRight;
@@ -64,7 +64,7 @@ public class RoadRunnerCommand_RED extends RoadRunnerSubsystem_RED {
                 pixel_cycle_PoseTransfer = rightPixel_LONG;
                 leftSpikeStartingTangetValue = 1;
                 leftSpikeFinalTangetValue = 1;
-                RandomizationOffset_XY.put("Final", RandomizationOffset_XY.get("Right"));
+
             }
         }
     }

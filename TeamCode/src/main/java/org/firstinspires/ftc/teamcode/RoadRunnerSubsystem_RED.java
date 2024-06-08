@@ -21,6 +21,42 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
     /*-------------------------------------------------------
     -Functions-
     -------------------------------------------------------*/
+    /*-------------------------------------------------------
+    -Enums-
+    -------------------------------------------------------*/
+    enum Randomization{
+        LEFT,
+        CENTER,
+        RIGHT
+    }
+
+    enum StartingPosition{
+        SHORT,
+        LONG
+    }
+
+    enum Path{
+        INNER,
+        OUTER
+    }
+
+    enum ParkingPosition{
+        INNER,
+        MID,
+        OUTER
+    }
+
+    enum PixelStack{
+        INNER,
+        MID,
+        OUTER
+    }
+
+    protected StartingPosition startingPosition;
+    protected Path path;
+    protected ParkingPosition parkingPosition;
+    protected PixelStack pixelStack;
+
     enum RobotSides{
         FRONT,
         REAR,
@@ -29,42 +65,18 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
         RIGHT,
     }
 
-    enum Offsets{
-        X,
-        Y,
-        BOTH
-    }
-
-    public Pose2d offsetPoseShifter(Pose2d pose, Pair<Double, Double> xy_offset, Offsets preference) {
+    public Pose2d offsetPoseShifter(Pose2d pose, Pair<Double, Double> xy_offset) {
         Double X = pose.getX() + xy_offset.first;
         Double Y = pose.getY() + xy_offset.second;
 
-        if (preference == Offsets.X){
-            Y = pose.getY();
-        }
-        else if(preference == Offsets.Y){
-            X = pose.getX();
-        }
-
-        Pose2d finalPose2d = new Pose2d(X,Y,pose.getHeading());
-
-        return finalPose2d;
+        return new Pose2d(X,Y,pose.getHeading());
     }
 
-    public Vector2d offsetPoseShifter(Vector2d pose, Pair<Double, Double> xy_offset, Offsets preference) {
+    public Vector2d offsetPoseShifter(Vector2d pose, Pair<Double, Double> xy_offset) {
         Double X = pose.getX() + xy_offset.first;
         Double Y = pose.getY() + xy_offset.second;
 
-        if (preference == Offsets.X){
-            Y = pose.getY();
-        }
-        else if(preference == Offsets.Y){
-            X = pose.getX();
-        }
-
-        Vector2d finalVector2d = new Vector2d(X,Y);
-
-        return finalVector2d;
+        return new Vector2d(X,Y);
     }
 
     public Pose2d robotPoseLimitCalculation(Pose2d pose, RobotSides side){
@@ -113,11 +125,183 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
     public static double AccDefault = 52;
     public static double VelDefault = 52;
 
-    Dictionary<String, Pair<Double, Double>> RandomizationOffset_XY = new Hashtable<String, Pair<Double, Double>>() {{
-        put("Left", new Pair<>(0.0, -2.5));
-        put("Center", new Pair<>(-0.5, -2.0));
-        put("Right", new Pair<>(-2.0, 0.0));
-        put("Final", new Pair<>(0.0,0.0));
+    Dictionary<String, Pair<Double, Double>> LEFT_RandomizationOffset_SHORT = new Hashtable<String, Pair<Double, Double>>() {{
+        put("Stacks_Inner_FirstCycle", new Pair<>(0.0, -2.5));
+        put("Stacks_Inner_SecondCycle", new Pair<>(0.0, -2.5));
+        put("Stacks_Mid_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Mid_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Outer_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Outer_SecondCycle", new Pair<>(0.0, 0.0));
+
+        put("Corridor_Close_Inner_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Close_Inner_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Close_Outer_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Close_Outer_SecondCycle", new Pair<>(0.0, 0.0));
+
+        put("Corridor_Far_Inner_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Far_Inner_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Far_Outer_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Far_Outer_SecondCycle", new Pair<>(0.0, 0.0));
+
+        put("Backdrop_Left_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Left_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Center_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Center_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Right_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Right_SecondCycle", new Pair<>(0.0, 0.0));
+    }};
+
+    Dictionary<String, Pair<Double, Double>> CENTER_RandomizationOffset_SHORT = new Hashtable<String, Pair<Double, Double>>() {{
+        put("Stacks_Inner_FirstCycle", new Pair<>(-0.5, -2.0));
+        put("Stacks_Inner_SecondCycle", new Pair<>(-0.5, -2.0));
+        put("Stacks_Mid_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Mid_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Outer_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Outer_SecondCycle", new Pair<>(0.0, 0.0));
+
+        put("Corridor_Close_Inner_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Close_Inner_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Close_Outer_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Close_Outer_SecondCycle", new Pair<>(0.0, 0.0));
+
+        put("Corridor_Far_Inner_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Far_Inner_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Far_Outer_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Far_Outer_SecondCycle", new Pair<>(0.0, 0.0));
+
+        put("Backdrop_Left_FirstCycle", new Pair<>(0.0, 3.0));
+        put("Backdrop_Left_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Center_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Center_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Right_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Right_SecondCycle", new Pair<>(0.0, 0.0));
+    }};
+
+    Dictionary<String, Pair<Double, Double>> RIGHT_RandomizationOffset_SHORT = new Hashtable<String, Pair<Double, Double>>() {{
+        put("Stacks_Inner_FirstCycle", new Pair<>(-2.0, 0.0));
+        put("Stacks_Inner_SecondCycle", new Pair<>(-2.0, 0.0));
+        put("Stacks_Mid_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Mid_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Outer_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Outer_SecondCycle", new Pair<>(0.0, 0.0));
+
+        put("Corridor_Close_Inner_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Close_Inner_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Close_Outer_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Close_Outer_SecondCycle", new Pair<>(0.0, 0.0));
+
+        put("Corridor_Far_Inner_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Far_Inner_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Far_Outer_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Far_Outer_SecondCycle", new Pair<>(0.0, 0.0));
+
+        put("Backdrop_Left_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Left_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Center_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Center_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Right_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Right_SecondCycle", new Pair<>(0.0, 0.0));
+    }};
+
+    Dictionary<String, Pair<Double, Double>> LEFT_RandomizationOffset_LONG = new Hashtable<String, Pair<Double, Double>>() {{
+        put("Stacks_Rand", new Pair<>(0.0, 0.0));
+        put("Stacks_Inner_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Inner_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Mid_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Mid_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Outer_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Outer_SecondCycle", new Pair<>(0.0, 0.0));
+
+        put("Corridor_Close_Inner_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Close_Inner_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Close_Outer_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Close_Outer_SecondCycle", new Pair<>(0.0, 0.0));
+
+        put("Corridor_Far_Inner_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Far_Inner_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Far_Outer_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Far_Outer_SecondCycle", new Pair<>(0.0, 0.0));
+
+        put("Backdrop_Rand", new Pair<>(0.0, 0.0));
+        put("Backdrop_Left_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Left_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Center_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Center_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Right_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Right_SecondCycle", new Pair<>(0.0, 0.0));
+    }};
+
+    Dictionary<String, Pair<Double, Double>> CENTER_RandomizationOffset_LONG = new Hashtable<String, Pair<Double, Double>>() {{
+        put("Stacks_Rand", new Pair<>(0.0, 0.0));
+        put("Stacks_Inner_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Inner_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Mid_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Mid_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Outer_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Outer_SecondCycle", new Pair<>(0.0, 0.0));
+
+        put("Corridor_Close_Inner_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Close_Inner_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Close_Outer_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Close_Outer_SecondCycle", new Pair<>(0.0, 0.0));
+
+        put("Corridor_Far_Inner_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Far_Inner_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Far_Outer_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Far_Outer_SecondCycle", new Pair<>(0.0, 0.0));
+
+        put("Backdrop_Rand", new Pair<>(0.0, 0.0));
+        put("Backdrop_Left_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Left_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Center_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Center_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Right_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Right_SecondCycle", new Pair<>(0.0, 0.0));
+    }};
+
+    Dictionary<String, Pair<Double, Double>> RIGHT_RandomizationOffset_LONG = new Hashtable<String, Pair<Double, Double>>() {{
+        put("Stacks_Rand", new Pair<>(0.0, 0.0));
+        put("Stacks_Inner_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Inner_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Mid_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Mid_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Outer_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Stacks_Outer_SecondCycle", new Pair<>(0.0, 0.0));
+
+        put("Corridor_Close_Inner_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Close_Inner_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Close_Outer_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Close_Outer_SecondCycle", new Pair<>(0.0, 0.0));
+
+        put("Corridor_Far_Inner_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Far_Inner_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Far_Outer_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Corridor_Far_Outer_SecondCycle", new Pair<>(0.0, 0.0));
+
+        put("Backdrop_Rand", new Pair<>(0.0, 0.0));
+        put("Backdrop_Left_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Left_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Center_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Center_SecondCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Right_FirstCycle", new Pair<>(0.0, 0.0));
+        put("Backdrop_Right_SecondCycle", new Pair<>(0.0, 0.0));
+    }};
+
+    public Dictionary<RoadRunnerSubsystem_BLUE.Randomization, Dictionary<String, Pair<Double, Double>>> OFFSETS_SHORT = new Hashtable<RoadRunnerSubsystem_BLUE.Randomization, Dictionary<String, Pair<Double, Double>>>() {{
+        put(RoadRunnerSubsystem_BLUE.Randomization.LEFT, LEFT_RandomizationOffset_SHORT);
+        put(RoadRunnerSubsystem_BLUE.Randomization.CENTER, CENTER_RandomizationOffset_SHORT);
+        put(RoadRunnerSubsystem_BLUE.Randomization.RIGHT, RIGHT_RandomizationOffset_SHORT);
+    }};
+
+    public Dictionary<RoadRunnerSubsystem_BLUE.Randomization, Dictionary<String, Pair<Double, Double>>> OFFSETS_LONG = new Hashtable<RoadRunnerSubsystem_BLUE.Randomization, Dictionary<String, Pair<Double, Double>>>() {{
+        put(RoadRunnerSubsystem_BLUE.Randomization.LEFT, LEFT_RandomizationOffset_LONG);
+        put(RoadRunnerSubsystem_BLUE.Randomization.CENTER, CENTER_RandomizationOffset_LONG);
+        put(RoadRunnerSubsystem_BLUE.Randomization.RIGHT, RIGHT_RandomizationOffset_LONG);
+    }};
+
+    public Dictionary<RoadRunnerSubsystem_BLUE.StartingPosition, Dictionary<RoadRunnerSubsystem_BLUE.Randomization, Dictionary<String, Pair<Double, Double>>>> OFFSETS = new Hashtable<RoadRunnerSubsystem_BLUE.StartingPosition, Dictionary<RoadRunnerSubsystem_BLUE.Randomization, Dictionary<String, Pair<Double, Double>>>>() {{
+        put(RoadRunnerSubsystem_BLUE.StartingPosition.SHORT, OFFSETS_SHORT);
+        put(RoadRunnerSubsystem_BLUE.StartingPosition.LONG, OFFSETS_LONG);
     }};
 
     /*-------------------------------------------------------
@@ -135,42 +319,6 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
     protected TrajectorySequenceBuilder station_backdrop_second_cycle;
     protected TrajectorySequenceBuilder spike_station;
     protected TrajectorySequenceBuilder parking;
-
-    /*-------------------------------------------------------
-    -Enums-
-    -------------------------------------------------------*/
-    enum Randomization{
-        LEFT,
-        CENTER,
-        RIGHT
-    }
-
-    enum StartingPosition{
-        SHORT,
-        LONG
-    }
-
-    enum Path{
-        INNER,
-        OUTER
-    }
-
-    enum ParkingPosition{
-        INNER,
-        MID,
-        OUTER
-    }
-
-    enum PixelStack{
-        INNER,
-        MID,
-        OUTER
-    }
-
-    protected StartingPosition startingPosition;
-    protected Path path;
-    protected ParkingPosition parkingPosition;
-    protected PixelStack pixelStack;
 
     /*-------------------------------------------------------
     -Poses-
@@ -327,11 +475,7 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
         drive.setPoseEstimate(HomePose);
     }
 
-    public void TrajectoryInit(Randomization randomization){
-
-        if(randomization == Randomization.LEFT)RandomizationOffset_XY.put("Final", RandomizationOffset_XY.get("Left"));
-        else if(randomization == Randomization.CENTER)RandomizationOffset_XY.put("Final", RandomizationOffset_XY.get("Center"));
-        else if(randomization == Randomization.RIGHT)RandomizationOffset_XY.put("Final", RandomizationOffset_XY.get("Right"));
+    public void TrajectoryInit(Randomization rand){
 
         /*-----------------------------------------------------*/
         test = drive.trajectorySequenceBuilder(new Pose2d())
@@ -352,13 +496,13 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
 
         leftSpike = drive.trajectorySequenceBuilder(HomePose)
                 .setTangent(Math.toRadians(leftSpikeStartingTanget[leftSpikeStartingTangetValue])) //tan pair 45/135
-                .splineToLinearHeading(offsetPoseShifter(leftPixelSpike, new Pair<>(2.0, 0.0), Offsets.BOTH), Math.toRadians(leftSpikeFinalTanget[leftSpikeFinalTangetValue]));
+                .splineToLinearHeading(offsetPoseShifter(leftPixelSpike, new Pair<>(2.0, 0.0)), Math.toRadians(leftSpikeFinalTanget[leftSpikeFinalTangetValue]));
 
         /*----------------------------------------------------------------------------------------*/
 
         spike_randomizedBackdrop = drive.trajectorySequenceBuilder(pixel_cycle_PoseTransfer)
                 .setTangent(Math.toRadians(315))
-                .splineToLinearHeading(offsetPoseShifter(randomizedBackdrop, new Pair<>(0.0, 0.0),  Offsets.BOTH), Math.toRadians(0));
+                .splineToLinearHeading(randomizedBackdrop, Math.toRadians(0));
 
         /*----------------------------------------------------------------------------------------*/
 
@@ -366,13 +510,13 @@ public class RoadRunnerSubsystem_RED extends SubsystemBase {
                 .setTangent(Math.toRadians(180))
                 .splineToConstantHeading(stationClose, Math.toRadians(180))
                 .lineTo(stationFar)
-                .splineToConstantHeading(offsetPoseShifter(stackStation.vec(), RandomizationOffset_XY.get("Final"), Offsets.BOTH), Math.toRadians(stackStationTanget[stackStationTangetValue])); //tan pair 180/225
+                .splineToConstantHeading(offsetPoseShifter(stackStation.vec(), OFFSETS.get(startingPosition).get(rand).get("Stacks_Inner_FirstCycle")), Math.toRadians(stackStationTanget[stackStationTangetValue])); //tan pair 180/225
 
         backdrop_station_second_cycle = drive.trajectorySequenceBuilder(backdrop_Unload)
                 .setTangent(Math.toRadians(180))
                 .splineToConstantHeading(stationClose, Math.toRadians(180))
                 .lineTo(stationFar)
-                .splineToConstantHeading(offsetPoseShifter(stackStationSecondCycle.vec(), RandomizationOffset_XY.get("Final"), Offsets.BOTH), Math.toRadians(stackStationTanget[stackStationTangetValue])); //tan pair 180/225
+                .splineToConstantHeading(offsetPoseShifter(stackStationSecondCycle.vec(), OFFSETS.get(startingPosition).get(rand).get("Stacks_Inner_SecondCycle")), Math.toRadians(stackStationTanget[stackStationTangetValue])); //tan pair 180/225
 
 
         station_backdrop_first_cycle = drive.trajectorySequenceBuilder(stackStation)
