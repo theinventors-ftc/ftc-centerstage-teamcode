@@ -11,6 +11,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.internal.opmode.InstantRunHelper;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.ElevatorCommand;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.ElevatorWait;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.OuttakeCommand;
@@ -102,7 +103,7 @@ public class CenterStageRobot extends RobotEx {
         toolOp.getGamepadButton(GamepadKeys.Button.DPAD_UP)
                 .whenPressed(new SequentialCommandGroup(
                         new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.STORAGE),
-                        new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.TOOGLE)
+                        new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.OPEN)
                 ));
 //        toolOp.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
 //                .whenPressed(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.MID));
@@ -112,6 +113,8 @@ public class CenterStageRobot extends RobotEx {
 //                .whenPressed(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.LOADING));
         toolOp.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
                 .whenPressed(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.HANGING));
+        toolOp.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON)
+                .whenPressed(new InstantCommand(elevatorSubsystem::reset, elevatorSubsystem));
 
         CommandScheduler.getInstance().registerSubsystem(elevatorSubsystem);
 
