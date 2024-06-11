@@ -27,9 +27,9 @@ public class LocalizerSubsystem extends SubsystemBase {
     public void periodic() {
         localizer.update();
 
-        telemetry.addData("Localizer Subsystem X: ", getCurrentPose().getX());
-        telemetry.addData("Localizer Subsystem Y: ", getCurrentPose().getY());
-        telemetry.addData("Localizer Subsystem Heading: ", Math.toDegrees(getCurrentPose().getHeading()));
+//        telemetry.addData("Localizer Subsystem X: ", getCurrentPose().getX());
+//        telemetry.addData("Localizer Subsystem Y: ", getCurrentPose().getY());
+//        telemetry.addData("Localizer Subsystem Heading: ", Math.toDegrees(getCurrentPose().getHeading()));
     }
 
     public Pose2d getCurrentPose() {

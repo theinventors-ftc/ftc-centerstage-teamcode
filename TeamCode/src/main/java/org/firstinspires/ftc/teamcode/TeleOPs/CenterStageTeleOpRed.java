@@ -117,9 +117,6 @@ public class CenterStageTeleOpRed extends CommandOpMode {
     @Override
     public void run() {
         super.run();
-        telemetry.addData("Init X: ", pose.getX());
-        telemetry.addData("Init Y: ", pose.getY());
-        telemetry.addData("Init Heading: ", Math.toDegrees(pose.getHeading()));
         telemetry.update();
     }
 }

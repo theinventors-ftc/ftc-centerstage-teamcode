@@ -77,12 +77,16 @@ public class PixelColorDetectorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        telemetry.addData("Front Pixel: ", frontPixelColor);
+        telemetry.addData("Back Pixel: ", backPixelColor);
         if (!isEnabled) return;
 
         update();
 
         frontPixelExistence = frontPixelColor != PixelColor.NONE ? 1 : 0;
         backPixelExistence = backPixelColor != PixelColor.NONE ? 1 : 0;
+
+
 
         numOfPixels = frontPixelExistence + backPixelExistence;
     }

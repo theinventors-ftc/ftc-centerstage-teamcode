@@ -116,14 +116,14 @@ public class CenterStageRobot extends RobotEx {
         toolOp.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON)
                 .whenPressed(new InstantCommand(elevatorSubsystem::reset, elevatorSubsystem));
 
-        CommandScheduler.getInstance().registerSubsystem(elevatorSubsystem);
+//        CommandScheduler.getInstance().registerSubsystem(elevatorSubsystem);
 
         // Intake Automation
         toolOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .toggleWhenPressed(
                         new SequentialCommandGroup(
                                 new InstantCommand(pixelColorDetectorSubsystem::enable),
-//                                new InstantCommand(ledSubsystem::enableIntake),
+                                new InstantCommand(ledSubsystem::enableIntake),
                                 new InstantCommand(intakeArmSubsystem::lowerArm),
                                 new InstantCommand(outtakeSusystem::go_intake_second),
                                 new WaitCommand(80),
@@ -146,13 +146,13 @@ public class CenterStageRobot extends RobotEx {
                                 new WaitCommand(500),
                                 new InstantCommand(intakeSubsystem::stop, intakeSubsystem),
                                 new InstantCommand(pixelColorDetectorSubsystem::disable),
-                                new WaitCommand(350)
-//                                new InstantCommand(ledSubsystem::disableIntake)
+                                new WaitCommand(350),
+                                new InstantCommand(ledSubsystem::disableIntake)
                         )
                 );
 
         // Aborting Pixels
-        new Trigger(() -> toolOp.getRightY() >= 0.8) // Abort Every Pixel Automation
+        new Trigger(() -> toolOp.getRightY() >= 0.5) // Abort Every Pixel Automation
                 .whenActive(new SequentialCommandGroup(
                         new InstantCommand(intakeArmSubsystem::raiseArm, intakeArmSubsystem),
                         new WaitCommand(200),
@@ -160,7 +160,7 @@ public class CenterStageRobot extends RobotEx {
                         new InstantCommand(outtakeSusystem::wheel_release, outtakeSusystem)
                 ));
 
-        new Trigger(() -> toolOp.getRightY() < 0.8) // Abort Every Pixel Automation (Complementary)
+        new Trigger(() -> toolOp.getRightY() < 0.5) // Abort Every Pixel Automation (Complementary)
                 .whenActive(new SequentialCommandGroup(
                         new InstantCommand(intakeSubsystem::stop, intakeSubsystem),
                         new InstantCommand(outtakeSusystem::wheel_stop, outtakeSusystem)

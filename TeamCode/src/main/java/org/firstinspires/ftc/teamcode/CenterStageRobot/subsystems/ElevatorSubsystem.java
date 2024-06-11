@@ -58,6 +58,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     ElevatorFeedforward feedforward;
 
+    public double joystickPower = 0.0, clippedPower = 0.0;
+
     public double feedForwardValue = 0.0;
 
     public double max_ticks_per_second = 0;
@@ -90,10 +92,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         limitSwitch = hm.get(DigitalChannel.class, "slider_limit");
 
-//        setAuto();
-//        level = Level.LOADING;
-//        setLevel(Level.LOADING);
-
         this.outtakeSusystem = outtakeSusystem;
 
         this.max_ticks_per_second = leftMotor.ACHIEVABLE_MAX_TICKS_PER_SECOND;
@@ -102,35 +100,38 @@ public class ElevatorSubsystem extends SubsystemBase {
         );
     }
 
+    private double calculateFeedForwardPower(double rawPower) {
+        feedForwardValue = feedforward.calculate(0.9 * rawPower * max_ticks_per_second);
+        return (feedForwardValue / max_ticks_per_second) * MAX_SPEED;
+    }
+
     @Override
     public void periodic() {
         if (zeroState != initZeroState.FOUND) {
             // TODO: add timer to prevent this running forever
             // for backup (if there are enough buttons) add a button to manually reset the elevator motor
             searchZero();
-            telemetry.addData("Zero State: ", zeroState);
             return;
         }
 
         ////////////////////////////////////////////////////////////////////////
 
-        if (Math.abs(leftY.getAsDouble()) > 0.06) {
+        joystickPower = leftY.getAsDouble();
+
+        clippedPower = joystickPower;
+
+        if(isSliderBottom() && joystickPower < 0) clippedPower = 0.0;
+        if(isSliderTop() && joystickPower > 0) clippedPower = 0.0;
+
+        if (Math.abs(joystickPower) > 0.06) {
             setManual();
         }
-        telemetry.addData("Elevator Height: ", levels.get(Level.STORAGE));
 
         if (!isAuto) {
-            feedForwardValue = feedforward.calculate(
-                    0.9 * leftY.getAsDouble() * max_ticks_per_second
-            );
+            if (getHeight() < 100) setPower(clippedPower);
+            else setPower(calculateFeedForwardPower(clippedPower));
 
-            if (getHeight() < 100) {
-                setPower(leftY.getAsDouble());
-            } else {
-                setPower((feedForwardValue / max_ticks_per_second) * MAX_SPEED);
-            }
-
-            if (getHeight() > 300 && leftY.getAsDouble() > 0.05) { // Open Outtake Automation
+            if (getHeight() > 250 && joystickPower > 0.05) { // Open Outtake Automation
                 if(outtakeSusystem.getState() != OuttakeSusystem.State.EXTREME) {
                     new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.OPEN).schedule();
                 }
@@ -180,13 +181,16 @@ public class ElevatorSubsystem extends SubsystemBase {
         return motors.atTargetPosition();
     }
 
-    public boolean isSliderAtBottom() {
+    public boolean isSliderBottom() {
         return limitSwitch.getState();
+    }
+    public boolean isSliderTop() {
+        return getHeight() >= 1750;
     }
 
     public void searchZero() {
-        if (!isSliderAtBottom()) {
-            motors.set(-0.3);
+        if (!isSliderBottom()) {
+            motors.set(-0.6);
             zeroState = initZeroState.SEARCHING;
         } else {
             motors.stopMotor();
