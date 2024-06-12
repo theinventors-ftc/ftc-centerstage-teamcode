@@ -32,7 +32,7 @@ repositories {
 
 dependencies {
     implementation project(':FtcRobotController')
-//    implementation project(':InventorsFtcLib')
+    implementation project(':InventorsFtcLib')
 
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
 
@@ -46,5 +46,5 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7'
     implementation 'com.acmerobotics.roadrunner:core:0.5.6'
 
-    implementation 'com.github.theinventors-ftc:InventorsFtcLib:5e4258c'
+//    implementation 'com.github.theinventors-ftc:InventorsFtcLib:5e4258c'
 }
