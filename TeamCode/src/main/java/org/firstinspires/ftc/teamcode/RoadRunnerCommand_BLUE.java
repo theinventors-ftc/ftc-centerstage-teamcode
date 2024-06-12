@@ -129,10 +129,10 @@ public class RoadRunnerCommand_BLUE extends RoadRunnerSubsystem_BLUE {
     public TrajectorySequenceBuilder getLongSpike_Station(Randomization randomization){
 
         if (randomization == Randomization.LEFT){
-                return spike_station;
+            return spike_station;
         }
         else if (randomization == Randomization.CENTER){
-                return spike_station;
+            return spike_station;
         }
         else if (randomization == Randomization.RIGHT){
             return spike_station_right;

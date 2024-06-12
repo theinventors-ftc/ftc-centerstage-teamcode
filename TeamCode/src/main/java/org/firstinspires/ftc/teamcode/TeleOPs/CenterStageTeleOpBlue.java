@@ -11,9 +11,9 @@ import org.inventors.ftc.robotbase.RobotEx;
 import org.inventors.ftc.robotbase.drive.DriveConstants;
 import org.inventors.ftc.robotbase.hardware.GamepadExEx;
 
-@TeleOp(name = "Greece 2024 TeleOP", group = "Final TeleOPs")
+@TeleOp(name = "MTI TeleOP BLUE", group = "Final TeleOPs")
 @Config
-public class CenterStageTeleOp extends CommandOpMode {
+public class CenterStageTeleOpBlue extends CommandOpMode {
     private CenterStageRobot robot;
 
     private DriveConstants RobotConstants;
@@ -110,16 +110,13 @@ public class CenterStageTeleOp extends CommandOpMode {
         pose = PoseStorage.currentPose;
 
         robot = new CenterStageRobot(hardwareMap, RobotConstants, telemetry, driverOp, toolOp,
-                RobotEx.OpModeType.TELEOP, RobotEx.Alliance.RED, "external_imu", false,
-                true, pose);
+                RobotEx.OpModeType.TELEOP,  RobotEx.Alliance.BLUE, "external_imu",
+                false, true, pose);
     }
 
     @Override
     public void run() {
         super.run();
-        telemetry.addData("Init X: ", pose.getX());
-        telemetry.addData("Init Y: ", pose.getY());
-        telemetry.addData("Init Heading: ", Math.toDegrees(pose.getHeading()));
         telemetry.update();
     }
 }

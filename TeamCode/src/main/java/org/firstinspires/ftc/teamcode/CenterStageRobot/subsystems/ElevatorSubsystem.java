@@ -1,55 +1,76 @@
 package org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems;
 
 import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitCommand;
-import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
-import com.arcrobotics.ftclib.util.MathUtils;
+import com.arcrobotics.ftclib.util.Timing;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.checkerframework.common.value.qual.MinLenFieldInvariant;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.OuttakeCommand;
 import org.inventors.ftc.robotbase.hardware.MotorExEx;
 
+import java.sql.Time;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 public class ElevatorSubsystem extends SubsystemBase {
-    public boolean isAuto = true;
+    public boolean isAuto = false;
     public final MotorExEx leftMotor;
     public final MotorExEx rightMotor;
     private final MotorGroup motors;
 
-    private boolean isAutoEnabled = true;
+    private final DigitalChannel limitSwitch;
 
     public double MAX_SPEED = 0.9;
 
     public enum Level {
-        LOADING, HANGING, AUTO0, AUTO1, AUTO2, LOW, MID, HIGH
+        LOADING, HANGING, AUTO0, AUTO1, AUTO2, LOW, MID, HIGH, STORAGE
     }
 
     private Level level;
 
-    private int[] levelPositions = { 0, 300, 500, 800, 870, 1050, 1650, 1750 };
+    private HashMap<Level, Integer> levels = new HashMap<Level, Integer>() {{
+        put(Level.LOADING, 0);
+        put(Level.HANGING, 600);
+        put(Level.AUTO0, 500);
+        put(Level.AUTO1, 800);
+        put(Level.AUTO2, 870);
+        put(Level.LOW, 1050);
+        put(Level.MID, 1650);
+        put(Level.HIGH, 1750);
+        put(Level.STORAGE, 0); // Remembering Last Position
+    }};
 
     private Telemetry telemetry;
     private DoubleSupplier leftY;
 
     private OuttakeSusystem outtakeSusystem;
 
-    public final double kS = 230, kG = 260, kV = 1.0, kA= 0.0;
+    public final double kS = 230, kG = 250, kV = 1.0, kA= 0.0;
 
     ElevatorFeedforward feedforward;
+
+    public double joystickPower = 0.0, clippedPower = 0.0;
 
     public double feedForwardValue = 0.0;
 
     public double max_ticks_per_second = 0;
+//    private Timing.Timer timer = new Timing.Timer(5, TimeUnit.MILLISECONDS);
+
+    private enum initZeroState {
+        INIT,
+        SEARCHING,
+        FOUND,
+    }
+    private initZeroState zeroState = initZeroState.INIT;
 
     public ElevatorSubsystem(HardwareMap hm, Telemetry telemetry, DoubleSupplier leftY,
             OuttakeSusystem outtakeSusystem) {
@@ -69,9 +90,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         motors.resetEncoder();
 
-        setAuto();
-        level = Level.LOADING;
-        setLevel(Level.LOADING);
+        limitSwitch = hm.get(DigitalChannel.class, "slider_limit");
 
         this.outtakeSusystem = outtakeSusystem;
 
@@ -81,27 +100,38 @@ public class ElevatorSubsystem extends SubsystemBase {
         );
     }
 
+    private double calculateFeedForwardPower(double rawPower) {
+        feedForwardValue = feedforward.calculate(0.9 * rawPower * max_ticks_per_second);
+        return (feedForwardValue / max_ticks_per_second) * MAX_SPEED;
+    }
+
     @Override
     public void periodic() {
-        if (leftY.getAsDouble() > 0.05 || leftY.getAsDouble() < -0.05) {
+        if (zeroState != initZeroState.FOUND) {
+            // TODO: add timer to prevent this running forever
+            // for backup (if there are enough buttons) add a button to manually reset the elevator motor
+            searchZero();
+            return;
+        }
+
+        ////////////////////////////////////////////////////////////////////////
+
+        joystickPower = leftY.getAsDouble();
+
+        clippedPower = joystickPower;
+
+        if(isSliderBottom() && joystickPower < 0) clippedPower = 0.0;
+        if(isSliderTop() && joystickPower > 0) clippedPower = 0.0;
+
+        if (Math.abs(joystickPower) > 0.06) {
             setManual();
         }
 
         if (!isAuto) {
-            feedForwardValue = feedforward.calculate(
-                    0.9 * leftY.getAsDouble() * max_ticks_per_second
-            );
+            if (getHeight() < 100) setPower(clippedPower);
+            else setPower(calculateFeedForwardPower(clippedPower));
 
-            // Don't use Feed Forward when the Elevator is in Loading(Down-Most) Position
-//        feedForwardValue = elevator.getHeight() < 100 ? max_ticks_per_second : feedForwardValue;
-
-            if (getHeight() < 100) {
-                setPower(leftY.getAsDouble());
-            } else {
-                setPower((feedForwardValue / max_ticks_per_second) * MAX_SPEED);
-            }
-
-            if (getHeight() > 300 && leftY.getAsDouble() > 0.05) {
+            if (getHeight() > 250 && joystickPower > 0.05) { // Open Outtake Automation
                 if(outtakeSusystem.getState() != OuttakeSusystem.State.EXTREME) {
                     new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.OPEN).schedule();
                 }
@@ -118,27 +148,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void setLevel(Level levelPicked) {
-        level = levelPicked;
-        int levelIdx = 0;
-
-        if (level == Level.LOADING)
-            levelIdx = 0;
-        else if (level == Level.HANGING)
-            levelIdx = 1;
-        else if (level == Level.AUTO0)
-            levelIdx = 2;
-        else if (level == Level.AUTO1)
-            levelIdx = 3;
-        else if (level == Level.AUTO2)
-            levelIdx = 4;
-        else if (level == Level.LOW)
-            levelIdx = 5;
-        else if (level == Level.MID)
-            levelIdx = 6;
-        else if (level == Level.HIGH)
-            levelIdx = 7;
-
-        motors.setTargetPosition(levelPositions[levelIdx]);
+        motors.setTargetPosition((int)levels.get(levelPicked));
     }
 
     public void setManual() {
@@ -149,6 +159,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void setAuto() {
         motors.setRunMode(Motor.RunMode.PositionControl);
         isAuto = true;
+    }
+
+    public void capturePosition() {
+        levels.put(Level.STORAGE, getHeight().intValue());
     }
 
     public void setPower(double power) {
@@ -165,5 +179,27 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public boolean atTargetLevel() {
         return motors.atTargetPosition();
+    }
+
+    public boolean isSliderBottom() {
+        return limitSwitch.getState();
+    }
+    public boolean isSliderTop() {
+        return getHeight() >= 1750;
+    }
+
+    public void searchZero() {
+        if (!isSliderBottom()) {
+            motors.set(-0.6);
+            zeroState = initZeroState.SEARCHING;
+        } else {
+            motors.stopMotor();
+            motors.resetEncoder();
+            zeroState = initZeroState.FOUND;
+        }
+    }
+
+    public void reset() {
+        motors.resetEncoder();
     }
 }

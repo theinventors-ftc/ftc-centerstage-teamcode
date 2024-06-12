@@ -109,9 +109,6 @@ public class LEDSubsystem extends SubsystemBase {
             }
         }
 
-        telemetry.addData("LED State: ", state);
-        telemetry.addData("LED Time: ", timer.elapsedTime()-initTime);
-
     }
 
     public void enableIntake() {
