@@ -17,11 +17,6 @@ import java.util.concurrent.TimeUnit;
 
 public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     protected SampleMecanumDrive drive;
-
-    /*-------------------------------------------------------
-    -Functions-
-    -------------------------------------------------------*/
-
     /*-------------------------------------------------------
     -Enums-
     -------------------------------------------------------*/
@@ -66,7 +61,9 @@ public class RoadRunnerSubsystem_BLUE extends SubsystemBase {
     protected ParkingPosition parkingPosition;
     protected PixelStack pixelStack;
 
-
+    /*-------------------------------------------------------
+    -Functions-
+    -------------------------------------------------------*/
     public Pose2d offsetPoseShifter(Pose2d pose, Pair<Double, Double> xy_offset) {
         Double X = pose.getX() + xy_offset.first;
         Double Y = pose.getY() + xy_offset.second;

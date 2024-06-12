@@ -138,29 +138,29 @@ public class RoadRunnerCommand_RED extends RoadRunnerSubsystem_RED {
         drive.followTrajectorySequenceAsync(spike_randomizedBackdrop.build());
     }
 
-    public void runBackdrop_Station_First_Cycle(){
-        drive.followTrajectorySequenceAsync(backdrop_station_first_cycle.build());
+    public void runBackdrop_Station(int idx){
+        if (idx == 0) drive.followTrajectorySequenceAsync(backdrop_station_first_cycle.build());
+        else if (idx == 1) drive.followTrajectorySequenceAsync(backdrop_station_second_cycle.build());
     }
 
-    public void runBackdrop_Station_Second_Cycle(){
-        drive.followTrajectorySequenceAsync(backdrop_station_second_cycle.build());
-    }
-
-    public void runStation_Backdrop_First_Cycle(){
-        drive.followTrajectorySequenceAsync(station_backdrop_first_cycle.build());
-    }
-
-    public void runStation_Backdrop_Second_Cycle(){
-        drive.followTrajectorySequenceAsync(station_backdrop_second_cycle.build());
+    public void runStation_Backdrop(int idx){
+        if (idx == 0) drive.followTrajectorySequenceAsync(station_backdrop_first_cycle.build());
+        else if (idx == 1) drive.followTrajectorySequenceAsync(station_backdrop_second_cycle.build());
     }
 
     public void runParking(){
         drive.followTrajectorySequenceAsync(parking.build());
     }
 
+    public void runStation_RandomizedBackdrop(){
+        drive.followTrajectorySequenceAsync(station_long_randomizedBackdrop.build());
+    }
+
     public void runSpike_Station(){
         drive.followTrajectorySequenceAsync(spike_station.build());
     }
 
-    public void runTest(){drive.followTrajectorySequence(test);}
+    public void runTest(){
+        drive.followTrajectorySequence(test);
+    }
 }

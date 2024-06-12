@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -22,7 +23,7 @@ import org.inventors.ftc.opencvpipelines.TeamPropDetectionPipeline;
 import org.inventors.ftc.robotbase.hardware.Camera;
 import org.opencv.core.Rect;
 
-@Autonomous(name = "BLUE_LONG", group = "Final Autonomous")
+@Autonomous(name = "BLUE_Long", group = "Final Autonomous")
 public class Autonomous_BLUE_Long extends CommandOpMode {
 
     private OuttakeSusystem outtakeSusystem;
@@ -33,6 +34,7 @@ public class Autonomous_BLUE_Long extends CommandOpMode {
     private SampleMecanumDrive drive;
     private RoadRunnerCommand_BLUE RR_Blue;
     private RoadRunnerSubsystem_BLUE.Randomization rand;
+    private RevBlinkinLedDriver ledDriver;
 
     private FtcDashboard dashboard;
     private Camera camera;
@@ -149,6 +151,8 @@ public class Autonomous_BLUE_Long extends CommandOpMode {
         elevatorSubsystem = new ElevatorSubsystem(hardwareMap, telemetry, () -> 0, outtakeSusystem);
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry);
         intakeArmSubsystem = new IntakeArmSubsystem(hardwareMap);
+        ledDriver = hardwareMap.get(RevBlinkinLedDriver.class, "led");
+        ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
 
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         drive = new SampleMecanumDrive(hardwareMap);
