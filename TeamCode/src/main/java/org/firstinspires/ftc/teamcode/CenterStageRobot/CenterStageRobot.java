@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.opmode.InstantRunHelper;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.ElevatorCommand;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.ElevatorWait;
+import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.DroneSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.ElevatorSubsystem;
@@ -137,6 +138,18 @@ public class CenterStageRobot extends RobotEx {
                                             new InstantCommand(intakeSubsystem::run, intakeSubsystem)
                                     )
                                 )
+//                                new IntakeCommand(intakeSubsystem, pixelColorDetectorSubsystem), // Stops when it sees 2 pixels
+//                                new SequentialCommandGroup(
+//                                        new InstantCommand(outtakeSusystem::wheel_stop),
+//                                        new InstantCommand(intakeArmSubsystem::raiseArm),
+//                                        new WaitCommand(150),
+//                                        new InstantCommand(intakeSubsystem::reverse, intakeSubsystem),
+//                                        new WaitCommand(500),
+//                                        new InstantCommand(intakeSubsystem::stop, intakeSubsystem),
+//                                        new InstantCommand(pixelColorDetectorSubsystem::disable),
+//                                        new WaitCommand(350),
+//                                        new InstantCommand(ledSubsystem::disableIntake)
+//                                )
                         ),
                         new SequentialCommandGroup(
                                 new InstantCommand(outtakeSusystem::wheel_stop),

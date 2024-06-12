@@ -22,7 +22,7 @@ public class IntakeCommand extends CommandBase {
         this.pixelColorDetectorSubsystem = pixelColorDetectorSubsystem;
 
         stateMachine = new StateMachine(() -> pixelColorDetectorSubsystem.getNumOfPixels() == 2,
-                200);
+                250);
 
         addRequirements(intakeSubsystem, pixelColorDetectorSubsystem);
     }

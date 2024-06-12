@@ -10,10 +10,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.concurrent.TimeUnit;
 
 public class LEDSubsystem extends SubsystemBase {
-    private RevBlinkinLedDriver driver;
 
-    private PixelColorDetectorSubsystem.PixelColor frontColor;
-    private PixelColorDetectorSubsystem.PixelColor backColor;
+    private RevBlinkinLedDriver driver;
 
     private RevBlinkinLedDriver.BlinkinPattern BLACK_PATTERN = RevBlinkinLedDriver.BlinkinPattern.BLACK;
     private RevBlinkinLedDriver.BlinkinPattern WHITE_PATTERN = RevBlinkinLedDriver.BlinkinPattern.WHITE;
@@ -100,18 +98,17 @@ public class LEDSubsystem extends SubsystemBase {
                 driver.setPattern(BLACK_PATTERN);
             }
         } else {
-            if(pixelColorDetectorSubsystem.getNumOfPixels() == 0) {
+            if (pixelColorDetectorSubsystem.getNumOfPixels() == 0) {
                 driver.setPattern(STOP_PATTERN);
-            } else if(pixelColorDetectorSubsystem.getNumOfPixels() == 1) {
+            } else if (pixelColorDetectorSubsystem.getNumOfPixels() == 1) {
                 driver.setPattern(ALMOST_PATTERN);
-            } else if(pixelColorDetectorSubsystem.getNumOfPixels() == 2) {
+            } else if (pixelColorDetectorSubsystem.getNumOfPixels() == 2) {
                 driver.setPattern(GOOO_PATTERN);
             }
         }
-
     }
 
-    public void enableIntake() {
+        public void enableIntake() {
         isIntaking = true;
     }
 
