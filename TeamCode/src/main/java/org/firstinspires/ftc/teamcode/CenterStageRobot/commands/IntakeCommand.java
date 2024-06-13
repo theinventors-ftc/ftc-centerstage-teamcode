@@ -15,14 +15,10 @@ import org.inventors.ftc.robotbase.controllers.StateMachine;
 public class IntakeCommand extends CommandBase {
     private IntakeSubsystem intakeSubsystem;
     private PixelColorDetectorSubsystem pixelColorDetectorSubsystem;
-    private StateMachine stateMachine;
 
     public IntakeCommand(IntakeSubsystem intakeSubsystem, PixelColorDetectorSubsystem pixelColorDetectorSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         this.pixelColorDetectorSubsystem = pixelColorDetectorSubsystem;
-
-        stateMachine = new StateMachine(() -> pixelColorDetectorSubsystem.getNumOfPixels() == 2,
-                250);
 
         addRequirements(intakeSubsystem, pixelColorDetectorSubsystem);
     }
@@ -33,13 +29,7 @@ public class IntakeCommand extends CommandBase {
     }
 
     @Override
-    public void execute() {
-        stateMachine.update();
-    }
-
-    @Override
     public boolean isFinished() {
-        return stateMachine.isJustActive();
-//        return pixelColorDetectorSubsystem.getNumOfPixels() == 2;
+        return pixelColorDetectorSubsystem.pocketIsJustFull();
     }
 }
