@@ -62,7 +62,8 @@ public class CenterStageRobot extends RobotEx {
         outtakeSusystem = new OuttakeSusystem(hardwareMap);
         elevatorSubsystem = new ElevatorSubsystem(hardwareMap, telemetry, () -> toolOp.getLeftY(), outtakeSusystem);
         droneSubsystem = new DroneSubsystem(hardwareMap);
-        pixelColorDetectorSubsystem = new PixelColorDetectorSubsystem(hardwareMap, telemetry);
+        pixelColorDetectorSubsystem = new PixelColorDetectorSubsystem(hardwareMap, telemetry,
+                driverOp, toolOp);
         ledSubsystem = new LEDSubsystem(hardwareMap, pixelColorDetectorSubsystem, telemetry);
 
         // ----------------------------------- Manual Actions ----------------------------------- //

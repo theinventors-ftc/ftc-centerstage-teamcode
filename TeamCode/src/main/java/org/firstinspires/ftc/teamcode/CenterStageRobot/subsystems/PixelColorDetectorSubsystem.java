@@ -4,7 +4,9 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.inventors.ftc.robotbase.controllers.StateMachine;
 import org.inventors.ftc.robotbase.hardware.ColorSensor;
+import org.inventors.ftc.robotbase.hardware.GamepadExEx;
 
 public class PixelColorDetectorSubsystem extends SubsystemBase {
     private ColorSensor frontSensor, backSensor;
@@ -28,11 +30,21 @@ public class PixelColorDetectorSubsystem extends SubsystemBase {
 
     private boolean isEnabled = false;
 
-    public PixelColorDetectorSubsystem(HardwareMap hm, Telemetry telemetry) {
+    private StateMachine stateMachine;
+
+    private GamepadExEx driverOp, toolOp;
+
+    public PixelColorDetectorSubsystem(HardwareMap hm, Telemetry telemetry, GamepadExEx driverOp,
+                                       GamepadExEx toolOp) {
         this.telemetry = telemetry;
 
         frontSensor = new ColorSensor(hm, "front_color_sensor");
         backSensor = new ColorSensor(hm, "back_color_sensor");
+
+        stateMachine = new StateMachine(() -> numOfPixels == 2, 250);
+
+        this.driverOp = driverOp;
+        this.toolOp = toolOp;
     }
 
     public PixelColor predictColorFront(double redCh, double greenCh, double blueCh) {
@@ -73,6 +85,8 @@ public class PixelColorDetectorSubsystem extends SubsystemBase {
 
         frontPixelColor = predictColorFront(frontColors[0], frontColors[1], frontColors[2]);
         backPixelColor = predictColorBack(backColors[0], backColors[1], backColors[2]);
+
+        stateMachine.update();
     }
 
     @Override
@@ -83,10 +97,13 @@ public class PixelColorDetectorSubsystem extends SubsystemBase {
 
         update();
 
+        if(pocketIsJustFull()) {
+            driverOp.rumble();
+            toolOp.rumble();
+        }
+
         frontPixelExistence = frontPixelColor != PixelColor.NONE ? 1 : 0;
         backPixelExistence = backPixelColor != PixelColor.NONE ? 1 : 0;
-
-
 
         numOfPixels = frontPixelExistence + backPixelExistence;
     }
@@ -109,6 +126,10 @@ public class PixelColorDetectorSubsystem extends SubsystemBase {
 
     public int getNumOfPixels() {
         return numOfPixels;
+    }
+
+    public boolean pocketIsJustFull() {
+        return stateMachine.isJustActive();
     }
 
     public void enable() {
