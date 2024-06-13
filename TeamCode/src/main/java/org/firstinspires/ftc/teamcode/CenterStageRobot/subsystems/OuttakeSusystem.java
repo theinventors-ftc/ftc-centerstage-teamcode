@@ -70,6 +70,9 @@ public class OuttakeSusystem extends SubsystemBase {
     public void wheel_release() {
         wheelServo.setPower(-WHEEL_POWER_OUT);
     }
+    public void wheel_release_auto() {
+        wheelServo.setPower(-1);
+    }
 
     public void wheel_stop() {
         wheelServo.setPower(0);

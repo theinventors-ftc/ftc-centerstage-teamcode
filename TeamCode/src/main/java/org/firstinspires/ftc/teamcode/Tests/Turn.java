@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.roadRunner.trajectorysequence.TrajectorySe
 import org.firstinspires.ftc.teamcode.roadRunner.trajectorysequence.TrajectorySequenceBuilder;
 
 @Disabled
-@Autonomous(name = "Turn", group = "Tests")
+@Autonomous(name = "Turn", group = "Final Autonomous")
 public class Turn extends LinearOpMode {
     private SampleMecanumDrive drive;
 
@@ -35,7 +35,7 @@ public class Turn extends LinearOpMode {
     public void runOpMode() {
         drive = new SampleMecanumDrive(hardwareMap);
         turnTraj = drive.trajectorySequenceBuilder(new Pose2d())
-                .turn(Math.toRadians(90));
+                .turn(Math.toRadians(50));
 
         waitForStart();
 
