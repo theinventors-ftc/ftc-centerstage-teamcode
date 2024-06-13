@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 
-//@Disabled
+@Disabled
 @TeleOp (name = "LimitSwitchTesting", group = "Tests")
 public class LimitSwitchTest extends LinearOpMode {
     DigitalChannel limitSwitch;
