@@ -32,7 +32,7 @@ public class Autonomous_BLUE_Short extends CommandOpMode {
     private IntakeSubsystem intakeSubsystem;
 
     private SampleMecanumDrive drive;
-    private RoadRunnerCommand_BLUE RR_Blue;
+    private RoadRunnerSubsystem_BLUE RR_Blue;
     private RoadRunnerSubsystem_BLUE.Randomization rand;
     private RevBlinkinLedDriver ledDriver;
 
@@ -43,7 +43,7 @@ public class Autonomous_BLUE_Short extends CommandOpMode {
     private final Rect centerRect = new Rect(600, 450, 150, 160);
     private final Rect rightRect = new Rect(950, 450, 300, 260);
 
-    private Pose2d HomePose_SHORT = new Pose2d(RoadRunnerSubsystem_BLUE.Tile/2, 3 * RoadRunnerSubsystem_BLUE.Tile - 6.93, Math.toRadians(270));
+    private Pose2d HomePose = new Pose2d(RoadRunnerSubsystem_BLUE.Tile/2, 3 * RoadRunnerSubsystem_BLUE.Tile - 6.93, Math.toRadians(270));
 
     private SequentialCommandGroup temp;
     public SequentialCommandGroup randomizationPixelElevator(){
@@ -134,7 +134,7 @@ public class Autonomous_BLUE_Short extends CommandOpMode {
 
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         drive = new SampleMecanumDrive(hardwareMap);
-        RR_Blue = new RoadRunnerCommand_BLUE(drive, HomePose_SHORT, RoadRunnerSubsystem_BLUE.StartingPosition.SHORT,
+        RR_Blue = new RoadRunnerSubsystem_BLUE(drive, HomePose, RoadRunnerSubsystem_BLUE.StartingPosition.SHORT,
                 RoadRunnerSubsystem_BLUE.Path.INNER, RoadRunnerSubsystem_BLUE.PixelStack.INNER,
                 RoadRunnerSubsystem_BLUE.ParkingPosition.INNER, telemetry);
 

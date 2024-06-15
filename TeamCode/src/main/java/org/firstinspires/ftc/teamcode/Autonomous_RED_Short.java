@@ -32,7 +32,7 @@ public class Autonomous_RED_Short extends CommandOpMode {
     private IntakeSubsystem intakeSubsystem;
 
     private SampleMecanumDrive drive;
-    private RoadRunnerCommand_RED RR_Red;
+    private RoadRunnerSubsystem_RED RR_Red;
     private RoadRunnerSubsystem_RED.Randomization rand;
     private RevBlinkinLedDriver ledDriver;
 
@@ -43,8 +43,7 @@ public class Autonomous_RED_Short extends CommandOpMode {
     private final Rect centerRect = new Rect(600, 450, 150, 160);
     private final Rect rightRect = new Rect(950, 450, 300, 260);
 
-    private Pose2d HomePose_SHORT = new Pose2d(RoadRunnerSubsystem_RED.Tile/2, 3 * RoadRunnerSubsystem_RED.TileInverted + 6.93, Math.toRadians(90));
-    private Pose2d HomePose_LONG = new Pose2d(1.5 * RoadRunnerSubsystem_RED.TileInverted, 3 * RoadRunnerSubsystem_RED.TileInverted + (RoadRunnerSubsystem_RED.RobotY/2), Math.toRadians(90));
+    private Pose2d HomePose = new Pose2d(RoadRunnerSubsystem_RED.Tile/2, 3 * RoadRunnerSubsystem_RED.TileInverted + 6.93, Math.toRadians(90));
 
     private SequentialCommandGroup temp;
     public SequentialCommandGroup randomizationPixelElevator(){
@@ -135,7 +134,7 @@ public class Autonomous_RED_Short extends CommandOpMode {
 
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         drive = new SampleMecanumDrive(hardwareMap);
-        RR_Red = new RoadRunnerCommand_RED(drive, HomePose_SHORT, RoadRunnerSubsystem_RED.StartingPosition.SHORT,
+        RR_Red = new RoadRunnerSubsystem_RED(drive, HomePose, RoadRunnerSubsystem_RED.StartingPosition.SHORT,
                 RoadRunnerSubsystem_RED.Path.INNER, RoadRunnerSubsystem_RED.PixelStack.INNER,
                 RoadRunnerSubsystem_RED.ParkingPosition.MID, telemetry);
 
