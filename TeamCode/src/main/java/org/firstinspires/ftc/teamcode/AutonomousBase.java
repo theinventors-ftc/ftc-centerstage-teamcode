@@ -46,8 +46,6 @@ public class AutonomousBase extends CommandOpMode {
         centerRect = new Rect(600, 450, 150, 160),
         rightRect = new Rect(950, 450, 300, 260);
 
-    protected Pose2d HomePose;
-
     protected SequentialCommandGroup temp;
 
     public SequentialCommandGroup randomizationPixelElevator() {
@@ -164,22 +162,20 @@ public class AutonomousBase extends CommandOpMode {
     }
 
     public void initAllianceRelated(Alliance alliance) {
-        switch (alliance) {
-            case BLUE:
-                camera = new Camera(
-                    hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.BLUE,
-                    colorThresh, leftRect, centerRect, rightRect
-                );
-                ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-                break;
-            default:
-                camera = new Camera(
-                    hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.RED,
-                    colorThresh, leftRect, centerRect, rightRect
-                );
-                ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
-                break;
+        if (alliance == Alliance.BLUE) {
+            camera = new Camera(
+                hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.BLUE,
+                colorThresh, leftRect, centerRect, rightRect
+            );
+            ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+            return;
         }
+
+        camera = new Camera(
+            hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.RED, colorThresh,
+            leftRect, centerRect, rightRect
+        );
+        ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
     }
 
     @Override
