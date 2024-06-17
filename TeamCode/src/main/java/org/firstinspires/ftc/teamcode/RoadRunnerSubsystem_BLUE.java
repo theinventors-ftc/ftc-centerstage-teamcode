@@ -425,25 +425,12 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
                 .splineToConstantHeading(parkingPose.vec(), Math.toRadians(0));
     }
 
+    public void spikeRandomizationPath(Randomization randomization) {
+        if (startingPosition == StartingPosition.LONG) {
+            rightPixelSpike = rightPixel_LONG;
+            leftPixelSpike = leftPixel_LONG;
+            centerPixelSpike = centerPixel_LONG;
 
-    public void spikeRandomizationPath(Randomization randomization){
-        if (startingPosition == StartingPosition.SHORT) {
-            if (randomization == Randomization.LEFT) {
-                randomizedBackdrop = randomizationBackdropLeft;
-                leftPixelSpike = leftPixel_SHORT;
-                pixel_cycle_PoseTransfer = leftPixel_SHORT;
-                rightSpikeStartingTangentValue = 0;
-                rightSpikeFinalTangentValue = 0;
-            } else if (randomization == Randomization.CENTER) {
-                randomizedBackdrop = randomizationBackdropCenter;
-                centerPixelSpike = centerPixel_SHORT;
-                pixel_cycle_PoseTransfer = centerPixel_SHORT;
-            } else if (randomization == Randomization.RIGHT) {
-                randomizedBackdrop = randomizationBackdropRight;
-                rightPixelSpike = rightPixel_SHORT;
-                pixel_cycle_PoseTransfer = rightPixel_SHORT;
-            }
-        } else if (startingPosition == StartingPosition.LONG) {
             if (randomization == Randomization.LEFT) {
                 randomizedBackdrop = randomizationBackdropLeftLong;
                 leftPixelSpike = leftPixel_LONG;
@@ -454,27 +441,46 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
                 randomizedBackdrop = randomizationBackdropCenterLong;
                 centerPixelSpike = centerPixel_LONG;
                 pixel_cycle_PoseTransfer = centerPixel_LONG;
-            } else if (randomization == Randomization.RIGHT) {
+            } else { // Randomization.RIGHT
                 randomizedBackdrop = randomizationBackdropRightLong;
                 rightPixelSpike = rightPixel_LONG;
                 pixel_cycle_PoseTransfer = rightPixel_LONG;
             }
+            return;
+        }
+        // StartingPosition.SHORT
+        rightPixelSpike = rightPixel_SHORT;
+        leftPixelSpike = leftPixel_SHORT;
+        centerPixelSpike = centerPixel_SHORT;
+
+        if (randomization == Randomization.LEFT) {
+            randomizedBackdrop = randomizationBackdropLeft;
+            pixel_cycle_PoseTransfer = leftPixel_SHORT;
+            rightSpikeStartingTangentValue = 0;
+            rightSpikeFinalTangentValue = 0;
+        } else if (randomization == Randomization.CENTER) {
+            randomizedBackdrop = randomizationBackdropCenter;
+            pixel_cycle_PoseTransfer = centerPixel_SHORT;
+        } else if (randomization == Randomization.RIGHT) {
+            randomizedBackdrop = randomizationBackdropRight;
+            pixel_cycle_PoseTransfer = rightPixel_SHORT;
         }
     }
 
-    public void cycle(){
-        if (path == Path.INNER){
+    public void cycle() {
+        if (path == Path.INNER) {
             stationClose = stationClose_Inner;
             stationFar = stationFar_Inner;
             backdrop_Unload = backdropRight;
             stackStation = stationInner;
             stackStationTangentValue = 0;
-        } else if (path == Path.OUTER){
-            stationClose = stationClose_Outer;
-            stationFar = stationFar_Outer;
-            backdrop_Unload = backdropLeft;
-            stackStation = stationOuter;
-            stackStationTangentValue = 2;
+            return;
         }
+        // else if (path == Path.OUTER)
+        stationClose = stationClose_Outer;
+        stationFar = stationFar_Outer;
+        backdrop_Unload = backdropLeft;
+        stackStation = stationOuter;
+        stackStationTangentValue = 2;
     }
 }
