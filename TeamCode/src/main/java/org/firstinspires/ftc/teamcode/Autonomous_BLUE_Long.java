@@ -182,8 +182,8 @@ public class Autonomous_BLUE_Long extends CommandOpMode {
         }
 
         RR_Blue.spikeRandomizationPath(rand);
-        RR_Blue.cycle();
-        RR_Blue.parking();
+        RR_Blue.setCycle();
+        RR_Blue.setParking();
         RR_Blue.TrajectoryInit(rand);
 
         // SPIKE
