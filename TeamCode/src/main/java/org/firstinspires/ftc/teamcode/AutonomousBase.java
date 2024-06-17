@@ -41,9 +41,10 @@ public class AutonomousBase extends CommandOpMode {
     protected FtcDashboard dashboard;
     protected Camera camera;
     protected final double colorThresh = 30;
-    protected final Rect leftRect = new Rect(90, 470, 300, 240);
-    protected final Rect centerRect = new Rect(600, 450, 150, 160);
-    protected final Rect rightRect = new Rect(950, 450, 300, 260);
+    protected final Rect
+        leftRect = new Rect(90, 470, 300, 240),
+        centerRect = new Rect(600, 450, 150, 160),
+        rightRect = new Rect(950, 450, 300, 260);
 
     protected Pose2d HomePose;
 
