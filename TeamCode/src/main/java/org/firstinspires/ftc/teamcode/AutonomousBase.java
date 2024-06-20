@@ -184,15 +184,16 @@ public class AutonomousBase extends CommandOpMode {
         waitForStart();
 
         if (camera.getTeamPropPos() == 0) {
-            rand = RoadRunnerSubsystem_BLUE.Randomization.LEFT;
+            rand = RoadRunnerSubsystem.Randomization.LEFT;
         } else if (camera.getTeamPropPos() == 1) {
-            rand = RoadRunnerSubsystem_BLUE.Randomization.CENTER;
+            rand = RoadRunnerSubsystem.Randomization.CENTER;
         } else if (camera.getTeamPropPos() == 2) {
-            rand = RoadRunnerSubsystem_BLUE.Randomization.RIGHT;
+            rand = RoadRunnerSubsystem.Randomization.RIGHT;
         }
 
         RR.spikeRandomizationPath(rand);
         RR.TrajectoryInit(rand);
+//        assert RR.leftPixelSpike != null : "NULL";
 
         // SPIKE
         new InstantCommand(intakeArmSubsystem::lockPixel, intakeArmSubsystem).schedule();

@@ -23,182 +23,32 @@ import org.inventors.ftc.opencvpipelines.TeamPropDetectionPipeline;
 import org.inventors.ftc.robotbase.hardware.Camera;
 import org.opencv.core.Rect;
 
+
 @Autonomous(name = "RED_Long", group = "Final Autonomous")
-public class Autonomous_RED_Long extends CommandOpMode {
+public class Autonomous_RED_Long extends AutonomousBase {
 
-    private OuttakeSusystem outtakeSusystem;
-    private ElevatorSubsystem elevatorSubsystem;
-    private IntakeArmSubsystem intakeArmSubsystem;
-    private IntakeSubsystem intakeSubsystem;
-
-    private SampleMecanumDrive drive;
-    private RoadRunnerSubsystem_RED RR_Red;
-    private RoadRunnerSubsystem_RED.Randomization rand;
-    private RevBlinkinLedDriver ledDriver;
-
-    private FtcDashboard dashboard;
-    private Camera camera;
-    private final double colorThresh = 50;
-    private final Rect leftRect = new Rect(90, 470, 300, 240);
-    private final Rect centerRect = new Rect(600, 450, 150, 160);
-    private final Rect rightRect = new Rect(950, 450, 300, 260);
-
-    private Pose2d HomePose = new Pose2d(1.5 * RoadRunnerSubsystem_RED.TileInverted, 3 * RoadRunnerSubsystem_RED.TileInverted + 6.93, Math.toRadians(90));
-
-    private SequentialCommandGroup temp;
-    public SequentialCommandGroup randomizationPixelElevator(){
-        return new SequentialCommandGroup(
-                new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.AUTO0),
-                new InstantCommand(outtakeSusystem::go_outtake_first),
-                new WaitCommand(80),
-                new InstantCommand(outtakeSusystem::go_outtake_second)
-        );
-    }
-
-    public SequentialCommandGroup elevator_first(){
-        return new SequentialCommandGroup(
-                new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.AUTO1),
-                new InstantCommand(outtakeSusystem::go_outtake_first),
-                new WaitCommand(80),
-                new InstantCommand(outtakeSusystem::go_outtake_second)
-        );
-    }
-
-    public SequentialCommandGroup elevator_second(){
-        return new SequentialCommandGroup(
-                new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.AUTO2),
-                new InstantCommand(outtakeSusystem::go_outtake_first),
-                new WaitCommand(80),
-                new InstantCommand(outtakeSusystem::go_outtake_second)
-        );
-    }
-
-    public SequentialCommandGroup scoring_randomization(){
-        return new SequentialCommandGroup(
-                new InstantCommand(outtakeSusystem::wheel_release),
-                new WaitCommand(800),
-                new InstantCommand(outtakeSusystem::wheel_stop)
-        );
-    }
-
-    public SequentialCommandGroup scoring(){
-        return new SequentialCommandGroup(
-                new InstantCommand(outtakeSusystem::wheel_release),
-                new WaitCommand(1300),
-                new InstantCommand(outtakeSusystem::wheel_stop)
-        );
-    }
-
-    public SequentialCommandGroup resetElevator() {
-        return new SequentialCommandGroup(
-                new InstantCommand(outtakeSusystem::go_intake_second),
-                new WaitCommand(80),
-                new InstantCommand(outtakeSusystem::go_intake_first),
-                new WaitCommand(100),
-                new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.LOADING)
-        );
-    }
-
-    public SequentialCommandGroup stackStationIntake(int index) {
-        return new SequentialCommandGroup(
-                new InstantCommand(intakeSubsystem::run),
-                new InstantCommand(outtakeSusystem::wheel_grab),
-                new WaitCommand(150),
-                new SequentialCommandGroup(
-                        new InstantCommand(()-> intakeArmSubsystem.auto_pixel(index)),
-                        new WaitCommand(500),
-                        new InstantCommand(()-> intakeArmSubsystem.auto_pixel(index - 1)),
-                        new WaitCommand(800)
-                ),
-                new ParallelCommandGroup(
-                        new InstantCommand(intakeSubsystem::stop),
-                        new InstantCommand(()-> intakeArmSubsystem.auto_pixel(6)),
-                        new InstantCommand(outtakeSusystem::wheel_stop)
-                ),
-                new SequentialCommandGroup(
-                        new InstantCommand(intakeSubsystem::reverse),
-                        new WaitCommand(600),
-                        new InstantCommand(intakeSubsystem::stop)
-                )
-        );
-    }
-
-    public SequentialCommandGroup stackStationIntakeOnePixel(int index) {
-        return new SequentialCommandGroup(
-                new InstantCommand(intakeSubsystem::run),
-                new InstantCommand(outtakeSusystem::wheel_grab),
-                new WaitCommand(150),
-                new SequentialCommandGroup(
-                        new InstantCommand(()-> intakeArmSubsystem.auto_pixel(index)),
-                        new WaitCommand(500)
-                ),
-                new ParallelCommandGroup(
-                        new InstantCommand(intakeSubsystem::stop),
-                        new InstantCommand(()-> intakeArmSubsystem.auto_pixel(6)),
-                        new InstantCommand(outtakeSusystem::wheel_stop)
-                ),
-                new SequentialCommandGroup(
-                        new InstantCommand(intakeSubsystem::reverse),
-                        new WaitCommand(600),
-                        new InstantCommand(intakeSubsystem::stop)
-                )
-        );
-    }
+    private Pose2d HomePose = new Pose2d(
+        1.5 * RoadRunnerSubsystem.TileInverted, 3 * RoadRunnerSubsystem.TileInverted + 6.93,
+        Math.toRadians(90)
+    );
 
     @Override
     public void initialize() {
-        outtakeSusystem = new OuttakeSusystem(hardwareMap);
-        elevatorSubsystem = new ElevatorSubsystem(hardwareMap, telemetry, () -> 0, outtakeSusystem);
-        intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry);
-        intakeArmSubsystem = new IntakeArmSubsystem(hardwareMap);
-        ledDriver = hardwareMap.get(RevBlinkinLedDriver.class, "led");
-        ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
-
-        Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
-        drive = new SampleMecanumDrive(hardwareMap);
-        RR_Red = new RoadRunnerSubsystem_RED(drive, new Pose2d(), RoadRunnerSubsystem_RED.StartingPosition.LONG,
-                RoadRunnerSubsystem_RED.Path.INNER, RoadRunnerSubsystem_RED.PixelStack.INNER,
-                RoadRunnerSubsystem_RED.ParkingPosition.MID, telemetry);
-
-        rand = RoadRunnerSubsystem_RED.Randomization.CENTER;
-        dashboard = FtcDashboard.getInstance();
-        camera = new Camera(hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.RED,
-                colorThresh, leftRect, centerRect, rightRect);
+        super.initialize();
+        initAllianceRelated(Alliance.RED);
+        RR = new RoadRunnerSubsystem_RED(
+            drive, HomePose, RoadRunnerSubsystem.StartingPosition.LONG,
+            RoadRunnerSubsystem.Path.INNER, RoadRunnerSubsystem.PixelStack.INNER,
+            RoadRunnerSubsystem.ParkingPosition.MID, telemetry
+        );
     }
 
     @Override
     public void runOpMode() {
-        initialize();
-        waitForStart();
-
-        if (camera.getTeamPropPos() == 0){
-            rand = RoadRunnerSubsystem_RED.Randomization.LEFT;
-        }
-        else if (camera.getTeamPropPos() == 1){
-            rand = RoadRunnerSubsystem_RED.Randomization.CENTER;
-        }
-        else if (camera.getTeamPropPos() == 2){
-            rand = RoadRunnerSubsystem_RED.Randomization.RIGHT;
-        }
-
-        RR_Red.spikeRandomizationPath(rand);
-        RR_Red.setCycle();
-        RR_Red.setParking();
-        RR_Red.TrajectoryInit(rand);
-
-
-        // SPIKE
-        new InstantCommand(intakeArmSubsystem::lockPixel, intakeArmSubsystem).schedule();
-
-        RR_Red.runSpike(rand);
-        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
-            drive.update();
-        }
-        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
+        super.runOpMode();
 
         new InstantCommand(intakeArmSubsystem::raiseArm, intakeArmSubsystem).schedule();
-
-        RR_Red.runSpike_Station();
+        RR.runSpike_Station();
         while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
             drive.update();
         }
@@ -217,7 +67,7 @@ public class Autonomous_RED_Long extends CommandOpMode {
 
         temp.schedule();
 
-        RR_Red.runStation_RandomizedBackdrop();
+        RR.runStation_RandomizedBackdrop();
         while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
             run();
             drive.update();
@@ -236,7 +86,7 @@ public class Autonomous_RED_Long extends CommandOpMode {
                 resetElevator()
         );
         temp.schedule();
-        RR_Red.runBackdrop_Station(0);
+        RR.runBackdrop_Station(0);
         while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
             run();
             drive.update();
@@ -256,7 +106,7 @@ public class Autonomous_RED_Long extends CommandOpMode {
 
         temp.schedule();
 
-        RR_Red.runStation_Backdrop(0);
+        RR.runStation_Backdrop(0);
         while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
             run();
             drive.update();
@@ -270,7 +120,7 @@ public class Autonomous_RED_Long extends CommandOpMode {
 
         temp = resetElevator();
         temp.schedule();
-        RR_Red.runParking();
+        RR.runParking();
         while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
             run();
             drive.update();

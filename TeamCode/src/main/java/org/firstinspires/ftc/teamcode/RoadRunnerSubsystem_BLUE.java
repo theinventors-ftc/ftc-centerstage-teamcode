@@ -11,11 +11,13 @@ import org.firstinspires.ftc.teamcode.roadRunner.drive.SampleMecanumDrive;
 
 
 public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
+    @Override
     public void OffsetsInit() {
         // Available key names:
         // "Stacks_Rand", "Stacks_Inner_FirstCycle","Stacks_Inner_SecondCycle",
         // "Stacks_Mid_FirstCycle", "Stacks_Mid_SecondCycle", "Stacks_Outer_FirstCycle",
         // "Stacks_Outer_SecondCycle", "Corridor_Close_Inner_FirstCycle",
+        // "Corridor_Close_Inner_Rand", "Corridor_Far_Inner_Rand",
         // "Corridor_Close_Inner_SecondCycle", "Corridor_Close_Outer_FirstCycle",
         // "Corridor_Close_Outer_SecondCycle", "Corridor_Far_Inner_FirstCycle",
         // "Corridor_Far_Inner_SecondCycle",  "Corridor_Far_Outer_FirstCycle",
@@ -77,13 +79,14 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
         PosesInit();
     }
 
+    @Override
     public void PosesInit() {
         /*------------------------------------------------------------------------------------------
         -- Poses --
         ------------------------------------------------------------------------------------------*/
         /* Spikes --------------------------------------------------------------------------------*/
         leftPixel_SHORT = robotPoseLimitCalculation(
-            new Pose2d(Tile, 1.8 * Tile, Math.toRadians(270)), RobotSides.CENTER
+            new Pose2d(Tile, 1.6 * Tile, Math.toRadians(180)), RobotSides.FRONT
         );
         centerPixel_SHORT = robotPoseLimitCalculation(
             new Pose2d(Tile / 2, Tile, Math.toRadians(270)), RobotSides.FRONT
@@ -92,11 +95,13 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
             new Pose2d(0, Tile, Math.toRadians(180)), RobotSides.FRONT
         );
         leftPixel_LONG = robotPoseLimitCalculation(
-            new Pose2d(TileInverted, 1.5 * Tile, Math.toRadians(0)), RobotSides.FRONT);
+            new Pose2d(TileInverted, 1.5 * Tile, Math.toRadians(0)), RobotSides.FRONT
+        );
         centerPixel_LONG = robotPoseLimitCalculation(
-            new Pose2d(1.9 * TileInverted, Tile, Math.toRadians(0)), RobotSides.FRONT);
+            new Pose2d(1.9 * TileInverted, Tile, Math.toRadians(0)), RobotSides.FRONT
+        );
         rightPixel_LONG = robotPoseLimitCalculation(
-            new Pose2d(1.95 * TileInverted, 1.25 * Tile, Math.toRadians(180)),
+            new Pose2d(1.9 * TileInverted, 1.25 * Tile, Math.toRadians(225)),
             RobotSides.FRONT
         );
 
@@ -108,18 +113,18 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
             new Pose2d(2.5 * Tile, 1.5 * Tile, Math.toRadians(180)), RobotSides.REAR
         );
         backdropRight = robotPoseLimitCalculation(
-            new Pose2d(2.5 * Tile, 1.25 * Tile, Math.toRadians(180)), RobotSides.REAR
+            new Pose2d(2.5 * Tile, 1.3 * Tile, Math.toRadians(180)), RobotSides.REAR
         );
 
         /* Stacks --------------------------------------------------------------------------------*/
         stationInner = robotPoseLimitCalculation(
-            new Pose2d(2.9 * TileInverted, Tile / 2, Math.toRadians(180)), RobotSides.FRONT
+            new Pose2d(2.8 * TileInverted, Tile / 2, Math.toRadians(180)), RobotSides.FRONT
         );
         stationMiddle = robotPoseLimitCalculation(
-            new Pose2d(2.9 * TileInverted, Tile, Math.toRadians(180)), RobotSides.FRONT
+            new Pose2d(2.8 * TileInverted, Tile, Math.toRadians(180)), RobotSides.FRONT
         );
         stationOuter = robotPoseLimitCalculation(
-            new Pose2d(2.9 * TileInverted, 1.5 * Tile, Math.toRadians(180)),
+            new Pose2d(2.8 * TileInverted, 1.5 * Tile, Math.toRadians(180)),
             RobotSides.FRONT
         );
 
@@ -135,6 +140,7 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
         parkingOuter = new Pose2d(2.5 * Tile, 2.5 * TileInverted, Math.toRadians(180));
     }
 
+    @Override
     public void TrajectoryInit(Randomization rand) {
         this.rand = rand;
 
@@ -150,7 +156,7 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
 
         /*----------------------------------------------------------------------------------------*/
         leftSpike = drive.trajectorySequenceBuilder(HomePose)
-            .strafeTo(leftPixelSpike.vec());
+            .lineToLinearHeading(leftPixelSpike);
         centerSpike = drive.trajectorySequenceBuilder(HomePose)
             .splineToLinearHeading(centerPixelSpike, Math.toRadians(270));
         rightSpike = drive.trajectorySequenceBuilder(HomePose)
@@ -160,23 +166,23 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
         /*----------------------------------------------------------------------------------------*/
         // TODO: this is wrong, change the values (??????)
         rightSpike_LONG = drive.trajectorySequenceBuilder(HomePose)
-            .splineToLinearHeading(rightPixel_LONG, Math.toRadians(0));
+            .lineToLinearHeading(rightPixel_LONG);
         centerSpike_LONG = drive.trajectorySequenceBuilder(HomePose)
             .lineTo(centerPixel_LONG.vec());
         leftSpike_LONG = drive.trajectorySequenceBuilder(HomePose)
-            .lineToLinearHeading(leftPixel_LONG);
+            .splineToLinearHeading(leftPixel_LONG, Math.toRadians(0));
 
         /*----------------------------------------------------------------------------------------*/
         randomizedBackdrop = offsetPoseShifter(randomizedBackdrop, "Backdrop_Rand");
 
         /* SHORT ---------------------------------------------------------------------------------*/
         spike_randomizedBackdrop = drive.trajectorySequenceBuilder(pixel_cycle_PoseTransfer)
-            .setTangent(Math.toRadians(90))
+            .setTangent(Math.toRadians(45))
             .splineToLinearHeading(randomizedBackdrop, Math.toRadians(0));
 
         /* LONG ---------------------------------------------------------------------------------*/
         spike_station = drive.trajectorySequenceBuilder(pixel_cycle_PoseTransfer)
-            .setTangent(Math.toRadians(280))
+            .setTangent(Math.toRadians(270))
             .splineToLinearHeading(
                 offsetPoseShifter(stackStation, "Stacks_Rand"), Math.toRadians(180)
             );
@@ -185,15 +191,27 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
                 offsetPoseShifter(stackStation, "Stacks_Rand"))
             .setReversed(true)
             .setTangent(Math.toRadians(0))
-            .splineToConstantHeading(stationFar, Math.toRadians(0))
-            .lineTo(stationClose)
-            .splineToConstantHeading(randomizedBackdrop.vec(), Math.toRadians(0));
+            .splineToConstantHeading(
+                offsetPoseShifter(stationFar, "Corridor_Far_Inner_Rand"),
+                Math.toRadians(0))
+            .lineTo(offsetPoseShifter(stationClose, "Corridor_Close_Inner_Rand"))
+            .splineToConstantHeading(
+                offsetPoseShifter(randomizedBackdrop.vec(), "Backdrop_Rand"),
+                Math.toRadians(0),
+                SampleMecanumDrive.getVelocityConstraint(
+                    35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH
+                ),
+                SampleMecanumDrive.getAccelerationConstraint(AccDefault)
+            );
 
         /* COMMON --------------------------------------------------------------------------------*/
         backdrop_station_1st_cycle = drive.trajectorySequenceBuilder(randomizedBackdrop)
             .setTangent(Math.toRadians(180))
-            .splineToConstantHeading(stationClose, Math.toRadians(180))
-            .lineTo(stationFar)
+            .splineToConstantHeading(
+                offsetPoseShifter(stationClose, "Corridor_Close_Inner_FirstCycle"),
+                Math.toRadians(180)
+            )
+            .lineTo(offsetPoseShifter(stationFar, "Corridor_Far_Inner_FirstCycle"))
             .splineToConstantHeading(
                 offsetPoseShifter(stackStation.vec(), "Stacks_Inner_FirstCycle"),
                 Math.toRadians(stackStationTangent[stackStationTangentValue])
@@ -203,8 +221,11 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
                 offsetPoseShifter(stackStation, "Stacks_Inner_FirstCycle"))
             .setReversed(true)
             .setTangent(Math.toRadians(0))
-            .splineToConstantHeading(stationFar, Math.toRadians(0))
-            .lineTo(stationClose)
+            .splineToConstantHeading(
+                offsetPoseShifter(stationFar, "Corridor_Far_Inner_FirstCycle"),
+                Math.toRadians(0)
+            )
+            .lineTo(offsetPoseShifter(stationClose, "Corridor_Close_Inner_FirstCycle"))
             .splineToConstantHeading(
                 offsetPoseShifter(backdrop_Unload.vec(), "Backdrop_Right_FirstCycle"),
                 Math.toRadians(0),
@@ -218,8 +239,11 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
         backdrop_station_2nd_cycle = drive.trajectorySequenceBuilder(
                 offsetPoseShifter(backdrop_Unload, "Backdrop_Right_FirstCycle"))
             .setTangent(Math.toRadians(180))
-            .splineToConstantHeading(stationClose, Math.toRadians(180))
-            .lineTo(stationFar)
+            .splineToConstantHeading(
+                offsetPoseShifter(stationClose, "Corridor_Close_Inner_SecondCycle"),
+                Math.toRadians(180)
+            )
+            .lineTo(offsetPoseShifter(stationFar, "Corridor_Far_Inner_SecondCycle"))
             .splineToConstantHeading(
                 offsetPoseShifter(stackStation.vec(), "Stacks_Inner_SecondCycle"),
                 Math.toRadians(stackStationTangent[stackStationTangentValue])
@@ -230,8 +254,13 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
                 offsetPoseShifter(stackStation, "Stacks_Inner_SecondCycle"))
             .setReversed(true)
             .setTangent(Math.toRadians(0))
-            .splineToConstantHeading(stationFar, Math.toRadians(0))
-            .lineTo(stationClose)
+            .splineToConstantHeading(
+                offsetPoseShifter(stationFar, "Corridor_Far_Inner_SecondCycle"),
+                Math.toRadians(0)
+            )
+            .lineTo(
+                offsetPoseShifter(stationClose, "Corridor_Close_Inner_SecondCycle")
+            )
             .splineToConstantHeading(
                 offsetPoseShifter(backdrop_Unload.vec(), "Backdrop_Right_SecondCycle"),
                 Math.toRadians(0),
@@ -250,6 +279,7 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
             .splineToConstantHeading(parkingPose.vec(), Math.toRadians(0));
     }
 
+    @Override
     public void setCycle() {
         super.setCycle();
 

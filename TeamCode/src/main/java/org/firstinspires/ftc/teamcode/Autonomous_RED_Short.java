@@ -10,18 +10,23 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name = "RED_Short", group = "Final Autonomous")
 public class Autonomous_RED_Short extends AutonomousBase {
-    private Pose2d HomePose = new Pose2d(RoadRunnerSubsystem_RED.Tile/2, 3 * RoadRunnerSubsystem_RED.TileInverted + 6.93, Math.toRadians(90));
+    private Pose2d HomePose = new Pose2d(
+        RoadRunnerSubsystem.Tile/2, 3 * RoadRunnerSubsystem.TileInverted + 6.93,
+        Math.toRadians(90)
+    );
 
+    @Override
     public void initialize() {
         super.initialize();
         initAllianceRelated(Alliance.RED);
         RR = new RoadRunnerSubsystem_RED(
-            drive, HomePose, RoadRunnerSubsystem_RED.StartingPosition.SHORT,
-            RoadRunnerSubsystem_RED.Path.INNER, RoadRunnerSubsystem_RED.PixelStack.INNER,
-            RoadRunnerSubsystem_RED.ParkingPosition.MID, telemetry
+            drive, HomePose, RoadRunnerSubsystem.StartingPosition.SHORT,
+            RoadRunnerSubsystem.Path.INNER, RoadRunnerSubsystem.PixelStack.INNER,
+            RoadRunnerSubsystem.ParkingPosition.INNER, telemetry
         );
     }
 
+    @Override
     public void runOpMode() {
         super.runOpMode();
 

@@ -23,10 +23,10 @@ public class RoadRunnerSubsystem extends SubsystemBase {
     ----------------------------------------------------------------------------------------------*/
     public static double
         Tile = 24, TileInverted = -Tile, /*-inches-*/
-        RobotX = 12.795, RobotY = 18.11, IntakeExt = 0.0, /*-inches-*/
-        // RobotY = robot_length + 2 * outtake_extension
-        // IntakeExt = intake_extension - outtake_extension
-//        RobotY = 15.1, RobotX = 13.1, IntakeExt = 3, /*-inches-*/
+//        RobotX = 12.795, RobotY = 18.11, IntakeExt = 0.0, /*-inches-*/
+//         RobotY = robot_length + 2 * outtake_extension
+//         IntakeExt = intake_extension - outtake_extension
+        RobotY = 15.1, RobotX = 13.1, IntakeExt = 3, /*-inches-*/
         AccDefault = 52, VelDefault = 52;
 
     /*----------------------------------------------------------------------------------------------
@@ -202,8 +202,18 @@ public class RoadRunnerSubsystem extends SubsystemBase {
         drive.setPoseEstimate(HomePose);
 
         /*----------------------------------------------------------------------------------------*/
+        OffsetsInit();
+        PosesInit();
         setCycle();
         setParking();
+    }
+
+    public void OffsetsInit() {
+        throw new NotImplementedError("Implement OffsetsInit in Child classes");
+    }
+
+    public void PosesInit() {
+        throw new NotImplementedError("Implement PosesInit in Child classes");
     }
 
     public void setCycle() {
