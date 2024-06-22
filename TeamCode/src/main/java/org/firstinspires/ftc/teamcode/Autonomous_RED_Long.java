@@ -62,7 +62,7 @@ public class Autonomous_RED_Long extends AutonomousBase {
 
         temp = new SequentialCommandGroup(
                 new WaitCommand(2400),
-                randomizationPixelElevator()
+                elevator_first()
         );
 
         temp.schedule();
@@ -101,7 +101,7 @@ public class Autonomous_RED_Long extends AutonomousBase {
 
         temp = new SequentialCommandGroup(
                 new WaitCommand(2400),
-                elevator_first()
+                elevator_second()
         );
 
         temp.schedule();

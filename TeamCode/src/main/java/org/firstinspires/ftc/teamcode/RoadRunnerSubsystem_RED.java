@@ -47,18 +47,21 @@ public class RoadRunnerSubsystem_RED extends RoadRunnerSubsystem {
         RIGHT_RandomizationOffset_SHORT.put("Backdrop_Left_SecondCycle", new Pair<>(3.5, -2.0));
 
         LEFT_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-1.0, -2.0));
+        LEFT_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-1.0, -2.0));
+        LEFT_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(3.0, 0.0));
+        LEFT_RandomizationOffset_LONG.put("Backdrop_Left_FirstCycle", new Pair<>(3.0, 0.0));
 
-        CENTER_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-4.0, -2.0));
-        CENTER_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-5.5, -3.0));
-        CENTER_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(-4.0, 0.0));
-        CENTER_RandomizationOffset_LONG.put("Backdrop_Left_FirstCycle", new Pair<>(-4.0, 0.0));
+        CENTER_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-2.5, -2.0));
+        CENTER_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-4.0, -3.0));
+        CENTER_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(3.0, 0.0));
+        CENTER_RandomizationOffset_LONG.put("Backdrop_Left_FirstCycle", new Pair<>(3.0, -2.0));
 
         RIGHT_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-3.5, -3.0));
         RIGHT_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-3.5, -3.0));
         RIGHT_RandomizationOffset_LONG.put("Corridor_Close_Inner_FirstCycle", new Pair<>(0.0, 2.0));
         RIGHT_RandomizationOffset_LONG.put("Corridor_Far_Inner_FirstCycle", new Pair<>(0.0, 2.0));
-        RIGHT_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(-1.5, 3.0));
-        RIGHT_RandomizationOffset_LONG.put("Backdrop_Left_FirstCycle", new Pair<>(-3.0, -3.0));
+        RIGHT_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(3.0, 3.0));
+        RIGHT_RandomizationOffset_LONG.put("Backdrop_Left_FirstCycle", new Pair<>(3.0, -3.0));
 
         LEFT_RandomizationOffset_LONG.put(
             "Backdrop_Left_SecondCycle", LEFT_RandomizationOffset_LONG.getOrDefault(
@@ -103,14 +106,15 @@ public class RoadRunnerSubsystem_RED extends RoadRunnerSubsystem {
                 new Pose2d(Tile/2, TileInverted, Math.toRadians(90)), RobotSides.FRONT
         );
         rightPixel_SHORT = robotPoseLimitCalculation(
-                new Pose2d(Tile, 1.6 * TileInverted, Math.toRadians(180)), RobotSides.FRONT
+                new Pose2d(Tile, 1.6 * TileInverted, Math.toRadians(135)), RobotSides.FRONT
         );
+
         leftPixel_LONG = robotPoseLimitCalculation(
-                new Pose2d(1.9 * TileInverted,1.25 * TileInverted, Math.toRadians(135)),
+                new Pose2d(1.9 * TileInverted,1.3 * TileInverted, Math.toRadians(180)),
                 RobotSides.FRONT
         );
         centerPixel_LONG = robotPoseLimitCalculation(
-                new Pose2d(1.75 * TileInverted, TileInverted, Math.toRadians(359)),
+                new Pose2d(1.4 * TileInverted, TileInverted, Math.toRadians(359)),
                 RobotSides.FRONT
         );
         rightPixel_LONG = robotPoseLimitCalculation(
@@ -164,11 +168,6 @@ public class RoadRunnerSubsystem_RED extends RoadRunnerSubsystem {
 
     @Override
     public void TrajectoryInit(Randomization rand) {
-//        assert stationClose != null : "Is null, stationClose";
-//        assert stationFar != null : "Is null, stationFar";
-//        assert stackStation != null : "Is null, stackStation";
-//        assert parkingPose != null : "Is null, parkingPose";
-
         /*----------------------------------------------------------------------------------------*/
 
         this.rand = rand;
@@ -196,7 +195,8 @@ public class RoadRunnerSubsystem_RED extends RoadRunnerSubsystem {
         rightSpike_LONG = drive.trajectorySequenceBuilder(HomePose)
                 .splineToLinearHeading(rightPixel_LONG, Math.toRadians(0));
         centerSpike_LONG = drive.trajectorySequenceBuilder(HomePose)
-                .lineTo(centerPixel_LONG.vec());
+                .setTangent(Math.toRadians(135))
+                .splineToLinearHeading(centerPixel_LONG, Math.toRadians(0));
         leftSpike_LONG = drive.trajectorySequenceBuilder(HomePose)
                 .lineToLinearHeading(leftPixel_LONG);
 

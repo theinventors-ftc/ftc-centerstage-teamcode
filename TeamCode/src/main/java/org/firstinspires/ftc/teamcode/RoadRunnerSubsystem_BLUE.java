@@ -75,8 +75,6 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
         super(
             sampleDrive, HomePose, startingPosition, path, pixelStack, parkingPosition, telemetry
         );
-        OffsetsInit();
-        PosesInit();
     }
 
     @Override

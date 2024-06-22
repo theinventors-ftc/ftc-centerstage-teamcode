@@ -5,7 +5,10 @@ import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
+import com.arcrobotics.ftclib.util.Timing;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import java.util.concurrent.TimeUnit;
 
 
 @Autonomous(name = "RED_Short", group = "Final Autonomous")
@@ -22,7 +25,7 @@ public class Autonomous_RED_Short extends AutonomousBase {
         RR = new RoadRunnerSubsystem_RED(
             drive, HomePose, RoadRunnerSubsystem.StartingPosition.SHORT,
             RoadRunnerSubsystem.Path.INNER, RoadRunnerSubsystem.PixelStack.INNER,
-            RoadRunnerSubsystem.ParkingPosition.INNER, telemetry
+            RoadRunnerSubsystem.ParkingPosition.OUTER, telemetry
         );
     }
 
@@ -39,6 +42,7 @@ public class Autonomous_RED_Short extends AutonomousBase {
             drive.update();
         }
         drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
+//        backdropAlignment();
 
         temp = scoring_randomization();
         temp.schedule();
@@ -71,6 +75,7 @@ public class Autonomous_RED_Short extends AutonomousBase {
             drive.update();
         }
         drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
+//        backdropAlignment();
 
         temp = scoring();
         temp.schedule();
@@ -109,12 +114,13 @@ public class Autonomous_RED_Short extends AutonomousBase {
         }
         drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
 
+//        backdropAlignment();
+
         temp = scoring();
         temp.schedule();
         while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
             run();
         }
-
 
         temp = resetElevator();
         temp.schedule();

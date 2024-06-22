@@ -11,8 +11,10 @@ import org.firstinspires.ftc.teamcode.roadRunner.trajectorysequence.TrajectorySe
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.arcrobotics.ftclib.util.Timing;
 
 import java.util.Hashtable;
+import java.util.concurrent.TimeUnit;
 
 import kotlin.NotImplementedError;
 
@@ -28,7 +30,6 @@ public class RoadRunnerSubsystem extends SubsystemBase {
 //         IntakeExt = intake_extension - outtake_extension
         RobotY = 15.1, RobotX = 13.1, IntakeExt = 3, /*-inches-*/
         AccDefault = 52, VelDefault = 52;
-
     /*----------------------------------------------------------------------------------------------
     -- Enums --
     ----------------------------------------------------------------------------------------------*/
@@ -253,8 +254,8 @@ public class RoadRunnerSubsystem extends SubsystemBase {
     ----------------------------------------------------------------------------------------------*/
     public void spikeRandomizationPath(Randomization randomization) {
         if (startingPosition == StartingPosition.LONG) {
-            rightPixelSpike = leftPixel_LONG;
-            leftPixelSpike = rightPixel_LONG;
+            rightPixelSpike = rightPixel_LONG;
+            leftPixelSpike = leftPixel_LONG;
             centerPixelSpike = centerPixel_LONG;
         } else {
             rightPixelSpike = rightPixel_SHORT;

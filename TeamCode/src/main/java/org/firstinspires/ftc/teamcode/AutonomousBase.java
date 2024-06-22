@@ -9,10 +9,12 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
+import com.arcrobotics.ftclib.util.Timing;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.ElevatorCommand;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.ElevatorSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeArmSubsystem;
@@ -20,12 +22,17 @@ import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeSubsyste
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.OuttakeSusystem;
 import org.firstinspires.ftc.teamcode.roadRunner.drive.SampleMecanumDrive;
 import org.inventors.ftc.opencvpipelines.TeamPropDetectionPipeline;
+import org.inventors.ftc.robotbase.controllers.ForwardControllerSubsystem;
 import org.inventors.ftc.robotbase.hardware.Camera;
+import org.inventors.ftc.robotbase.hardware.DistanceSensorEx;
 import org.opencv.core.Rect;
+
+import java.util.concurrent.TimeUnit;
 
 @Disabled
 @Autonomous(name = "Do not run", group = "Final Autonomous")
 public class AutonomousBase extends CommandOpMode {
+//    protected Timing.Timer timer = new Timing.Timer(2000, TimeUnit.MILLISECONDS);
     protected enum Alliance {BLUE, RED}
 
     protected OuttakeSusystem outtakeSusystem;
@@ -46,7 +53,22 @@ public class AutonomousBase extends CommandOpMode {
         centerRect = new Rect(600, 450, 150, 160),
         rightRect = new Rect(950, 450, 300, 260);
 
+    protected DistanceSensorEx distanceSensor;
+    protected ForwardControllerSubsystem distanceFollow;
+
     protected SequentialCommandGroup temp;
+
+//    public void backdropAlignment(){
+//        timer.start();
+//        distanceFollow.enable();
+//        double out = 0.0;
+//        while (!isStopRequested() && opModeIsActive() && !timer.done()) {
+//            out = distanceFollow.calculateOutput();
+//            drive.setMotorPowers(out, out, out, out);
+//            run();
+//            drive.updatePoseEstimate();
+//        }
+//    }
 
     public SequentialCommandGroup randomizationPixelElevator() {
         return new SequentialCommandGroup(
@@ -159,6 +181,11 @@ public class AutonomousBase extends CommandOpMode {
         drive = new SampleMecanumDrive(hardwareMap);
 
         dashboard = FtcDashboard.getInstance();
+
+        distanceSensor = new DistanceSensorEx(hardwareMap, "distance_sensor");
+        distanceFollow =
+            new ForwardControllerSubsystem(() -> distanceSensor.getDistance(DistanceUnit.CM), 3, telemetry);
+
     }
 
     public void initAllianceRelated(Alliance alliance) {
