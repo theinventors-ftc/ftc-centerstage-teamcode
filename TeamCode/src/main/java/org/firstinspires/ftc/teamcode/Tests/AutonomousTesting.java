@@ -27,9 +27,7 @@ public class AutonomousTesting extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
-
-        intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry);
+        intakeSubsystem = new IntakeSubsystem(hardwareMap);
         intakeArmSubsystem = new IntakeArmSubsystem(hardwareMap);
 //        schedule(new SequentialCommandGroup(
 //                new InstantCommand(intakeSubsystem::run, intakeSubsystem),

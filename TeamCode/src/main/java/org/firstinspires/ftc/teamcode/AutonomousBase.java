@@ -171,21 +171,21 @@ public class AutonomousBase extends CommandOpMode {
 
     @Override
     public void initialize() {
+        dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
+
         outtakeSusystem = new OuttakeSusystem(hardwareMap);
         elevatorSubsystem = new ElevatorSubsystem(hardwareMap, telemetry, () -> 0, outtakeSusystem);
-        intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry);
+        intakeSubsystem = new IntakeSubsystem(hardwareMap);
         intakeArmSubsystem = new IntakeArmSubsystem(hardwareMap);
         ledDriver = hardwareMap.get(RevBlinkinLedDriver.class, "led");
 
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         drive = new SampleMecanumDrive(hardwareMap);
 
-        dashboard = FtcDashboard.getInstance();
-
         distanceSensor = new DistanceSensorEx(hardwareMap, "distance_sensor");
-        distanceFollow =
-            new ForwardControllerSubsystem(() -> distanceSensor.getDistance(DistanceUnit.CM), 3, telemetry);
-
+        distanceFollow = new ForwardControllerSubsystem(
+            () -> distanceSensor.getDistance(DistanceUnit.CM), 3, telemetry
+        );
     }
 
     public void initAllianceRelated(Alliance alliance) {
