@@ -84,22 +84,22 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
         ------------------------------------------------------------------------------------------*/
         /* Spikes --------------------------------------------------------------------------------*/
         leftPixel_SHORT = robotPoseLimitCalculation(
-            new Pose2d(Tile, 1.6 * Tile, Math.toRadians(180)), RobotSides.FRONT
+            new Pose2d(Tile, 1.6 * Tile, Math.toRadians(225)), RobotSides.FRONT
         );
         centerPixel_SHORT = robotPoseLimitCalculation(
-            new Pose2d(Tile / 2, Tile, Math.toRadians(270)), RobotSides.FRONT
+            new Pose2d(Tile/2, Tile, Math.toRadians(270)), RobotSides.FRONT
         );
         rightPixel_SHORT = robotPoseLimitCalculation(
-            new Pose2d(0, Tile, Math.toRadians(180)), RobotSides.FRONT
+            new Pose2d(2, Tile, Math.toRadians(180)), RobotSides.FRONT
         );
         leftPixel_LONG = robotPoseLimitCalculation(
-            new Pose2d(TileInverted, 1.5 * Tile, Math.toRadians(0)), RobotSides.FRONT
+            new Pose2d(TileInverted, 1.4 * Tile, Math.toRadians(1)), RobotSides.FRONT
         );
         centerPixel_LONG = robotPoseLimitCalculation(
-            new Pose2d(1.9 * TileInverted, Tile, Math.toRadians(0)), RobotSides.FRONT
+            new Pose2d(1.4 * TileInverted, Tile, Math.toRadians(1)), RobotSides.FRONT
         );
         rightPixel_LONG = robotPoseLimitCalculation(
-            new Pose2d(1.9 * TileInverted, 1.25 * Tile, Math.toRadians(225)),
+            new Pose2d(1.9 * TileInverted, 1.3 * Tile, Math.toRadians(180)),
             RobotSides.FRONT
         );
 
@@ -156,17 +156,17 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
         leftSpike = drive.trajectorySequenceBuilder(HomePose)
             .lineToLinearHeading(leftPixelSpike);
         centerSpike = drive.trajectorySequenceBuilder(HomePose)
-            .splineToLinearHeading(centerPixelSpike, Math.toRadians(270));
+            .lineTo(centerPixelSpike.vec());
         rightSpike = drive.trajectorySequenceBuilder(HomePose)
-            .setTangent(Math.toRadians(315))
+//            .setTangent(Math.toRadians(315))
             .splineToLinearHeading(rightPixelSpike, Math.toRadians(180));
 
         /*----------------------------------------------------------------------------------------*/
-        // TODO: this is wrong, change the values (??????)
         rightSpike_LONG = drive.trajectorySequenceBuilder(HomePose)
             .lineToLinearHeading(rightPixel_LONG);
         centerSpike_LONG = drive.trajectorySequenceBuilder(HomePose)
-            .lineTo(centerPixel_LONG.vec());
+            .setTangent(Math.toRadians(225))
+            .splineToLinearHeading(centerPixel_LONG, Math.toRadians(0));
         leftSpike_LONG = drive.trajectorySequenceBuilder(HomePose)
             .splineToLinearHeading(leftPixel_LONG, Math.toRadians(0));
 

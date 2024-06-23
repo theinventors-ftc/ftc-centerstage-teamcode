@@ -60,8 +60,8 @@ public class RoadRunnerSubsystem_RED extends RoadRunnerSubsystem {
         RIGHT_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-3.5, -3.0));
         RIGHT_RandomizationOffset_LONG.put("Corridor_Close_Inner_FirstCycle", new Pair<>(0.0, 2.0));
         RIGHT_RandomizationOffset_LONG.put("Corridor_Far_Inner_FirstCycle", new Pair<>(0.0, 2.0));
-        RIGHT_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(3.0, 3.0));
-        RIGHT_RandomizationOffset_LONG.put("Backdrop_Left_FirstCycle", new Pair<>(3.0, -3.0));
+        RIGHT_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(2.0, 0.0));
+        RIGHT_RandomizationOffset_LONG.put("Backdrop_Left_FirstCycle", new Pair<>(2.5, 0.0));
 
         LEFT_RandomizationOffset_LONG.put(
             "Backdrop_Left_SecondCycle", LEFT_RandomizationOffset_LONG.getOrDefault(
@@ -118,7 +118,7 @@ public class RoadRunnerSubsystem_RED extends RoadRunnerSubsystem {
                 RobotSides.FRONT
         );
         rightPixel_LONG = robotPoseLimitCalculation(
-                new Pose2d(TileInverted, 1.40 * TileInverted, Math.toRadians(0)),
+                new Pose2d(TileInverted, 1.25 * TileInverted, Math.toRadians(359)),
                 RobotSides.FRONT
         );
 
@@ -135,10 +135,6 @@ public class RoadRunnerSubsystem_RED extends RoadRunnerSubsystem {
                 new Pose2d(2.5 * Tile , 1.75 * TileInverted, Math.toRadians(180)),
                 RobotSides.REAR
         );
-//        randomizationBackdropRight =  robotPoseLimitCalculation(
-//                new Pose2d(2.75 * Tile, 1.9 * TileInverted, Math.toRadians(180)),
-//                RobotSides.REAR
-//        );
 
         /* Stacks --------------------------------------------------------------------------------*/
         stationInner = robotPoseLimitCalculation(
@@ -168,8 +164,6 @@ public class RoadRunnerSubsystem_RED extends RoadRunnerSubsystem {
 
     @Override
     public void TrajectoryInit(Randomization rand) {
-        /*----------------------------------------------------------------------------------------*/
-
         this.rand = rand;
 
         test = drive.trajectorySequenceBuilder(new Pose2d())
@@ -184,29 +178,29 @@ public class RoadRunnerSubsystem_RED extends RoadRunnerSubsystem {
 
         /*----------------------------------------------------------------------------------------*/
         rightSpike = drive.trajectorySequenceBuilder(HomePose)
-                .lineToLinearHeading(rightPixelSpike);
+            .lineToLinearHeading(rightPixelSpike);
         centerSpike = drive.trajectorySequenceBuilder(HomePose)
-                .lineTo(centerPixelSpike.vec());
+            .lineTo(centerPixelSpike.vec());
         leftSpike = drive.trajectorySequenceBuilder(HomePose)
 //                .setTangent(Math.toRadians(45))
-                .splineToLinearHeading(leftPixelSpike, Math.toRadians(180));
+            .splineToLinearHeading(leftPixelSpike, Math.toRadians(180));
 
         /*----------------------------------------------------------------------------------------*/
         rightSpike_LONG = drive.trajectorySequenceBuilder(HomePose)
-                .splineToLinearHeading(rightPixel_LONG, Math.toRadians(0));
+            .splineToLinearHeading(rightPixel_LONG, Math.toRadians(0));
         centerSpike_LONG = drive.trajectorySequenceBuilder(HomePose)
-                .setTangent(Math.toRadians(135))
-                .splineToLinearHeading(centerPixel_LONG, Math.toRadians(0));
+            .setTangent(Math.toRadians(135))
+            .splineToLinearHeading(centerPixel_LONG, Math.toRadians(0));
         leftSpike_LONG = drive.trajectorySequenceBuilder(HomePose)
-                .lineToLinearHeading(leftPixel_LONG);
+            .lineToLinearHeading(leftPixel_LONG);
 
         /*----------------------------------------------------------------------------------------*/
         randomizedBackdrop = offsetPoseShifter(randomizedBackdrop, "Backdrop_Rand");
 
         /* SHORT ---------------------------------------------------------------------------------*/
         spike_randomizedBackdrop = drive.trajectorySequenceBuilder(pixel_cycle_PoseTransfer)
-                .setTangent(Math.toRadians(315))
-                .splineToLinearHeading(randomizedBackdrop, Math.toRadians(0));
+            .setTangent(Math.toRadians(315))
+            .splineToLinearHeading(randomizedBackdrop, Math.toRadians(0));
 
         /* LONG ----------------------------------------------------------------------------------*/
         spike_station = drive.trajectorySequenceBuilder(pixel_cycle_PoseTransfer)
