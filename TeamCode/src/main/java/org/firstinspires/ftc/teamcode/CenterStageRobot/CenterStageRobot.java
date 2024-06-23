@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.opmode.InstantRunHelper;
@@ -28,6 +29,8 @@ import org.inventors.ftc.robotbase.drive.DriveConstants;
 import org.inventors.ftc.robotbase.hardware.GamepadExEx;
 import org.inventors.ftc.robotbase.RobotEx;
 
+import java.util.function.DoubleSupplier;
+
 public class CenterStageRobot extends RobotEx {
     //----------------------------------- Initialize Subsystems -----------------------------------//
     private IntakeArmSubsystem intakeArmSubsystem;
@@ -39,15 +42,26 @@ public class CenterStageRobot extends RobotEx {
     private DroneSubsystem droneSubsystem;
     private PixelColorDetectorSubsystem pixelColorDetectorSubsystem;
     private LEDSubsystem ledSubsystem;
-    private LocalizerSubsystem localizerSubsystem;
+    private ElapsedTime running_time;
 
     public CenterStageRobot(HardwareMap hm, DriveConstants RobotConstants, Telemetry telemetry,
                             GamepadExEx driverOp, GamepadExEx toolOp, OpModeType opModeType,
                             Alliance alliance, String imuName, boolean camera, boolean distance_sensor,
-                            Pose2d startingPose) {
+                            Pose2d startingPose, ElapsedTime running_time) {
         super(hm, RobotConstants, telemetry, driverOp, toolOp, opModeType, alliance, imuName, camera, distance_sensor, startingPose);
-        localizerSubsystem = new LocalizerSubsystem(hm, telemetry, startingPose,
-                this::getHeading, this::getHeadingVelocity);
+
+        // ----------------------------------- Notifications ------------------------------------ //
+        this.running_time = running_time;
+
+        new Trigger(() -> running_time.seconds() >= 120-10)
+                .whenActive(
+                        new InstantCommand(() -> driverOp.rumble(0.6))
+                );
+
+        new Trigger(() -> running_time.seconds() >= 120-5)
+                .whenActive(
+                        new InstantCommand(() -> driverOp.rumble(5))
+                );
     }
 
     @Override
@@ -64,7 +78,7 @@ public class CenterStageRobot extends RobotEx {
         droneSubsystem = new DroneSubsystem(hardwareMap);
         pixelColorDetectorSubsystem = new PixelColorDetectorSubsystem(hardwareMap, telemetry,
                 driverOp, toolOp);
-        ledSubsystem = new LEDSubsystem(hardwareMap, pixelColorDetectorSubsystem, telemetry);
+        ledSubsystem = new LEDSubsystem(hardwareMap, pixelColorDetectorSubsystem, telemetry, running_time);
 
         // ----------------------------------- Manual Actions ----------------------------------- //
         toolOp.getGamepadButton(GamepadKeys.Button.B) // Outtake Toggle
@@ -80,13 +94,13 @@ public class CenterStageRobot extends RobotEx {
                 );
 
         // Releasing Pixels
-        new Trigger(() -> toolOp.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) >= 0.8) // Outtaking
+        new Trigger(() -> driverOp.getButton(GamepadKeys.Button.RIGHT_BUMPER)) // Outtaking
                 .whenActive(new SequentialCommandGroup(
                         new InstantCommand(outtakeSusystem::wheel_release),
                         new InstantCommand(pixelColorDetectorSubsystem::enable),
                         new InstantCommand(elevatorSubsystem::capturePosition, elevatorSubsystem)
                 ));
-        new Trigger(() -> toolOp.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) < 0.8)// Outtaking (Complementary)
+        new Trigger(() -> !driverOp.getButton(GamepadKeys.Button.RIGHT_BUMPER))// Outtaking (Complementary)
                 .whenActive(new SequentialCommandGroup(
                         new InstantCommand(outtakeSusystem::wheel_stop),
                         new InstantCommand(pixelColorDetectorSubsystem::disable)
@@ -102,17 +116,12 @@ public class CenterStageRobot extends RobotEx {
         // ---------------------------------- Automated Actions --------------------------------- //
 
         // Elevator Automated Heights
-        toolOp.getGamepadButton(GamepadKeys.Button.DPAD_UP)
+        toolOp.getGamepadButton(GamepadKeys.Button.DPAD_UP) // Memory
                 .whenPressed(new SequentialCommandGroup(
                         new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.STORAGE),
                         new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.OPEN)
                 ));
-//        toolOp.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
-//                .whenPressed(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.MID));
-//        toolOp.getGamepadButton(GamepadKeys.Button.DPAD_UP)
-//                .whenPressed(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.HIGH));
-//        toolOp.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
-//                .whenPressed(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.LOADING));
+
         toolOp.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
                 .whenPressed(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.HANGING));
         toolOp.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON)
@@ -155,12 +164,12 @@ public class CenterStageRobot extends RobotEx {
                         new SequentialCommandGroup(
                                 new InstantCommand(outtakeSusystem::wheel_stop),
                                 new InstantCommand(intakeArmSubsystem::raiseArm),
-                                new WaitCommand(150),
+                                new WaitCommand(100),
                                 new InstantCommand(intakeSubsystem::reverse, intakeSubsystem),
                                 new WaitCommand(500),
                                 new InstantCommand(intakeSubsystem::stop, intakeSubsystem),
                                 new InstantCommand(pixelColorDetectorSubsystem::disable),
-                                new WaitCommand(350),
+//                                new WaitCommand(350), // please dont fuck up this is important to be removed
                                 new InstantCommand(ledSubsystem::disableIntake)
                         )
                 );
