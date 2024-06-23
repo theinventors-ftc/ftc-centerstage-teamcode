@@ -112,8 +112,6 @@ public class LEDSubsystem extends SubsystemBase {
                 driver.setPattern(GOOO_PATTERN);
             }
         }
-
-//        telemetry.addData("time:", test.now(TimeUnit.SECONDS));
     }
 
         public void enableIntake() {

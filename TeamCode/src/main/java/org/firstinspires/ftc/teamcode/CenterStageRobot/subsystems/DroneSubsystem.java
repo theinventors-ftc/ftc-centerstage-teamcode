@@ -32,10 +32,6 @@ public class DroneSubsystem extends SubsystemBase {
         servo.setPosition(RELEASE_POS);
     }
 
-    public void linearMove(double value) {
-        servo.setPosition(value * (RELEASE_POS-SECURE_POS) + SECURE_POS);
-    }
-
     public State getState() {
         return state;
     }

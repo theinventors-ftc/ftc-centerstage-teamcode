@@ -9,7 +9,6 @@ public class ElevatorWait extends CommandBase {
 
     public ElevatorWait(ElevatorSubsystem elevator){
         this.elevator = elevator;
-//        addRequirements(this.elevator);
     }
 
 
