@@ -1,24 +1,19 @@
 package org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems;
 
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
-import com.arcrobotics.ftclib.util.Timing;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.checkerframework.common.value.qual.MinLenFieldInvariant;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.OuttakeCommand;
 import org.inventors.ftc.robotbase.hardware.MotorExEx;
 
-import java.sql.Time;
+
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.function.DoubleSupplier;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -63,7 +58,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     public double feedForwardValue = 0.0;
 
     public double max_ticks_per_second = 0;
-//    private Timing.Timer timer = new Timing.Timer(5, TimeUnit.MILLISECONDS);
 
     private enum initZeroState {
         INIT,

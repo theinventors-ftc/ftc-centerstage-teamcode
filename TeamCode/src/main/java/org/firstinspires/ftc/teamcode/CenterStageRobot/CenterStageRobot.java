@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.CenterStageRobot;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -12,24 +11,20 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.internal.opmode.InstantRunHelper;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.ElevatorCommand;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.ElevatorWait;
-import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.DroneSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.ElevatorSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeArmSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.LEDSubsystem;
-import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.LocalizerSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.OuttakeSusystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.PixelColorDetectorSubsystem;
 import org.inventors.ftc.robotbase.drive.DriveConstants;
 import org.inventors.ftc.robotbase.hardware.GamepadExEx;
 import org.inventors.ftc.robotbase.RobotEx;
 
-import java.util.function.DoubleSupplier;
 
 public class CenterStageRobot extends RobotEx {
     //----------------------------------- Initialize Subsystems -----------------------------------//
@@ -72,7 +67,7 @@ public class CenterStageRobot extends RobotEx {
     @Override
     public void initMechanismsTeleOp(HardwareMap hardwareMap) {
         intakeArmSubsystem = new IntakeArmSubsystem(hardwareMap);
-        intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry);
+        intakeSubsystem = new IntakeSubsystem(hardwareMap);
         outtakeSusystem = new OuttakeSusystem(hardwareMap);
         elevatorSubsystem = new ElevatorSubsystem(hardwareMap, telemetry, () -> toolOp.getLeftY(), outtakeSusystem);
         droneSubsystem = new DroneSubsystem(hardwareMap);
@@ -126,8 +121,6 @@ public class CenterStageRobot extends RobotEx {
                 .whenPressed(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.HANGING));
         toolOp.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON)
                 .whenPressed(new InstantCommand(elevatorSubsystem::reset, elevatorSubsystem));
-
-//        CommandScheduler.getInstance().registerSubsystem(elevatorSubsystem);
 
         // Intake Automation
         toolOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)

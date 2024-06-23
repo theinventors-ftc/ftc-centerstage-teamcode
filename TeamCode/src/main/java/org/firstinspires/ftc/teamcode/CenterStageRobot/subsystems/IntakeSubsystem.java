@@ -15,7 +15,6 @@ public class IntakeSubsystem extends SubsystemBase {
     private final MotorExEx motor;
     public double speed = 0.9;
     private final double ampThreshold = 1.4;
-    private Telemetry telemetry;
 
     private boolean isStalled = false;
     private final Timing.Timer timer;
@@ -28,11 +27,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private State state;
 
-    public IntakeSubsystem(HardwareMap hm, Telemetry telemetry) {
+    public IntakeSubsystem(HardwareMap hm) {
         this.motor = new MotorExEx(hm, "intake");
         motor.setInverted(true);
-
-        this.telemetry = telemetry;
 
         this.timer = new Timing.Timer(2500, TimeUnit.MILLISECONDS);
 
@@ -78,10 +75,6 @@ public class IntakeSubsystem extends SubsystemBase {
     public void stop() {
         state = State.RESTING;
         motor.set(0);
-    }
-
-    public void slow_grabbing() {
-        motor.set(0.35);
     }
 
     public boolean isStalled() {

@@ -1,12 +1,8 @@
 package org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.hardware.ServoEx;
-import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class IntakeArmSubsystem extends SubsystemBase {
     private double MIN = 0.1,MID = 0.1, MAX = 0.35;
@@ -31,10 +27,6 @@ public class IntakeArmSubsystem extends SubsystemBase {
 
     public void lowerArm() {
         setPosition(MIN);
-    }
-
-    public void midArm() {
-        setPosition(MID);
     }
 
     public void auto_pixel(int index){
