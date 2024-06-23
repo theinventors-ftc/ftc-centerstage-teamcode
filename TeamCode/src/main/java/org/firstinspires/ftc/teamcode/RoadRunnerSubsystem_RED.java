@@ -46,6 +46,8 @@ public class RoadRunnerSubsystem_RED extends RoadRunnerSubsystem {
         RIGHT_RandomizationOffset_SHORT.put("Backdrop_Left_FirstCycle", new Pair<>(3.5, -2.0));
         RIGHT_RandomizationOffset_SHORT.put("Backdrop_Left_SecondCycle", new Pair<>(3.5, -2.0));
 
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
         LEFT_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-1.0, -2.0));
         LEFT_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-1.0, -2.0));
         LEFT_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(3.0, 0.0));

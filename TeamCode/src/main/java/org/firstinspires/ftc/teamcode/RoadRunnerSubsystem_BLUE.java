@@ -45,6 +45,8 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
         RIGHT_RandomizationOffset_SHORT.put("Backdrop_Right_FirstCycle", new Pair<>(-1.0, 0.0));
         RIGHT_RandomizationOffset_SHORT.put("Backdrop_Right_SecondCycle", new Pair<>(-1.0, 0.0));
 
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
         LEFT_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-6.0, 0.0));
         LEFT_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(-0.5, 3.0));
         LEFT_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-6.0, 1.5));
@@ -54,27 +56,27 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
         CENTER_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-6.0, 0.0));
         CENTER_RandomizationOffset_LONG.put("Backdrop_Right_FirstCycle", new Pair<>(-0.5, 4.0));
 
-        RIGHT_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-1.0, 0.0));
-        RIGHT_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-1.0, 1.0));
-        RIGHT_RandomizationOffset_LONG.put("Stacks_Inner_SecondCycle", new Pair<>(-1.0, 3.0));
-        RIGHT_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(1.0, 0.0));
-        RIGHT_RandomizationOffset_LONG.put("Backdrop_Right_FirstCycle", new Pair<>(2.0, 2.0));
+        RIGHT_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-5.0, 0.0)); // PEOS
+        RIGHT_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-6.0, 1.0)); // PEOS
+        RIGHT_RandomizationOffset_LONG.put("Stacks_Inner_SecondCycle", new Pair<>(-1.0, 3.0)); // PEOS
+        RIGHT_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(-2.0, 0.0)); // PEOS
+        RIGHT_RandomizationOffset_LONG.put("Backdrop_Right_FirstCycle", new Pair<>(-1.0, 2.0)); // PEOS
 
         LEFT_RandomizationOffset_LONG.put(
             "Backdrop_Right_SecondCycle", LEFT_RandomizationOffset_LONG.getOrDefault(
                 "Backdrop_Right_FirstCycle", ZERO_OFFSET
             )
-        );
+        ); // PEOS
         CENTER_RandomizationOffset_LONG.put(
             "Backdrop_Right_SecondCycle", CENTER_RandomizationOffset_LONG.getOrDefault(
                 "Backdrop_Right_FirstCycle", ZERO_OFFSET
             )
-        );
+        ); // PEOS
         RIGHT_RandomizationOffset_LONG.put(
             "Backdrop_Right_SecondCycle", RIGHT_RandomizationOffset_LONG.getOrDefault(
                 "Backdrop_Right_FirstCycle", ZERO_OFFSET
             )
-        );
+        ); // PEOS
     }
 
     /*----------------------------------------------------------------------------------------------
@@ -112,7 +114,7 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
             new Pose2d(1.4 * TileInverted, Tile, Math.toRadians(1)), RobotSides.FRONT
         );
         rightPixel_LONG = robotPoseLimitCalculation(
-            new Pose2d(1.9 * TileInverted, 1.3 * Tile, Math.toRadians(180)),
+            new Pose2d(1.9 * TileInverted - 2, 1.3 * Tile, Math.toRadians(180)),
             RobotSides.FRONT
         );
 
