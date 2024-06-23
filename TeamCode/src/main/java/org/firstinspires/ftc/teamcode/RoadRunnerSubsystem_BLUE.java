@@ -25,21 +25,34 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
         // "Backdrop_Left_SecondCycle", "Backdrop_Center_FirstCycle",
         // "Backdrop_Center_SecondCycle", "Backdrop_Right_FirstCycle", "Backdrop_Right_SecondCycle"
 
-        LEFT_RandomizationOffset_SHORT.put("Stacks_Inner_FirstCycle", new Pair<>(-2.0, 0.0));
+        LEFT_RandomizationOffset_SHORT.put("Stacks_Inner_FirstCycle", new Pair<>(-7.0, -4.0));
+        LEFT_RandomizationOffset_SHORT.put("Stacks_Inner_SecondCycle", new Pair<>(-7.0, -4.0));
+        LEFT_RandomizationOffset_SHORT.put("Corridor_Close_Inner_FirstCycle", new Pair<>(0.0, -2.0));
+        LEFT_RandomizationOffset_SHORT.put("Corridor_Far_Inner_FirstCycle", new Pair<>(0.0, -2.0));
         LEFT_RandomizationOffset_SHORT.put("Backdrop_Left_FirstCycle", new Pair<>(-15.0, 0.0));
         LEFT_RandomizationOffset_SHORT.put("Backdrop_Left_SecondCycle", new Pair<>(-15.0, 0.0));
 
-        CENTER_RandomizationOffset_SHORT.put("Stacks_Inner_FirstCycle", new Pair<>(-2.0, 0.0));
-        CENTER_RandomizationOffset_SHORT.put("Stacks_Inner_SecondCycle", new Pair<>(-2.5, 0.0));
+        CENTER_RandomizationOffset_SHORT.put("Stacks_Inner_FirstCycle", new Pair<>(-5.0, -1.5));
+        CENTER_RandomizationOffset_SHORT.put("Stacks_Inner_SecondCycle", new Pair<>(-4.5, 0.0));
         CENTER_RandomizationOffset_SHORT.put("Backdrop_Left_FirstCycle", new Pair<>(0.5, 3.0));
+        CENTER_RandomizationOffset_SHORT.put("Backdrop_Left_SecondCycle", new Pair<>(0.5, 6.0));
 
-        RIGHT_RandomizationOffset_SHORT.put("Stacks_Inner_FirstCycle", new Pair<>(-1.5, 0.0));
-        RIGHT_RandomizationOffset_SHORT.put("Stacks_Inner_SecondCycle", new Pair<>(-1.5, 2.0));
-        RIGHT_RandomizationOffset_SHORT.put("Backdrop_Right_FirstCycle", new Pair<>(2.0, 0.0));
-        RIGHT_RandomizationOffset_SHORT.put("Backdrop_Right_SecondCycle", new Pair<>(2.0, 0.0));
+        RIGHT_RandomizationOffset_SHORT.put("Backdrop_Rand", new Pair<>(-0.5, 0.0));
+        RIGHT_RandomizationOffset_SHORT.put("Stacks_Inner_FirstCycle", new Pair<>(-5.0, -1.5));
+        RIGHT_RandomizationOffset_SHORT.put("Stacks_Inner_SecondCycle", new Pair<>(-5.0, 0.0));
+        RIGHT_RandomizationOffset_SHORT.put("Corridor_Close_Inner_FirstCycle", new Pair<>(0.0, -2.0));
+        RIGHT_RandomizationOffset_SHORT.put("Corridor_Far_Inner_FirstCycle", new Pair<>(0.0, -2.0));
+        RIGHT_RandomizationOffset_SHORT.put("Backdrop_Right_FirstCycle", new Pair<>(-1.0, 0.0));
+        RIGHT_RandomizationOffset_SHORT.put("Backdrop_Right_SecondCycle", new Pair<>(-1.0, 0.0));
 
-        CENTER_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-1.5, 0.0));
-        CENTER_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-2.0, 0.0));
+        LEFT_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-6.0, 0.0));
+        LEFT_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(-0.5, 3.0));
+        LEFT_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-6.0, 1.5));
+        LEFT_RandomizationOffset_LONG.put("Backdrop_Right_FirstCycle", new Pair<>(-0.5, 4.0));
+
+        CENTER_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-6.0, 0.0));
+        CENTER_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-6.0, 0.0));
+        CENTER_RandomizationOffset_LONG.put("Backdrop_Right_FirstCycle", new Pair<>(-0.5, 4.0));
 
         RIGHT_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-1.0, 0.0));
         RIGHT_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-1.0, 1.0));
@@ -84,16 +97,16 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
         ------------------------------------------------------------------------------------------*/
         /* Spikes --------------------------------------------------------------------------------*/
         leftPixel_SHORT = robotPoseLimitCalculation(
-            new Pose2d(Tile, 1.6 * Tile, Math.toRadians(225)), RobotSides.FRONT
+            new Pose2d(Tile, 1.4 * Tile, Math.toRadians(225)), RobotSides.FRONT
         );
         centerPixel_SHORT = robotPoseLimitCalculation(
             new Pose2d(Tile/2, Tile, Math.toRadians(270)), RobotSides.FRONT
         );
         rightPixel_SHORT = robotPoseLimitCalculation(
-            new Pose2d(2, Tile, Math.toRadians(180)), RobotSides.FRONT
+            new Pose2d(2, 1.25 * Tile, Math.toRadians(180)), RobotSides.FRONT
         );
         leftPixel_LONG = robotPoseLimitCalculation(
-            new Pose2d(TileInverted, 1.4 * Tile, Math.toRadians(1)), RobotSides.FRONT
+            new Pose2d(TileInverted - 3 , 1.4 * Tile, Math.toRadians(1)), RobotSides.FRONT
         );
         centerPixel_LONG = robotPoseLimitCalculation(
             new Pose2d(1.4 * TileInverted, Tile, Math.toRadians(1)), RobotSides.FRONT
@@ -133,9 +146,9 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
         stationFar_Outer = new Vector2d(TileInverted, 2.5 * Tile);
 
         /* Parking -------------------------------------------------------------------------------*/
-        parkingInner = new Pose2d(2.5 * Tile, TileInverted / 2, Math.toRadians(180));
-        parkingMiddle = new Pose2d(2 * Tile, 1.5 * TileInverted, Math.toRadians(180));
-        parkingOuter = new Pose2d(2.5 * Tile, 2.5 * TileInverted, Math.toRadians(180));
+        parkingInner = new Pose2d(2.5 * Tile, Tile / 3, Math.toRadians(180));
+        parkingMiddle = new Pose2d(2 * Tile, 1.5 * Tile, Math.toRadians(180));
+        parkingOuter = new Pose2d(2.5 * Tile, 2.5 * Tile, Math.toRadians(180));
     }
 
     @Override
@@ -194,7 +207,7 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
                 Math.toRadians(0))
             .lineTo(offsetPoseShifter(stationClose, "Corridor_Close_Inner_Rand"))
             .splineToConstantHeading(
-                offsetPoseShifter(randomizedBackdrop.vec(), "Backdrop_Rand"),
+                randomizedBackdrop.vec(),
                 Math.toRadians(0),
                 SampleMecanumDrive.getVelocityConstraint(
                     35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH
