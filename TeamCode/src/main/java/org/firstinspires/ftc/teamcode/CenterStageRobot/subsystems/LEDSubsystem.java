@@ -4,10 +4,12 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.util.Timing;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.DoubleSupplier;
 
 public class LEDSubsystem extends SubsystemBase {
 
@@ -20,7 +22,7 @@ public class LEDSubsystem extends SubsystemBase {
     private RevBlinkinLedDriver.BlinkinPattern PURPLE_PATTERN = RevBlinkinLedDriver.BlinkinPattern.VIOLET;
 
     private RevBlinkinLedDriver.BlinkinPattern STOP_PATTERN = RevBlinkinLedDriver.BlinkinPattern.RED;
-    private RevBlinkinLedDriver.BlinkinPattern ALMOST_PATTERN = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
+    private RevBlinkinLedDriver.BlinkinPattern ALMOST_PATTERN = RevBlinkinLedDriver.BlinkinPattern.ORANGE;
     private RevBlinkinLedDriver.BlinkinPattern GOOO_PATTERN = RevBlinkinLedDriver.BlinkinPattern.GREEN;
 
     private PixelColorDetectorSubsystem pixelColorDetectorSubsystem;
@@ -41,7 +43,9 @@ public class LEDSubsystem extends SubsystemBase {
 
     private boolean isIntaking = false;
 
-    public LEDSubsystem(HardwareMap hm, PixelColorDetectorSubsystem pixelColorDetectorSubsystem, Telemetry telemetry) {
+    private ElapsedTime test;
+
+    public LEDSubsystem(HardwareMap hm, PixelColorDetectorSubsystem pixelColorDetectorSubsystem, Telemetry telemetry, ElapsedTime test) {
         this.pixelColorDetectorSubsystem = pixelColorDetectorSubsystem;
 
         driver = hm.get(RevBlinkinLedDriver.class, "led");
@@ -53,6 +57,8 @@ public class LEDSubsystem extends SubsystemBase {
         this.telemetry = telemetry;
 
         state = PixelState.PIXEL_ONE;
+
+        this.test = test;
     }
 
     private RevBlinkinLedDriver.BlinkinPattern getPattern(PixelColorDetectorSubsystem.PixelColor pixelColor) {
@@ -106,6 +112,8 @@ public class LEDSubsystem extends SubsystemBase {
                 driver.setPattern(GOOO_PATTERN);
             }
         }
+
+//        telemetry.addData("time:", test.now(TimeUnit.SECONDS));
     }
 
         public void enableIntake() {

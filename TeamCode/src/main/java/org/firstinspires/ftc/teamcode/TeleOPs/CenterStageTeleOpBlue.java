@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.CenterStageRobot.CenterStageRobot;
 import org.firstinspires.ftc.teamcode.PoseStorage;
@@ -60,8 +61,12 @@ public class CenterStageTeleOpBlue extends CommandOpMode {
 
     public Pose2d pose;
 
+    private ElapsedTime runtime;
+
     @Override
     public void initialize() {
+        runtime = new ElapsedTime();
+
         GamepadExEx driverOp = new GamepadExEx(gamepad1);
         GamepadExEx toolOp = new GamepadExEx(gamepad2);
 
@@ -111,7 +116,13 @@ public class CenterStageTeleOpBlue extends CommandOpMode {
 
         robot = new CenterStageRobot(hardwareMap, RobotConstants, telemetry, driverOp, toolOp,
                 RobotEx.OpModeType.TELEOP,  RobotEx.Alliance.BLUE, "external_imu",
-                false, true, pose);
+                false, true, pose, runtime);
+    }
+
+    @Override
+    public void waitForStart() {
+        super.waitForStart();
+        runtime.reset();
     }
 
     @Override

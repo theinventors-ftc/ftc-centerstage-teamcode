@@ -98,8 +98,8 @@ public class PixelColorDetectorSubsystem extends SubsystemBase {
         update();
 
         if(pocketIsJustFull()) {
-            driverOp.rumble();
-            toolOp.rumble();
+            driverOp.rumble(0.3);
+            toolOp.rumble(0.3);
         }
 
         frontPixelExistence = frontPixelColor != PixelColor.NONE ? 1 : 0;

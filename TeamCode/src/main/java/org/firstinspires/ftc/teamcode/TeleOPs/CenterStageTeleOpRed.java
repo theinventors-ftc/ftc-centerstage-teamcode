@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.CenterStageRobot.CenterStageRobot;
 import org.firstinspires.ftc.teamcode.PoseStorage;
@@ -60,20 +61,24 @@ public class CenterStageTeleOpRed extends CommandOpMode {
 
     public Pose2d pose;
 
+    private ElapsedTime runtime;
+
     @Override
     public void initialize() {
+        runtime = new ElapsedTime();
+
         GamepadExEx driverOp = new GamepadExEx(gamepad1);
         GamepadExEx toolOp = new GamepadExEx(gamepad2);
 
         RobotConstants = new DriveConstants();
 
-        RobotConstants.frontLeftInverted = frontLeftInverted;
-        RobotConstants.frontRightInverted = frontRightInverted;
-        RobotConstants.rearRightInverted = rearRightInverted;
-        RobotConstants.rearLeftInverted = rearLeftInverted;
+        RobotConstants.frontLeftInverted = true;
+        RobotConstants.frontRightInverted = true;
+        RobotConstants.rearRightInverted = true;
+        RobotConstants.rearLeftInverted = true;
 
-        RobotConstants.WHEEL_RADIUS = WHEEL_RADIUS; // inch
-        RobotConstants.GEAR_RATIO = GEAR_RATIO; // output (wheel) speed / input (motor) speed
+        RobotConstants.WHEEL_RADIUS = 1.8898; // inch
+        RobotConstants.GEAR_RATIO = 3.25; // output (wheel) speed / input (motor) speed
         RobotConstants.TRACK_WIDTH = TRACK_WIDTH; // in
 
         RobotConstants.MAX_VEL = MAX_VEL;
@@ -111,7 +116,13 @@ public class CenterStageTeleOpRed extends CommandOpMode {
 
         robot = new CenterStageRobot(hardwareMap, RobotConstants, telemetry, driverOp, toolOp,
                 RobotEx.OpModeType.TELEOP,  RobotEx.Alliance.RED, "external_imu",
-                false, true, pose);
+                false, true, pose, runtime);
+    }
+
+    @Override
+    public void waitForStart() {
+        super.waitForStart();
+        runtime.reset();
     }
 
     @Override
