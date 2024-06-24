@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 @Disabled
 @Autonomous(name = "Do not run", group = "Final Autonomous")
 public class AutonomousBase extends CommandOpMode {
-//    protected Timing.Timer timer = new Timing.Timer(2000, TimeUnit.MILLISECONDS);
+    protected Timing.Timer timer = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
     protected enum Alliance {BLUE, RED}
 
     protected OuttakeSusystem outtakeSusystem;
@@ -58,17 +58,17 @@ public class AutonomousBase extends CommandOpMode {
 
     protected SequentialCommandGroup temp;
 
-//    public void backdropAlignment(){
-//        timer.start();
-//        distanceFollow.enable();
-//        double out = 0.0;
-//        while (!isStopRequested() && opModeIsActive() && !timer.done()) {
-//            out = distanceFollow.calculateOutput();
-//            drive.setMotorPowers(out, out, out, out);
-//            run();
-//            drive.updatePoseEstimate();
-//        }
-//    }
+    public void backdropAlignment(){
+        timer.start();
+        distanceFollow.enable();
+        double out = 0.0;
+        while (!isStopRequested() && opModeIsActive() && !timer.done()) {
+            out = distanceFollow.calculateOutput();
+            drive.setMotorPowers(out, out, out, out);
+            run();
+            drive.updatePoseEstimate();
+        }
+    }
 
     public SequentialCommandGroup randomizationPixelElevator() {
         return new SequentialCommandGroup(

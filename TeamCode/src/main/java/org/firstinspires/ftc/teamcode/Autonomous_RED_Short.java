@@ -113,7 +113,6 @@ public class Autonomous_RED_Short extends AutonomousBase {
             drive.update();
         }
         drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
-
 //        backdropAlignment();
 
         temp = scoring();

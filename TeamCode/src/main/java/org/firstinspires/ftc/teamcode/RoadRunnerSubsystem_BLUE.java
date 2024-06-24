@@ -48,7 +48,9 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
         ////////////////////////////////////////////////////////////////////////////////////////////
 
         LEFT_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-6.0, 0.0));
-        LEFT_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(-0.5, 3.0));
+        LEFT_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(-0.5, 0.0));
+        LEFT_RandomizationOffset_LONG.put("Corridor_Close_Inner_FirstCycle", new Pair <>(0.0, -2.0));
+        LEFT_RandomizationOffset_LONG.put("Corridor_Far_Inner_FirstCycle", new Pair <>(0.0, -2.0));
         LEFT_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-6.0, 1.5));
         LEFT_RandomizationOffset_LONG.put("Backdrop_Right_FirstCycle", new Pair<>(-0.5, 4.0));
 
@@ -56,27 +58,27 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
         CENTER_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-6.0, 0.0));
         CENTER_RandomizationOffset_LONG.put("Backdrop_Right_FirstCycle", new Pair<>(-0.5, 4.0));
 
-        RIGHT_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-5.0, 0.0)); // PEOS
-        RIGHT_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-6.0, 1.0)); // PEOS
-        RIGHT_RandomizationOffset_LONG.put("Stacks_Inner_SecondCycle", new Pair<>(-1.0, 3.0)); // PEOS
-        RIGHT_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(-2.0, 0.0)); // PEOS
-        RIGHT_RandomizationOffset_LONG.put("Backdrop_Right_FirstCycle", new Pair<>(-1.0, 2.0)); // PEOS
+        RIGHT_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-5.0, 0.0));
+        RIGHT_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-6.0, 1.0));
+        RIGHT_RandomizationOffset_LONG.put("Stacks_Inner_SecondCycle", new Pair<>(-1.0, 3.0));
+        RIGHT_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(-2.0, 0.0));
+        RIGHT_RandomizationOffset_LONG.put("Backdrop_Right_FirstCycle", new Pair<>(-1.0, 2.0));
 
         LEFT_RandomizationOffset_LONG.put(
             "Backdrop_Right_SecondCycle", LEFT_RandomizationOffset_LONG.getOrDefault(
                 "Backdrop_Right_FirstCycle", ZERO_OFFSET
             )
-        ); // PEOS
+        );
         CENTER_RandomizationOffset_LONG.put(
             "Backdrop_Right_SecondCycle", CENTER_RandomizationOffset_LONG.getOrDefault(
                 "Backdrop_Right_FirstCycle", ZERO_OFFSET
             )
-        ); // PEOS
+        );
         RIGHT_RandomizationOffset_LONG.put(
             "Backdrop_Right_SecondCycle", RIGHT_RandomizationOffset_LONG.getOrDefault(
                 "Backdrop_Right_FirstCycle", ZERO_OFFSET
             )
-        ); // PEOS
+        );
     }
 
     /*----------------------------------------------------------------------------------------------
