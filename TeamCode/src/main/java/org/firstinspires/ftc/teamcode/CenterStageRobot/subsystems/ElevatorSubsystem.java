@@ -35,7 +35,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private HashMap<Level, Integer> levels = new HashMap<Level, Integer>() {{
         put(Level.LOADING, 0);
         put(Level.HANGING, 600);
-        put(Level.AUTO0, 340);
+        put(Level.AUTO0, 550);
         put(Level.AUTO1, 800);
         put(Level.AUTO2, 870);
         put(Level.LOW, 1050);

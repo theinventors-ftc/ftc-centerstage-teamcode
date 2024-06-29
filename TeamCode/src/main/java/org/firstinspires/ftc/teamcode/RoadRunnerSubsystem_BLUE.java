@@ -48,18 +48,19 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
         ////////////////////////////////////////////////////////////////////////////////////////////
 
         LEFT_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-6.0, 0.0));
-        LEFT_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(-0.5, 0.0));
+        LEFT_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(-2.5, 0.0));
         LEFT_RandomizationOffset_LONG.put("Corridor_Close_Inner_FirstCycle", new Pair <>(0.0, -2.0));
         LEFT_RandomizationOffset_LONG.put("Corridor_Far_Inner_FirstCycle", new Pair <>(0.0, -2.0));
         LEFT_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-6.0, 1.5));
-        LEFT_RandomizationOffset_LONG.put("Backdrop_Right_FirstCycle", new Pair<>(-0.5, 4.0));
+        LEFT_RandomizationOffset_LONG.put("Backdrop_Right_FirstCycle", new Pair<>(-2.0, 4.0));
 
+        CENTER_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(-3.0, 0.0));
         CENTER_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-6.0, 0.0));
         CENTER_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-6.0, 0.0));
-        CENTER_RandomizationOffset_LONG.put("Backdrop_Right_FirstCycle", new Pair<>(-0.5, 4.0));
+        CENTER_RandomizationOffset_LONG.put("Backdrop_Right_FirstCycle", new Pair<>(-3.5, 0.0));
 
-        RIGHT_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-5.0, 0.0));
-        RIGHT_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-6.0, 1.0));
+        RIGHT_RandomizationOffset_LONG.put("Stacks_Rand", new Pair<>(-3.0, 0.0));
+        RIGHT_RandomizationOffset_LONG.put("Stacks_Inner_FirstCycle", new Pair<>(-4.5, 1.0));
         RIGHT_RandomizationOffset_LONG.put("Stacks_Inner_SecondCycle", new Pair<>(-1.0, 3.0));
         RIGHT_RandomizationOffset_LONG.put("Backdrop_Rand", new Pair<>(-2.0, 0.0));
         RIGHT_RandomizationOffset_LONG.put("Backdrop_Right_FirstCycle", new Pair<>(-1.0, 2.0));
@@ -110,13 +111,13 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
             new Pose2d(2, 1.25 * Tile, Math.toRadians(180)), RobotSides.FRONT
         );
         leftPixel_LONG = robotPoseLimitCalculation(
-            new Pose2d(TileInverted - 3 , 1.25 * Tile, Math.toRadians(1)), RobotSides.FRONT
+            new Pose2d(0.95 * TileInverted , 1.25 * Tile, Math.toRadians(1)), RobotSides.FRONT
         );
         centerPixel_LONG = robotPoseLimitCalculation(
-            new Pose2d(1.4 * TileInverted, Tile, Math.toRadians(1)), RobotSides.FRONT
+            new Pose2d(1.4 * TileInverted, 1.2 * Tile, Math.toRadians(1)), RobotSides.FRONT
         );
         rightPixel_LONG = robotPoseLimitCalculation(
-            new Pose2d(1.9 * TileInverted - 2, 1.25 * Tile, Math.toRadians(180)),
+            new Pose2d(1.8 * TileInverted, 1.25 * Tile, Math.toRadians(225)),
             RobotSides.FRONT
         );
 
@@ -152,7 +153,7 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
         /* Parking -------------------------------------------------------------------------------*/
         parkingInner = new Pose2d(2.5 * Tile, Tile / 3, Math.toRadians(180));
         parkingMiddle = new Pose2d(2 * Tile, 1.5 * Tile, Math.toRadians(180));
-        parkingOuter = new Pose2d(2.5 * Tile, 2.5 * Tile, Math.toRadians(180));
+        parkingOuter = new Pose2d(2.3 * Tile, 2.5 * Tile, Math.toRadians(180));
     }
 
     @Override

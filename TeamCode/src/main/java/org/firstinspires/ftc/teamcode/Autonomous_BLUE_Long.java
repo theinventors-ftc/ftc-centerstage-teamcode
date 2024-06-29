@@ -46,10 +46,7 @@ public class Autonomous_BLUE_Long extends AutonomousBase {
     public void runOpMode() {
         super.runOpMode();
 
-        temp = new SequentialCommandGroup(
-                new WaitCommand(2000),
-                new InstantCommand(intakeArmSubsystem::raiseArm, intakeArmSubsystem)
-        );
+        temp = new SequentialCommandGroup(new InstantCommand(intakeArmSubsystem::raiseArm, intakeArmSubsystem));
         temp.schedule();
         while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
             run();
@@ -62,15 +59,9 @@ public class Autonomous_BLUE_Long extends AutonomousBase {
         }
         drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
 
-        temp = stackStationIntakeOnePixel(5);
-        temp.schedule();
-        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
-            run();
-        }
-
         temp = new SequentialCommandGroup(
                 new WaitCommand(2400),
-                elevator_first()
+                randomizationPixelElevator()
         );
 
         temp.schedule();

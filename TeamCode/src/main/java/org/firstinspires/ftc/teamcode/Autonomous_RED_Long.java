@@ -40,7 +40,7 @@ public class Autonomous_RED_Long extends AutonomousBase {
         RR = new RoadRunnerSubsystem_RED(
             drive, HomePose, RoadRunnerSubsystem.StartingPosition.LONG,
             RoadRunnerSubsystem.Path.INNER, RoadRunnerSubsystem.PixelStack.INNER,
-            RoadRunnerSubsystem.ParkingPosition.MID, telemetry
+            RoadRunnerSubsystem.ParkingPosition.INNER, telemetry
         );
     }
 
@@ -78,6 +78,12 @@ public class Autonomous_RED_Long extends AutonomousBase {
         temp = scoring();
         temp.schedule();
         while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
+            run();
+        }
+
+        temp = elevator_first();
+        temp.schedule();
+        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)){
             run();
         }
 

@@ -25,7 +25,7 @@ public class Autonomous_RED_Short extends AutonomousBase {
         RR = new RoadRunnerSubsystem_RED(
             drive, HomePose, RoadRunnerSubsystem.StartingPosition.SHORT,
             RoadRunnerSubsystem.Path.INNER, RoadRunnerSubsystem.PixelStack.INNER,
-            RoadRunnerSubsystem.ParkingPosition.OUTER, telemetry
+            RoadRunnerSubsystem.ParkingPosition.INNER, telemetry
         );
     }
 
@@ -49,6 +49,7 @@ public class Autonomous_RED_Short extends AutonomousBase {
         while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
             run();
         }
+
         // STACK FIRST
         temp = new SequentialCommandGroup(new WaitCommand(600), resetElevator());
         temp.schedule();
