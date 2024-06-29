@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @Autonomous(name = "RED_Short", group = "Final Autonomous")
 public class Autonomous_RED_Short extends AutonomousBase {
     private Pose2d HomePose = new Pose2d(
-        RoadRunnerSubsystem.Tile/2, 3 * RoadRunnerSubsystem.TileInverted + 6.93,
+        RoadRunnerSubsystem.Tile/2, 3 * RoadRunnerSubsystem.TileInverted + 7.93,
         Math.toRadians(90)
     );
 

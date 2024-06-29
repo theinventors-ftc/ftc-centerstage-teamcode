@@ -1,30 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.ElevatorCommand;
-import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.ElevatorSubsystem;
-import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeArmSubsystem;
-import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeSubsystem;
-import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.OuttakeSusystem;
-import org.firstinspires.ftc.teamcode.roadRunner.drive.SampleMecanumDrive;
-import org.inventors.ftc.opencvpipelines.TeamPropDetectionPipeline;
-import org.inventors.ftc.robotbase.hardware.Camera;
-import org.opencv.core.Rect;
-
-@Autonomous(name = "BLUE_Long", group = "Final Autonomous")
-public class Autonomous_BLUE_Long extends AutonomousBase {
+@Autonomous(name = "BLUE_Long_Purple_Yellow", group = "Final Autonomous")
+public class Autonomous_BLUE_Long_Purple_Yellow extends AutonomousBase {
 
     private Pose2d HomePose = new Pose2d(
         1.5 * RoadRunnerSubsystem.TileInverted, 3 * RoadRunnerSubsystem.Tile - 7.93,
@@ -88,44 +72,13 @@ public class Autonomous_BLUE_Long extends AutonomousBase {
             run();
         }
 
-        // STACK
-        temp = new SequentialCommandGroup(
-                new WaitCommand(600),
-                resetElevator()
-        );
-        temp.schedule();
-        RR.runBackdrop_Station(0);
-        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
-            run();
-            drive.update();
-        }
-        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
-
-        temp = stackStationIntake(4);
+        temp = elevator_first();
         temp.schedule();
         while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
             run();
         }
 
-        temp = new SequentialCommandGroup(
-                new WaitCommand(2400),
-                elevator_first()
-        );
-
-        temp.schedule();
-
-        RR.runStation_Backdrop(0);
-        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
-            run();
-            drive.update();
-        }
-        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
-        temp = scoring();
-        temp.schedule();
-        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
-            run();
-        }
-
+        //Parking
         temp = resetElevator();
         temp.schedule();
         RR.runParking();

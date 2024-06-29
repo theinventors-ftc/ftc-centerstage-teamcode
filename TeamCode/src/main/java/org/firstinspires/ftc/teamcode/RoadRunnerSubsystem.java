@@ -96,7 +96,7 @@ public class RoadRunnerSubsystem extends SubsystemBase {
         spike_randomizedBackdrop, station_long_randomizedBackdrop, spike_station,
         backdrop_station_1st_cycle, backdrop_station_2nd_cycle,
         station_backdrop_1st_cycle, station_backdrop_2nd_cycle,
-        parking;
+        parking, to_Home;
 
     /*----------------------------------------------------------------------------------------------
     -- Poses --
@@ -336,4 +336,6 @@ public class RoadRunnerSubsystem extends SubsystemBase {
     public void runTest() {
         drive.followTrajectorySequence(test.build());
     }
+
+    public void runToHome(){drive.followTrajectorySequenceAsync(to_Home.build());}
 }

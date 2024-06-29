@@ -27,7 +27,7 @@ import org.opencv.core.Rect;
 public class Autonomous_BLUE_Short extends AutonomousBase {
 
     private Pose2d HomePose = new Pose2d(
-        RoadRunnerSubsystem.Tile/2, 3 * RoadRunnerSubsystem.Tile - 6.93,
+        RoadRunnerSubsystem.Tile/2, 3 * RoadRunnerSubsystem.Tile - 7.93,
         Math.toRadians(270)
     );
 

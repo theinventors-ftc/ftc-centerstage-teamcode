@@ -88,6 +88,8 @@ public class CenterStageRobot extends RobotEx {
                         new InstantCommand(intakeArmSubsystem::raiseArm, intakeArmSubsystem)
                 );
 
+
+
         // Releasing Pixels
         new Trigger(() -> driverOp.getButton(GamepadKeys.Button.RIGHT_BUMPER)) // Outtaking
                 .whenActive(new SequentialCommandGroup(

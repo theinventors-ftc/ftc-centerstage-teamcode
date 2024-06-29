@@ -101,7 +101,7 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
         ------------------------------------------------------------------------------------------*/
         /* Spikes --------------------------------------------------------------------------------*/
         leftPixel_SHORT = robotPoseLimitCalculation(
-            new Pose2d(Tile, 1.4 * Tile, Math.toRadians(225)), RobotSides.FRONT
+            new Pose2d(Tile, 1.25 * Tile, Math.toRadians(225)), RobotSides.FRONT
         );
         centerPixel_SHORT = robotPoseLimitCalculation(
             new Pose2d(Tile/2, Tile, Math.toRadians(270)), RobotSides.FRONT
@@ -110,13 +110,13 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
             new Pose2d(2, 1.25 * Tile, Math.toRadians(180)), RobotSides.FRONT
         );
         leftPixel_LONG = robotPoseLimitCalculation(
-            new Pose2d(TileInverted - 3 , 1.4 * Tile, Math.toRadians(1)), RobotSides.FRONT
+            new Pose2d(TileInverted - 3 , 1.25 * Tile, Math.toRadians(1)), RobotSides.FRONT
         );
         centerPixel_LONG = robotPoseLimitCalculation(
             new Pose2d(1.4 * TileInverted, Tile, Math.toRadians(1)), RobotSides.FRONT
         );
         rightPixel_LONG = robotPoseLimitCalculation(
-            new Pose2d(1.9 * TileInverted - 2, 1.3 * Tile, Math.toRadians(180)),
+            new Pose2d(1.9 * TileInverted - 2, 1.25 * Tile, Math.toRadians(180)),
             RobotSides.FRONT
         );
 
@@ -168,6 +168,11 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
         stackStationTangent = new Integer[]{180, 135, 225};
         // 135 for Inner 225 for Mid and Outer
         parkingTangent = new Integer[]{180, 135};
+        /*----------------------------------------------------------------------------------------*/
+
+        to_Home = drive.trajectorySequenceBuilder(pixel_cycle_PoseTransfer)
+            .setTangent(180)
+            .splineToLinearHeading(HomePose, Math.toRadians(90));
 
         /*----------------------------------------------------------------------------------------*/
         leftSpike = drive.trajectorySequenceBuilder(HomePose)

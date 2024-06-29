@@ -22,7 +22,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public final MotorExEx rightMotor;
     private final MotorGroup motors;
 
-    private final DigitalChannel limitSwitch;
+//    private final DigitalChannel limitSwitch;
 
     public double MAX_SPEED = 0.9;
 
@@ -35,7 +35,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private HashMap<Level, Integer> levels = new HashMap<Level, Integer>() {{
         put(Level.LOADING, 0);
         put(Level.HANGING, 600);
-        put(Level.AUTO0, 600);
+        put(Level.AUTO0, 340);
         put(Level.AUTO1, 800);
         put(Level.AUTO2, 870);
         put(Level.LOW, 1050);
@@ -49,7 +49,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private OuttakeSusystem outtakeSusystem;
 
-    public final double kS = 230, kG = 250, kV = 1.0, kA= 0.0;
+    public final double kS = 230, kG = 300, kV = 1.0, kA= 0.0;
 
     ElevatorFeedforward feedforward;
 
@@ -84,7 +84,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         motors.resetEncoder();
 
-        limitSwitch = hm.get(DigitalChannel.class, "slider_limit");
+//        limitSwitch = hm.get(DigitalChannel.class, "slider_limit");
 
         this.outtakeSusystem = outtakeSusystem;
 
@@ -101,12 +101,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (zeroState != initZeroState.FOUND) {
-            // TODO: add timer to prevent this running forever
-            // for backup (if there are enough buttons) add a button to manually reset the elevator motor
-            searchZero();
-            return;
-        }
+//        if (zeroState != initZeroState.FOUND) {
+//            // TODO: add timer to prevent this running forever
+//            // for backup (if there are enough buttons) add a button to manually reset the elevator motor
+//            searchZero();
+//            return;
+//        }
 
         ////////////////////////////////////////////////////////////////////////
 
@@ -114,7 +114,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         clippedPower = joystickPower;
 
-        if(isSliderBottom() && joystickPower < 0) clippedPower = 0.0;
+//        if(isSliderBottom() && joystickPower < 0) clippedPower = 0.0;
         if(isSliderTop() && joystickPower > 0) clippedPower = 0.0;
 
         if (Math.abs(joystickPower) > 0.06) {
@@ -175,22 +175,22 @@ public class ElevatorSubsystem extends SubsystemBase {
         return motors.atTargetPosition();
     }
 
-    public boolean isSliderBottom() {
-        return limitSwitch.getState();
-    }
+//    public boolean isSliderBottom() {
+//        return limitSwitch.getState();
+//    }
     public boolean isSliderTop() {
         return getHeight() >= 1750;
     }
 
     public void searchZero() {
-        if (!isSliderBottom()) {
-            motors.set(-0.6);
-            zeroState = initZeroState.SEARCHING;
-        } else {
-            motors.stopMotor();
-            motors.resetEncoder();
-            zeroState = initZeroState.FOUND;
-        }
+//        if (!isSliderBottom()) {
+//            motors.set(-0.6);
+//            zeroState = initZeroState.SEARCHING;
+//        } else {
+//            motors.stopMotor();
+//            motors.resetEncoder();
+//            zeroState = initZeroState.FOUND;
+//        }
     }
 
     public void reset() {
