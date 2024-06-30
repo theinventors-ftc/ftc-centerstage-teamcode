@@ -5,15 +5,19 @@ import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
+import com.arcrobotics.ftclib.util.Timing;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.OuttakeCommand;
 import org.inventors.ftc.robotbase.hardware.MotorExEx;
 
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.function.DoubleSupplier;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -59,6 +63,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public double max_ticks_per_second = 0;
 
+    public boolean isStalled = false;
+    public double ampThreshold = 4.2;
+    private final Timing.Timer timer;
+
     private enum initZeroState {
         INIT,
         SEARCHING,
@@ -92,6 +100,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         feedforward = new ElevatorFeedforward(
                 kS, kG, kV, kA
         );
+
+        timer = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
     }
 
     private double calculateFeedForwardPower(double rawPower) {
@@ -99,14 +109,18 @@ public class ElevatorSubsystem extends SubsystemBase {
         return (feedForwardValue / max_ticks_per_second) * MAX_SPEED;
     }
 
+    public double getCurrent() {
+        return ((DcMotorEx)leftMotor.getRawMotor()).getCurrent(CurrentUnit.AMPS);
+    }
+
     @Override
     public void periodic() {
-//        if (zeroState != initZeroState.FOUND) {
-//            // TODO: add timer to prevent this running forever
-//            // for backup (if there are enough buttons) add a button to manually reset the elevator motor
-//            searchZero();
-//            return;
-//        }
+        if (zeroState != initZeroState.FOUND) {
+            // TODO: add timer to prevent this running forever
+            // for backup (if there are enough buttons) add a button to manually reset the elevator motor
+            searchZero();
+            return;
+        }
 
         ////////////////////////////////////////////////////////////////////////
 
@@ -175,22 +189,30 @@ public class ElevatorSubsystem extends SubsystemBase {
         return motors.atTargetPosition();
     }
 
-//    public boolean isSliderBottom() {
-//        return limitSwitch.getState();
-//    }
+    public boolean isSliderBottom() {
+        return isStalled;
+    }
     public boolean isSliderTop() {
         return getHeight() >= 1750;
     }
 
     public void searchZero() {
-//        if (!isSliderBottom()) {
-//            motors.set(-0.6);
-//            zeroState = initZeroState.SEARCHING;
-//        } else {
-//            motors.stopMotor();
-//            motors.resetEncoder();
-//            zeroState = initZeroState.FOUND;
-//        }
+        if (!isSliderBottom()) {
+            motors.set(-0.6);
+            zeroState = initZeroState.SEARCHING;
+
+            if(getCurrent() > ampThreshold && !timer.isTimerOn()) {
+                timer.start();
+            }
+
+            if(timer.done() && getCurrent() > ampThreshold){
+                isStalled = true;
+            }
+        } else {
+            motors.stopMotor();
+            motors.resetEncoder();
+            zeroState = initZeroState.FOUND;
+        }
     }
 
     public void reset() {
