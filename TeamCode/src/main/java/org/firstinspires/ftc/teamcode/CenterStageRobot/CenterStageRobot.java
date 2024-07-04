@@ -57,6 +57,7 @@ public class CenterStageRobot extends RobotEx {
                 .whenActive(
                         new InstantCommand(() -> driverOp.rumble(5))
                 );
+        // TODO Maybe a Notification Subsystem with a Hashmap (time -> action)
     }
 
     @Override
@@ -114,11 +115,18 @@ public class CenterStageRobot extends RobotEx {
         toolOp.getGamepadButton(GamepadKeys.Button.DPAD_UP) // Memory
                 .whenPressed(new SequentialCommandGroup(
                         new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.STORAGE),
-                        new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.OPEN)
+                        new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.OPEN) // TODO This Might be unnecessary
                 ));
 
         toolOp.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.HANGING));
+                .whenPressed(new ParallelCommandGroup(
+                        new InstantCommand(ledSubsystem::hanged, ledSubsystem),
+                        new InstantCommand(intakeArmSubsystem::raiseArm, intakeArmSubsystem),
+                        new InstantCommand(intakeSubsystem::stop, intakeSubsystem),
+                        new OuttakeCommand(outtakeSusystem, OuttakeCommand.Action.CLOSE),
+                        new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.HANGING)
+                ));
+
         toolOp.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON)
                 .whenPressed(new InstantCommand(elevatorSubsystem::reset, elevatorSubsystem));
 
@@ -152,7 +160,7 @@ public class CenterStageRobot extends RobotEx {
 //                                        new InstantCommand(pixelColorDetectorSubsystem::disable),
 //                                        new WaitCommand(350),
 //                                        new InstantCommand(ledSubsystem::disableIntake)
-//                                )
+//                                ) // This is for Auto Stop the Intake when pocket has 2 pixels
                         ),
                         new SequentialCommandGroup(
                                 new InstantCommand(outtakeSusystem::wheel_stop),

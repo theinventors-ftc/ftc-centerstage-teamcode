@@ -41,7 +41,7 @@ public class LEDSubsystem extends SubsystemBase {
 
     private Telemetry telemetry;
 
-    private boolean isIntaking = false;
+    private boolean isIntaking = false, isHanging = false;
 
     private ElapsedTime test;
 
@@ -49,7 +49,7 @@ public class LEDSubsystem extends SubsystemBase {
         this.pixelColorDetectorSubsystem = pixelColorDetectorSubsystem;
 
         driver = hm.get(RevBlinkinLedDriver.class, "led");
-        driver.setPattern(BLACK_PATTERN);
+        setPattern(BLACK_PATTERN);
 
         timer = new Timing.Timer(0, TimeUnit.MILLISECONDS);
         timer.start();
@@ -77,39 +77,41 @@ public class LEDSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if(isHanging) return;
+
         if(!isIntaking) {
             if (state == PixelState.PIXEL_ONE) {
                 if (timer.elapsedTime()-initTime >= 200) {
                     state = PixelState.DELAY;
                     initTime = timer.elapsedTime();
                 }
-                driver.setPattern(getPattern(pixelColorDetectorSubsystem.getFrontPixelColor()));
+                setPattern(getPattern(pixelColorDetectorSubsystem.getFrontPixelColor()));
             } else if (state == PixelState.DELAY) {
                 if (timer.elapsedTime()-initTime >= 20) {
                     state = PixelState.PIXEL_TWO;
                     initTime = timer.elapsedTime();
                 }
-                driver.setPattern(BLACK_PATTERN);
+                setPattern(BLACK_PATTERN);
             } else if (state == PixelState.PIXEL_TWO) {
                 if (timer.elapsedTime()-initTime >= 200) {
                     state = PixelState.IDLE;
                     initTime = timer.elapsedTime();
                 }
-                driver.setPattern(getPattern(pixelColorDetectorSubsystem.getBackPixelColor()));
+                setPattern(getPattern(pixelColorDetectorSubsystem.getBackPixelColor()));
             } else if (state == PixelState.IDLE) {
                 if (timer.elapsedTime()-initTime >= 400) {
                     state = PixelState.PIXEL_ONE;
                     initTime = timer.elapsedTime();
                 }
-                driver.setPattern(BLACK_PATTERN);
+                setPattern(BLACK_PATTERN);
             }
         } else {
             if (pixelColorDetectorSubsystem.getNumOfPixels() == 0) {
-                driver.setPattern(STOP_PATTERN);
+                setPattern(STOP_PATTERN);
             } else if (pixelColorDetectorSubsystem.getNumOfPixels() == 1) {
-                driver.setPattern(ALMOST_PATTERN);
+                setPattern(ALMOST_PATTERN);
             } else if (pixelColorDetectorSubsystem.getNumOfPixels() == 2) {
-                driver.setPattern(GOOO_PATTERN);
+                setPattern(GOOO_PATTERN);
             }
         }
     }
@@ -124,5 +126,14 @@ public class LEDSubsystem extends SubsystemBase {
 
     public boolean isIntaking() {
         return isIntaking;
+    }
+
+    public void setPattern(RevBlinkinLedDriver.BlinkinPattern pattern) {
+        driver.setPattern(pattern);
+    }
+
+    public void hanged() {
+        isHanging = true;
+        setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
     }
 }
