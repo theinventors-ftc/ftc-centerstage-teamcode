@@ -1,0 +1,242 @@
+package org.firstinspires.ftc.teamcode.Autos;
+
+
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
+import com.arcrobotics.ftclib.util.Timing;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.ElevatorCommand;
+import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.ElevatorSubsystem;
+import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeArmSubsystem;
+import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.OuttakeSusystem;
+import org.firstinspires.ftc.teamcode.PoseStorage;
+import org.firstinspires.ftc.teamcode.roadRunner.drive.SampleMecanumDrive;
+import org.inventors.ftc.opencvpipelines.TeamPropDetectionPipeline;
+import org.inventors.ftc.robotbase.controllers.ForwardControllerSubsystem;
+import org.inventors.ftc.robotbase.hardware.Camera;
+import org.inventors.ftc.robotbase.hardware.DistanceSensorEx;
+import org.opencv.core.Rect;
+
+import java.util.concurrent.TimeUnit;
+
+@Disabled
+@Autonomous(name = "Do not run", group = "")
+public class AutonomousBase extends CommandOpMode {
+    protected Timing.Timer timer = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
+    protected enum Alliance {
+        RED,
+        BLUE
+    }
+
+    protected OuttakeSusystem outtakeSusystem;
+    protected ElevatorSubsystem elevatorSubsystem;
+    protected IntakeArmSubsystem intakeArmSubsystem;
+    protected IntakeSubsystem intakeSubsystem;
+
+    protected SampleMecanumDrive drive;
+    protected RoadRunnerSubsystem RR;
+    protected RoadRunnerSubsystem.Randomization rand;
+    protected RevBlinkinLedDriver ledDriver;
+
+    protected FtcDashboard dashboard;
+    protected Camera camera;
+    protected final double colorThresh = 30;
+    protected final Rect
+        leftRect = new Rect(90, 470, 300, 240),
+        centerRect = new Rect(600, 450, 150, 160),
+        rightRect = new Rect(950, 450, 300, 260);
+
+    protected DistanceSensorEx distanceSensor;
+    protected ForwardControllerSubsystem distanceFollow;
+
+    protected SequentialCommandGroup temp;
+
+    public void backdropAlignment(){
+        timer.start();
+        distanceFollow.enable();
+        double out = 0.0;
+        while (!isStopRequested() && opModeIsActive() && !timer.done()) {
+            out = distanceFollow.calculateOutput();
+            drive.setMotorPowers(out, out, out, out);
+            run();
+            drive.updatePoseEstimate();
+        }
+    }
+
+    public SequentialCommandGroup randomizationPixelElevator() {
+        return new SequentialCommandGroup(
+            new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.AUTO0),
+            new InstantCommand(outtakeSusystem::go_outtake_first),
+            new WaitCommand(80),
+            new InstantCommand(outtakeSusystem::go_outtake_second)
+        );
+    }
+
+    public SequentialCommandGroup elevator_first() {
+        return new SequentialCommandGroup(
+            new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.AUTO1),
+            new InstantCommand(outtakeSusystem::go_outtake_first),
+            new WaitCommand(80),
+            new InstantCommand(outtakeSusystem::go_outtake_second)
+        );
+    }
+
+    public SequentialCommandGroup elevator_second() {
+        return new SequentialCommandGroup(
+            new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.AUTO2),
+            new InstantCommand(outtakeSusystem::go_outtake_first),
+            new WaitCommand(80),
+            new InstantCommand(outtakeSusystem::go_outtake_second)
+        );
+    }
+
+    public SequentialCommandGroup scoring_randomization() {
+        return new SequentialCommandGroup(
+            new InstantCommand(outtakeSusystem::wheel_release),
+            new WaitCommand(800),
+            new InstantCommand(outtakeSusystem::wheel_stop)
+        );
+    }
+
+    public SequentialCommandGroup scoring() {
+        return new SequentialCommandGroup(
+            new InstantCommand(outtakeSusystem::wheel_release),
+            new WaitCommand(1300),
+            new InstantCommand(outtakeSusystem::wheel_stop)
+        );
+    }
+
+    public SequentialCommandGroup resetElevator() {
+        return new SequentialCommandGroup(
+            new WaitCommand(400),
+            new InstantCommand(outtakeSusystem::go_intake_second),
+            new WaitCommand(80),
+            new InstantCommand(outtakeSusystem::go_intake_first),
+            new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.LOADING)
+        );
+    }
+
+    public SequentialCommandGroup stackStationIntake(int index) {
+        return new SequentialCommandGroup(
+            new InstantCommand(intakeSubsystem::run),
+            new InstantCommand(outtakeSusystem::wheel_grab),
+            new WaitCommand(150),
+            new SequentialCommandGroup(
+                new InstantCommand(() -> intakeArmSubsystem.auto_pixel(index)),
+                new WaitCommand(500),
+                new InstantCommand(() -> intakeArmSubsystem.auto_pixel(index - 1)),
+                new WaitCommand(800)
+            ),
+            new ParallelCommandGroup(
+                new InstantCommand(intakeSubsystem::stop),
+                new InstantCommand(() -> intakeArmSubsystem.auto_pixel(6)),
+                new InstantCommand(outtakeSusystem::wheel_stop)
+            ),
+            new SequentialCommandGroup(
+                new InstantCommand(intakeSubsystem::reverse),
+                new WaitCommand(600),
+                new InstantCommand(intakeSubsystem::stop)
+            )
+        );
+    }
+
+    public SequentialCommandGroup stackStationIntakeOnePixel(int index) {
+        return new SequentialCommandGroup(
+            new InstantCommand(intakeSubsystem::run),
+            new InstantCommand(outtakeSusystem::wheel_grab),
+            new WaitCommand(150),
+            new SequentialCommandGroup(
+                new InstantCommand(() -> intakeArmSubsystem.auto_pixel(index)),
+                new WaitCommand(500)
+            ),
+            new ParallelCommandGroup(
+                new InstantCommand(intakeSubsystem::stop),
+                new InstantCommand(() -> intakeArmSubsystem.auto_pixel(6)),
+                new InstantCommand(outtakeSusystem::wheel_stop)
+            ),
+            new SequentialCommandGroup(
+                new InstantCommand(intakeSubsystem::reverse),
+                new WaitCommand(600),
+                new InstantCommand(intakeSubsystem::stop)
+            )
+        );
+    }
+
+    @Override
+    public void initialize() {
+        dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
+
+        outtakeSusystem = new OuttakeSusystem(hardwareMap);
+        elevatorSubsystem = new ElevatorSubsystem(hardwareMap, telemetry, () -> 0, outtakeSusystem);
+        intakeSubsystem = new IntakeSubsystem(hardwareMap);
+        intakeArmSubsystem = new IntakeArmSubsystem(hardwareMap);
+        ledDriver = hardwareMap.get(RevBlinkinLedDriver.class, "led");
+
+        drive = new SampleMecanumDrive(hardwareMap);
+
+        distanceSensor = new DistanceSensorEx(hardwareMap, "distance_sensor");
+        distanceFollow = new ForwardControllerSubsystem(
+            () -> distanceSensor.getDistance(DistanceUnit.CM), 3, telemetry
+        );
+    }
+
+    public void initAllianceRelated(Alliance alliance) {
+        if (alliance == Alliance.RED) {
+            // For RED Alliance
+            camera = new Camera(
+                    hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.RED,
+                    colorThresh, leftRect, centerRect, rightRect
+            );
+            ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+        } else {
+            // For BLUE Alliance
+            camera = new Camera(
+                    hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.BLUE,
+                    colorThresh, leftRect, centerRect, rightRect
+            );
+            ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+        }
+    }
+
+    @Override
+    public void runOpMode() {
+        initialize();
+        waitForStart();
+
+        if (camera.getTeamPropPos() == 0) {
+            rand = RoadRunnerSubsystem.Randomization.LEFT;
+        } else if (camera.getTeamPropPos() == 1) {
+            rand = RoadRunnerSubsystem.Randomization.CENTER;
+        } else if (camera.getTeamPropPos() == 2) {
+            rand = RoadRunnerSubsystem.Randomization.RIGHT;
+        }
+
+        RR.spikeRandomizationPath(rand);
+        RR.TrajectoryInit(rand);
+
+        // SPIKE
+        new InstantCommand(intakeArmSubsystem::lockPixel, intakeArmSubsystem).schedule();
+        RR.runSpike(rand);
+        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
+            run();
+            drive.update();
+        }
+        drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
+    }
+
+    public void save_current_pose() {
+        PoseStorage.currentPose = drive.getPoseEstimate();
+    }
+}

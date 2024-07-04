@@ -1,39 +1,39 @@
 package org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.hardware.ServoEx;
-import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-
 public class IntakeArmSubsystem extends SubsystemBase {
-    private double MIN = 0.02,MID = 0.1, MAX = 0.55;
-//    private final ServoEx leftArm;
+    private double MIN = 0.1,MID = 0.1, MAX = 0.35;
+
+    private double PIXEL_LOCK_POS = 0.05;
+    private double[] AUTO = {0.1, 0.16, 0.22, 0.27, 0.32, MAX};
     private final ServoImplEx rightArm;
 
     public IntakeArmSubsystem(HardwareMap hm) {
-//        leftArm = new SimpleServo(hm, "left_intake_arm", 0, 180, AngleUnit.DEGREES); // TODO: Angle Values Might Change
         rightArm = hm.get(ServoImplEx.class, "right_intake_arm");
 
-        setPosition(MAX);
+        lowerArm();
     }
 
     public void setPosition(double position) {
-//        leftArm.setPosition(position);
         rightArm.setPosition(1-position);
     }
 
     public void raiseArm() {
-        setPosition(MAX); // TODO: Might be 0
+        setPosition(MAX);
     }
 
     public void lowerArm() {
-        setPosition(MIN); // TODO: Might be 1
+        setPosition(MIN);
     }
 
-    public void midArm() {
-        setPosition(MID); // TODO: Might be 1
+    public void auto_pixel(int index){
+        setPosition(AUTO[index - 1]);
+    }
+
+    public void lockPixel() {
+        setPosition(PIXEL_LOCK_POS);
     }
 }

@@ -8,15 +8,31 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 public class DroneSubsystem extends SubsystemBase {
     private ServoImplEx servo;
 
+    private final double SECURE_POS = 0, RELEASE_POS = 0.14;
+
+    public enum State {
+        SECURED,
+        RELEASED
+    }
+
+    private State state;
+
     public DroneSubsystem(HardwareMap hm) {
         servo = hm.get(ServoImplEx.class, "drone");
+        this.grab();
     }
 
     public void grab() {
-        servo.setPosition(0);
+        state = State.SECURED;
+        servo.setPosition(SECURE_POS);
     }
 
     public void release() {
-        servo.setPosition(0.5);
+        state = State.RELEASED;
+        servo.setPosition(RELEASE_POS);
+    }
+
+    public State getState() {
+        return state;
     }
 }
