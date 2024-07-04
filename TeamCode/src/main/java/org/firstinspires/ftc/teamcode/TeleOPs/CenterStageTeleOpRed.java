@@ -11,7 +11,7 @@ import org.inventors.ftc.robotbase.RobotEx;
 import org.inventors.ftc.robotbase.drive.DriveConstants;
 import org.inventors.ftc.robotbase.hardware.GamepadExEx;
 
-@TeleOp(name = "MTI TeleOP RED", group = "Final TeleOPs")
+@TeleOp(name = "TeleOP RED", group = "Final TeleOPs")
 public class CenterStageTeleOpRed extends CommandOpMode {
     private CenterStageRobot robot;
 
