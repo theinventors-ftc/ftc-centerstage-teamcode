@@ -1,27 +1,33 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autos.Cases;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-@Autonomous(name = "BLUE_Short_Purple", group = "Final Autonomous")
-public class Autonomous_BLUE_Short_Purple extends AutonomousBase {
+import org.firstinspires.ftc.teamcode.Autos.AutonomousBase;
+import org.firstinspires.ftc.teamcode.Autos.RoadRunnerSubsystem;
+import org.firstinspires.ftc.teamcode.Autos.RoadRunnerSubsystem_RED;
 
+@Disabled
+@Autonomous(name = "RED_Short_Purple", group = "Final Autonomous")
+public class Autonomous_RED_Short_Purple extends AutonomousBase {
     private Pose2d HomePose = new Pose2d(
-        RoadRunnerSubsystem.Tile/2, 3 * RoadRunnerSubsystem.Tile - 7.93,
-        Math.toRadians(270)
+        RoadRunnerSubsystem.Tile/2, 3 * RoadRunnerSubsystem.TileInverted + 6.93,
+        Math.toRadians(90)
     );
 
     @Override
     public void initialize() {
         super.initialize();
-        initAllianceRelated(Alliance.BLUE);
-        RR = new RoadRunnerSubsystem_BLUE(
+        initAllianceRelated(Alliance.RED);
+        RR = new RoadRunnerSubsystem_RED(
             drive, HomePose, RoadRunnerSubsystem.StartingPosition.SHORT,
             RoadRunnerSubsystem.Path.INNER, RoadRunnerSubsystem.PixelStack.INNER,
-            RoadRunnerSubsystem.ParkingPosition.INNER, telemetry);
+            RoadRunnerSubsystem.ParkingPosition.OUTER, telemetry
+        );
     }
 
     @Override
@@ -34,7 +40,7 @@ public class Autonomous_BLUE_Short_Purple extends AutonomousBase {
             run();
         }
 
-        //Parking
+        // Parking
         temp = resetElevator();
         temp.schedule();
         RR.runParking();
@@ -44,9 +50,8 @@ public class Autonomous_BLUE_Short_Purple extends AutonomousBase {
         }
         drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
 
-        PoseStorage.currentPose = drive.getPoseEstimate();
+        save_current_pose();
 
         reset();
-
     }
 }

@@ -1,17 +1,13 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autos;
 
 import android.util.Pair;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.roadRunner.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.roadRunner.drive.SampleMecanumDrive;
-
-import java.util.Dictionary;
-import java.util.Hashtable;
 
 public class RoadRunnerSubsystem_RED extends RoadRunnerSubsystem {
     @Override
@@ -87,7 +83,7 @@ public class RoadRunnerSubsystem_RED extends RoadRunnerSubsystem {
     /*----------------------------------------------------------------------------------------------
     -- La program --
     ----------------------------------------------------------------------------------------------*/
-    RoadRunnerSubsystem_RED(
+    public RoadRunnerSubsystem_RED(
         SampleMecanumDrive sampleDrive, Pose2d HomePose,
         StartingPosition startingPosition, Path path, PixelStack pixelStack,
         ParkingPosition parkingPosition, Telemetry telemetry

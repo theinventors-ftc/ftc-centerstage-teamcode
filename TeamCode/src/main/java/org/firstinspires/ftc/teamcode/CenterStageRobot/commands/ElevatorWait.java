@@ -11,7 +11,6 @@ public class ElevatorWait extends CommandBase {
         this.elevator = elevator;
     }
 
-
     @Override
     public boolean isFinished() {
         return elevator.atTargetLevel();

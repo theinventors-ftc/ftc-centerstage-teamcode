@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.CenterStageRobot;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
@@ -12,7 +11,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.ElevatorCommand;
-import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.ElevatorWait;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.DroneSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.ElevatorSubsystem;
@@ -21,9 +19,9 @@ import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeSubsyste
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.LEDSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.OuttakeSusystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.PixelColorDetectorSubsystem;
+import org.inventors.ftc.robotbase.RobotEx;
 import org.inventors.ftc.robotbase.drive.DriveConstants;
 import org.inventors.ftc.robotbase.hardware.GamepadExEx;
-import org.inventors.ftc.robotbase.RobotEx;
 
 
 public class CenterStageRobot extends RobotEx {
@@ -135,14 +133,9 @@ public class CenterStageRobot extends RobotEx {
                                 new WaitCommand(80),
                                 new InstantCommand(outtakeSusystem::go_intake_first),
                                 new WaitCommand(150),
-                                new ParallelCommandGroup(
-                                    new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.LOADING),
-                                    new SequentialCommandGroup(
-                                            new ElevatorWait(elevatorSubsystem),
-                                            new InstantCommand(outtakeSusystem::wheel_grab),
-                                            new InstantCommand(intakeSubsystem::run, intakeSubsystem)
-                                    )
-                                )
+                                new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.LOADING),
+                                new InstantCommand(outtakeSusystem::wheel_grab),
+                                new InstantCommand(intakeSubsystem::run, intakeSubsystem)
 //                                new IntakeCommand(intakeSubsystem, pixelColorDetectorSubsystem), // Stops when it sees 2 pixels
 //                                new SequentialCommandGroup(
 //                                        new InstantCommand(outtakeSusystem::wheel_stop),
@@ -157,15 +150,14 @@ public class CenterStageRobot extends RobotEx {
 //                                )
                         ),
                         new SequentialCommandGroup(
+                                new InstantCommand(pixelColorDetectorSubsystem::disable),
+                                new InstantCommand(ledSubsystem::disableIntake),
                                 new InstantCommand(outtakeSusystem::wheel_stop),
                                 new InstantCommand(intakeArmSubsystem::raiseArm),
-                                new WaitCommand(100),
+                                new WaitCommand(80),
                                 new InstantCommand(intakeSubsystem::reverse, intakeSubsystem),
                                 new WaitCommand(500),
-                                new InstantCommand(intakeSubsystem::stop, intakeSubsystem),
-                                new InstantCommand(pixelColorDetectorSubsystem::disable),
-//                                new WaitCommand(350), // please dont fuck up this is important to be removed
-                                new InstantCommand(ledSubsystem::disableIntake)
+                                new InstantCommand(intakeSubsystem::stop, intakeSubsystem)
                         )
                 );
 

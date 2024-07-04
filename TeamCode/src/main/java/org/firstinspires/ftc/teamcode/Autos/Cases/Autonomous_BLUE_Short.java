@@ -1,32 +1,31 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autos.Cases;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
-import com.arcrobotics.ftclib.util.Timing;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import java.util.concurrent.TimeUnit;
+import org.firstinspires.ftc.teamcode.Autos.AutonomousBase;
+import org.firstinspires.ftc.teamcode.Autos.RoadRunnerSubsystem;
+import org.firstinspires.ftc.teamcode.Autos.RoadRunnerSubsystem_BLUE;
 
-
-@Autonomous(name = "RED_Short", group = "Final Autonomous")
-public class Autonomous_RED_Short extends AutonomousBase {
+@Autonomous(name = "BLUE_Short", group = "Final Autonomous")
+public class Autonomous_BLUE_Short extends AutonomousBase {
     private Pose2d HomePose = new Pose2d(
-        RoadRunnerSubsystem.Tile/2, 3 * RoadRunnerSubsystem.TileInverted + 7.93,
-        Math.toRadians(90)
+        RoadRunnerSubsystem.Tile/2, 3 * RoadRunnerSubsystem.Tile - 7.93,
+        Math.toRadians(270)
     );
 
     @Override
     public void initialize() {
         super.initialize();
-        initAllianceRelated(Alliance.RED);
-        RR = new RoadRunnerSubsystem_RED(
+        initAllianceRelated(Alliance.BLUE);
+        RR = new RoadRunnerSubsystem_BLUE(
             drive, HomePose, RoadRunnerSubsystem.StartingPosition.SHORT,
             RoadRunnerSubsystem.Path.INNER, RoadRunnerSubsystem.PixelStack.INNER,
-            RoadRunnerSubsystem.ParkingPosition.INNER, telemetry
-        );
+            RoadRunnerSubsystem.ParkingPosition.INNER, telemetry);
     }
 
     @Override
@@ -42,15 +41,14 @@ public class Autonomous_RED_Short extends AutonomousBase {
             drive.update();
         }
         drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
-//        backdropAlignment();
 
         temp = scoring_randomization();
         temp.schedule();
         while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
             run();
         }
+        // STACk
 
-        // STACK FIRST
         temp = new SequentialCommandGroup(new WaitCommand(600), resetElevator());
         temp.schedule();
         RR.runBackdrop_Station(0);
@@ -66,7 +64,7 @@ public class Autonomous_RED_Short extends AutonomousBase {
             run();
         }
 
-        temp = new SequentialCommandGroup(new WaitCommand(1800), elevator_first());
+        temp = new SequentialCommandGroup(new WaitCommand(2400), elevator_first());
 
         temp.schedule();
 
@@ -76,7 +74,6 @@ public class Autonomous_RED_Short extends AutonomousBase {
             drive.update();
         }
         drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
-//        backdropAlignment();
 
         temp = scoring();
         temp.schedule();
@@ -84,10 +81,10 @@ public class Autonomous_RED_Short extends AutonomousBase {
             run();
         }
 
-        // STACK Second
+        //2nd Cycle
+
         temp = new SequentialCommandGroup(new WaitCommand(600), resetElevator());
         temp.schedule();
-
         RR.runBackdrop_Station(1);
         while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
             run();
@@ -101,10 +98,7 @@ public class Autonomous_RED_Short extends AutonomousBase {
             run();
         }
 
-        temp = new SequentialCommandGroup(
-                new WaitCommand(1800),
-                elevator_second()
-        );
+        temp = new SequentialCommandGroup(new WaitCommand(2400), elevator_second());
 
         temp.schedule();
 
@@ -114,7 +108,6 @@ public class Autonomous_RED_Short extends AutonomousBase {
             drive.update();
         }
         drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
-//        backdropAlignment();
 
         temp = scoring();
         temp.schedule();
@@ -131,7 +124,7 @@ public class Autonomous_RED_Short extends AutonomousBase {
         }
         drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
 
-        poseStoragePeriodic();
+        save_current_pose();
 
         reset();
     }

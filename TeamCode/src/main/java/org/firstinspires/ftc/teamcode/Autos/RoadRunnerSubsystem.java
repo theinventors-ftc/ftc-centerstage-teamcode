@@ -1,20 +1,16 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autos;
 
 import android.util.Pair;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.roadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadRunner.trajectorysequence.TrajectorySequenceBuilder;
 
-
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.arcrobotics.ftclib.util.Timing;
-
 import java.util.Hashtable;
-import java.util.concurrent.TimeUnit;
 
 import kotlin.NotImplementedError;
 
@@ -25,9 +21,6 @@ public class RoadRunnerSubsystem extends SubsystemBase {
     ----------------------------------------------------------------------------------------------*/
     public static double
         Tile = 24, TileInverted = -Tile, /*-inches-*/
-//        RobotX = 12.795, RobotY = 18.11, IntakeExt = 0.0, /*-inches-*/
-//         RobotY = robot_length + 2 * outtake_extension
-//         IntakeExt = intake_extension - outtake_extension
         RobotY = 15.1, RobotX = 13.1, IntakeExt = 3, /*-inches-*/
         AccDefault = 52, VelDefault = 52;
     /*----------------------------------------------------------------------------------------------
@@ -35,15 +28,15 @@ public class RoadRunnerSubsystem extends SubsystemBase {
     ----------------------------------------------------------------------------------------------*/
     enum Randomization {LEFT, CENTER, RIGHT}
 
-    enum StartingPosition {SHORT, LONG}
+    public enum StartingPosition {SHORT, LONG}
 
-    enum Path {INNER, OUTER}
+    public enum Path {INNER, OUTER}
 
-    enum ParkingPosition {INNER, MID, OUTER}
+    public enum ParkingPosition {INNER, MID, OUTER}
 
-    enum PixelStack {INNER, MID, OUTER}
+    public enum PixelStack {INNER, MID, OUTER}
 
-    enum RobotSides {FRONT, REAR, CENTER, LEFT, RIGHT}
+    public enum RobotSides {FRONT, REAR, CENTER, LEFT, RIGHT}
 
     protected Randomization rand;
     protected StartingPosition startingPosition;

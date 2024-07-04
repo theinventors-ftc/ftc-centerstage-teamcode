@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autos;
 
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.ElevatorSubsys
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeArmSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.OuttakeSusystem;
+import org.firstinspires.ftc.teamcode.PoseStorage;
 import org.firstinspires.ftc.teamcode.roadRunner.drive.SampleMecanumDrive;
 import org.inventors.ftc.opencvpipelines.TeamPropDetectionPipeline;
 import org.inventors.ftc.robotbase.controllers.ForwardControllerSubsystem;
@@ -30,10 +31,13 @@ import org.opencv.core.Rect;
 import java.util.concurrent.TimeUnit;
 
 @Disabled
-@Autonomous(name = "Do not run", group = "Final Autonomous")
+@Autonomous(name = "Do not run", group = "")
 public class AutonomousBase extends CommandOpMode {
     protected Timing.Timer timer = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
-    protected enum Alliance {BLUE, RED}
+    protected enum Alliance {
+        RED,
+        BLUE
+    }
 
     protected OuttakeSusystem outtakeSusystem;
     protected ElevatorSubsystem elevatorSubsystem;
@@ -189,20 +193,21 @@ public class AutonomousBase extends CommandOpMode {
     }
 
     public void initAllianceRelated(Alliance alliance) {
-        if (alliance == Alliance.BLUE) {
+        if (alliance == Alliance.RED) {
+            // For RED Alliance
             camera = new Camera(
-                hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.BLUE,
-                colorThresh, leftRect, centerRect, rightRect
+                    hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.RED,
+                    colorThresh, leftRect, centerRect, rightRect
+            );
+            ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+        } else {
+            // For BLUE Alliance
+            camera = new Camera(
+                    hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.BLUE,
+                    colorThresh, leftRect, centerRect, rightRect
             );
             ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-            return;
         }
-
-        camera = new Camera(
-            hardwareMap, dashboard, telemetry, TeamPropDetectionPipeline.Alliance.RED, colorThresh,
-            leftRect, centerRect, rightRect
-        );
-        ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
     }
 
     @Override
@@ -220,7 +225,6 @@ public class AutonomousBase extends CommandOpMode {
 
         RR.spikeRandomizationPath(rand);
         RR.TrajectoryInit(rand);
-//        assert RR.leftPixelSpike != null : "NULL";
 
         // SPIKE
         new InstantCommand(intakeArmSubsystem::lockPixel, intakeArmSubsystem).schedule();
@@ -232,7 +236,7 @@ public class AutonomousBase extends CommandOpMode {
         drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
     }
 
-    public void poseStoragePeriodic() {
+    public void save_current_pose() {
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
 }

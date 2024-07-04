@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autos;
 
 import android.util.Pair;
 
@@ -85,7 +85,7 @@ public class RoadRunnerSubsystem_BLUE extends RoadRunnerSubsystem {
     /*----------------------------------------------------------------------------------------------
     -- La program --
     ----------------------------------------------------------------------------------------------*/
-    RoadRunnerSubsystem_BLUE(
+    public RoadRunnerSubsystem_BLUE(
         SampleMecanumDrive sampleDrive, Pose2d HomePose,
         StartingPosition startingPosition, Path path, PixelStack pixelStack,
         ParkingPosition parkingPosition, Telemetry telemetry
