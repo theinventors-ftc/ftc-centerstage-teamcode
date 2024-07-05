@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.CenterStageRobot;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.ElevatorCommand;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.commands.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.DroneSubsystem;
@@ -17,10 +19,13 @@ import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.ElevatorSubsys
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeArmSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.LEDSubsystem;
+import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.NotifierSubsystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.OuttakeSusystem;
 import org.firstinspires.ftc.teamcode.CenterStageRobot.subsystems.PixelColorDetectorSubsystem;
 import org.inventors.ftc.robotbase.RobotEx;
+import org.inventors.ftc.robotbase.controllers.ForwardControllerSubsystem;
 import org.inventors.ftc.robotbase.drive.DriveConstants;
+import org.inventors.ftc.robotbase.hardware.DistanceSensorEx;
 import org.inventors.ftc.robotbase.hardware.GamepadExEx;
 
 
@@ -35,35 +40,52 @@ public class CenterStageRobot extends RobotEx {
     private DroneSubsystem droneSubsystem;
     private PixelColorDetectorSubsystem pixelColorDetectorSubsystem;
     private LEDSubsystem ledSubsystem;
+
+    private NotifierSubsystem notifierSubsystem;
+
+    // -------------------------------------- Controllers --------------------------------------- //
+    protected DistanceSensorEx distanceSensor;
+    protected ForwardControllerSubsystem distanceFollow;
+
+    // ---------------------------------------- Utility ----------------------------------------- //
     private ElapsedTime running_time;
 
     public CenterStageRobot(HardwareMap hm, DriveConstants RobotConstants, Telemetry telemetry,
                             GamepadExEx driverOp, GamepadExEx toolOp, OpModeType opModeType,
                             Alliance alliance, String imuName, boolean camera, boolean distance_sensor,
                             Pose2d startingPose, ElapsedTime running_time) {
-        super(hm, RobotConstants, telemetry, driverOp, toolOp, opModeType, alliance, imuName, camera, distance_sensor, startingPose);
+        super(hm, RobotConstants, telemetry, driverOp, toolOp, opModeType, alliance,
+                imuName, camera, distance_sensor, startingPose);
 
         // ----------------------------------- Notifications ------------------------------------ //
         this.running_time = running_time;
 
-        new Trigger(() -> running_time.seconds() >= 120-10)
-                .whenActive(
-                        new InstantCommand(() -> driverOp.rumble(0.6))
-                );
+//        new Trigger(() -> running_time.seconds() >= 120-10)
+//                .whenActive(
+//                        new InstantCommand(() -> driverOp.rumble(0.6))
+//                );
+//
+//        new Trigger(() -> running_time.seconds() >= 120-5)
+//                .whenActive(
+//                        new InstantCommand(() -> driverOp.rumble(5))
+//                );
 
-        new Trigger(() -> running_time.seconds() >= 120-5)
-                .whenActive(
-                        new InstantCommand(() -> driverOp.rumble(5))
-                );
+        // TODO TEST This malakia
+        notifierSubsystem = new NotifierSubsystem(running_time);
+
+        notifierSubsystem.addNotification(120-10, new InstantCommand(() -> driverOp.rumble(0.6)));
+        notifierSubsystem.addNotification(120-5, new InstantCommand(() -> driverOp.rumble(5)));
     }
 
     @Override
-    public void initMechanismsAutonomous(HardwareMap hardwareMap) {
-        super.initMechanismsAutonomous(hardwareMap);
+    public void initMechanismsAutonomous() {
+        super.initMechanismsAutonomous();
     }
 
     @Override
-    public void initMechanismsTeleOp(HardwareMap hardwareMap) {
+    public void initMechanismsTeleOp() {
+        super.initMechanismsTeleOp();
+
         intakeArmSubsystem = new IntakeArmSubsystem(hardwareMap);
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
         outtakeSusystem = new OuttakeSusystem(hardwareMap);
@@ -175,5 +197,31 @@ public class CenterStageRobot extends RobotEx {
                         new InstantCommand(intakeSubsystem::stop, intakeSubsystem),
                         new InstantCommand(outtakeSusystem::wheel_stop, outtakeSusystem)
                 ));
+
+        // --------------------------------- Backdrop Alignment --------------------------------- //
+        distanceSensor = new DistanceSensorEx(hardwareMap, "distance_sensor");
+        distanceFollow = new ForwardControllerSubsystem(() -> distanceSensor.getDistance(DistanceUnit.CM), 3, telemetry);
+
+        // Backdrop Aligment
+        driverOp.getGamepadButton(GamepadKeys.Button.A)
+                .whenPressed(
+                        new ParallelCommandGroup(
+                                new SequentialCommandGroup(
+                                        new InstantCommand(drive::setRobotCentric),
+                                        new InstantCommand(gyroFollow::enable, gyroFollow),
+                                        new InstantCommand(() -> gyroFollow.setGyroTarget(alliance == Alliance.RED ? 90 : -90), gyroFollow)
+                                ),
+                                new InstantCommand(distanceFollow::enable, distanceFollow)
+                        )
+                );
+
+        driverOp.getGamepadButton(GamepadKeys.Button.A)
+                .whenReleased(
+                        new ParallelCommandGroup(
+                                new InstantCommand(drive::setFieldCentric),
+                                new InstantCommand(gyroFollow::disable, gyroFollow),
+                                new InstantCommand(distanceFollow::disable, distanceFollow)
+                        )
+                );
     }
 }

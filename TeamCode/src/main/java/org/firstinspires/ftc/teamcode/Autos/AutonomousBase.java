@@ -31,7 +31,7 @@ import org.opencv.core.Rect;
 import java.util.concurrent.TimeUnit;
 
 @Disabled
-@Autonomous(name = "Do not run", group = "")
+@Autonomous(name = "Do not run this Auto", group = "")
 public class AutonomousBase extends CommandOpMode {
     protected Timing.Timer timer = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
     protected enum Alliance {
