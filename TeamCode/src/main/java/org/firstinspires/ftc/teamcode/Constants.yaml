@@ -63,5 +63,7 @@ speed_regulators:
   overspeed: 1 # TODO 0.5 bcuz 0.5 + 0.5 = 1
   underspeed: 0.3
 
-initializations:
-  initCamera: true
+camera:
+  camera_name: "webcam"
+  frame_width: 1280
+  frame_height: 720
