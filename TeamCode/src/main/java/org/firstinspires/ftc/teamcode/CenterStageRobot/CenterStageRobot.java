@@ -52,10 +52,10 @@ public class CenterStageRobot extends RobotEx {
 
     public CenterStageRobot(HardwareMap hm, DriveConstants RobotConstants, Telemetry telemetry,
                             GamepadExEx driverOp, GamepadExEx toolOp, OpModeType opModeType,
-                            Alliance alliance, String imuName, boolean camera, boolean distance_sensor,
-                            Pose2d startingPose, ElapsedTime running_time) {
+                            Alliance alliance, String imuName, boolean camera, Pose2d startingPose,
+                            ElapsedTime running_time) {
         super(hm, RobotConstants, telemetry, driverOp, toolOp, opModeType, alliance,
-                imuName, camera, distance_sensor, startingPose);
+                imuName, camera, startingPose);
 
         // ----------------------------------- Notifications ------------------------------------ //
         this.running_time = running_time;
@@ -73,18 +73,24 @@ public class CenterStageRobot extends RobotEx {
         // TODO TEST This malakia
         notifierSubsystem = new NotifierSubsystem(running_time);
 
-        notifierSubsystem.addNotification(120-10, new InstantCommand(() -> driverOp.rumble(0.6)));
-        notifierSubsystem.addNotification(120-5, new InstantCommand(() -> driverOp.rumble(5)));
+        notifierSubsystem.addNotification(
+                120-10, new InstantCommand(() -> driverOp.rumble(0.6))
+        );
+
+        notifierSubsystem.addNotification(
+                120-5, new InstantCommand(() -> driverOp.rumble(5))
+        );
     }
 
     @Override
-    public void initMechanismsAutonomous() {
-        super.initMechanismsAutonomous();
+    public void initMechanismsAutonomous(HardwareMap hardwareMap) {
+        super.initMechanismsAutonomous(hardwareMap);
     }
 
     @Override
-    public void initMechanismsTeleOp() {
-        super.initMechanismsTeleOp();
+    public void initMechanismsTeleOp(HardwareMap hardwareMap, GamepadExEx driverOp,
+                                     GamepadExEx toolOp) {
+        super.initMechanismsTeleOp(hardwareMap, driverOp, toolOp);
 
         intakeArmSubsystem = new IntakeArmSubsystem(hardwareMap);
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
@@ -202,20 +208,20 @@ public class CenterStageRobot extends RobotEx {
         distanceSensor = new DistanceSensorEx(hardwareMap, "distance_sensor");
         distanceFollow = new ForwardControllerSubsystem(() -> distanceSensor.getDistance(DistanceUnit.CM), 3, telemetry);
 
-        // Backdrop Aligment
-        driverOp.getGamepadButton(GamepadKeys.Button.A)
+        // Backdrop Alignment
+        driverOp.getGamepadButton(GamepadKeys.Button.A) // Enable Backdrop Alignment
                 .whenPressed(
                         new ParallelCommandGroup(
                                 new SequentialCommandGroup(
                                         new InstantCommand(drive::setRobotCentric),
                                         new InstantCommand(gyroFollow::enable, gyroFollow),
-                                        new InstantCommand(() -> gyroFollow.setGyroTarget(alliance == Alliance.RED ? 90 : -90), gyroFollow)
+                                        new InstantCommand(() -> gyroFollow.setGyroTarget(this.alliance == Alliance.RED ? 90 : -90), gyroFollow)
                                 ),
                                 new InstantCommand(distanceFollow::enable, distanceFollow)
                         )
                 );
 
-        driverOp.getGamepadButton(GamepadKeys.Button.A)
+        driverOp.getGamepadButton(GamepadKeys.Button.A) // Disable Backdrop Alignment
                 .whenReleased(
                         new ParallelCommandGroup(
                                 new InstantCommand(drive::setFieldCentric),
@@ -223,5 +229,12 @@ public class CenterStageRobot extends RobotEx {
                                 new InstantCommand(distanceFollow::disable, distanceFollow)
                         )
                 );
+    }
+
+    @Override
+    public double drivetrainForward() {
+        if(distanceFollow.isEnabled()) return distanceFollow.calculateOutput();
+
+        return super.drivetrainForward();
     }
 }

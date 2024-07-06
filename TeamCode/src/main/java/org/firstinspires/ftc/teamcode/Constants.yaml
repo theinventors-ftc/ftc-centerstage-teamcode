@@ -1,0 +1,67 @@
+configuration:
+  robot_name: "ROBOT"
+
+  motors:
+    frontLeft_motor_name: "frontLeft"
+    frontRight_motor_name: "frontRight"
+    rearLeft_motor_name: "rearLeft"
+    rearRight_motor_name: "rearRight"
+
+  encoders:
+    left_encoder_name: "leftEncoder"
+    right_encoder_name: "rightEncoder"
+    perpendicular_encoder_name: "perpendicularEncoder"
+
+  imu_name: "imu"
+  camera_name: "webcam"
+
+drive_base:
+  front_left_inverted: false
+  front_right_inverted: false
+  rear_left_inverted: false
+  rear_right_inverted: false
+
+  transmission:
+    gear_ratio: 1.0
+    wheel_radius: 0.0 # inch
+
+  motor_specs:
+    rpm: 0.0
+    ticks_per_rev: 0.0
+
+  motors_feedforward:
+    front_left:
+      kS: 0.0
+      kV: 1.0
+      kA: 0.0
+    front_right:
+      kS: 0.0
+      kV: 1.0
+      kA: 0.0
+    rear_left:
+      kS: 0.0
+      kV: 1.0
+      kA: 0.0
+    rear_right:
+      kS: 0.0
+      kV: 1.0
+      kA: 0.0
+
+  motors_PID:
+    Kp: 0.0
+    Ki: 0.0
+    Kd: 0.0
+    integral_bound: 0.0
+
+  MAX_VEL: 0.0
+  MAX_ACCEL: 0.0
+  MAX_ANG_VEL: 0.0
+  MAX_ANG_ACCEL: 0.0
+
+speed_regulators:
+  default: 0.5
+  overspeed: 1 # TODO 0.5 bcuz 0.5 + 0.5 = 1
+  underspeed: 0.3
+
+initializations:
+  initCamera: true
