@@ -28,6 +28,8 @@ import org.inventors.ftc.robotbase.drive.DriveConstants;
 import org.inventors.ftc.robotbase.hardware.DistanceSensorEx;
 import org.inventors.ftc.robotbase.hardware.GamepadExEx;
 
+import java.util.HashMap;
+
 
 public class CenterStageRobot extends RobotEx {
     //----------------------------------- Initialize Subsystems -----------------------------------//
@@ -50,12 +52,12 @@ public class CenterStageRobot extends RobotEx {
     // ---------------------------------------- Utility ----------------------------------------- //
     private ElapsedTime running_time;
 
-    public CenterStageRobot(HardwareMap hm, DriveConstants RobotConstants, Telemetry telemetry,
-                            GamepadExEx driverOp, GamepadExEx toolOp, OpModeType opModeType,
-                            Alliance alliance, String imuName, boolean camera, Pose2d startingPose,
-                            ElapsedTime running_time) {
-        super(hm, RobotConstants, telemetry, driverOp, toolOp, opModeType, alliance,
-                imuName, camera, startingPose);
+    public CenterStageRobot(HardwareMap hardwareMap, Telemetry telemetry, GamepadExEx driverOp,
+                            GamepadExEx toolOp, HashMap constants, OpModeType opModeType,
+                            Alliance alliance, Pose2d startingPose, ElapsedTime running_time
+    ) {
+        super(hardwareMap, telemetry, driverOp, toolOp, constants, opModeType, alliance,
+                startingPose);
 
         // ----------------------------------- Notifications ------------------------------------ //
         this.running_time = running_time;

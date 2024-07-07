@@ -1,19 +1,19 @@
 configuration:
-  robot_name: "ROBOT"
+  robot_name: ROBOT
 
   motors:
-    frontLeft_motor_name: "frontLeft"
-    frontRight_motor_name: "frontRight"
-    rearLeft_motor_name: "rearLeft"
-    rearRight_motor_name: "rearRight"
+    frontLeft_motor_name: frontLeft
+    frontRight_motor_name: frontRight
+    rearLeft_motor_name: rearLeft
+    rearRight_motor_name: rearRight
 
   encoders:
-    left_encoder_name: "leftEncoder"
-    right_encoder_name: "rightEncoder"
-    perpendicular_encoder_name: "perpendicularEncoder"
+    left_encoder_name: leftEncoder
+    right_encoder_name: rightEncoder
+    perpendicular_encoder_name: perpendicularEncoder
 
-  imu_name: "imu"
-  camera_name: "webcam"
+  imu_name: imu
+  camera_name: webcam
 
 drive_base:
   front_left_inverted: false
@@ -64,6 +64,6 @@ speed_regulators:
   underspeed: 0.3
 
 camera:
-  camera_name: "webcam"
+  camera_name: webcam
   frame_width: 1280
   frame_height: 720
